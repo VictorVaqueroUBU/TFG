@@ -21,6 +21,8 @@ jobs:
 
       - name: Install Composer dependencies
         run: composer install --prefer-dist --no-progress --no-suggest --no-interaction
+        env:
+          APP_ENV: test
 
       - name: Run Symfony tests
         run: ./bin/phpunit
