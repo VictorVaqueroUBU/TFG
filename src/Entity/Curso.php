@@ -56,8 +56,8 @@ class Curso
     #[ORM\Column]
     private ?bool $visible_web = null;
 
-    #[ORM\Column]
-    private ?int $id_programa = null;
+    //#[ORM\Column]
+    //private ?int $id_programa = null;
 
     #[ORM\Column(type: Types::SMALLINT)]
     private ?int $horas_virtuales = null;

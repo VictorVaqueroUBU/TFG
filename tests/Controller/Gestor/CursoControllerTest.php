@@ -65,7 +65,6 @@ final class CursoControllerTest extends WebTestCase
             'curso[plazo_solicitud]' => 'Testing',
             'curso[observaciones]' => 'Testing',
             'curso[visible_web]' => 'Testing',
-            'curso[id_programa]' => 'Testing',
             'curso[horas_virtuales]' => 'Testing',
             'curso[calificable]' => 'Testing',
         ]);
@@ -93,7 +92,6 @@ final class CursoControllerTest extends WebTestCase
         $fixture->setPlazo_solicitud('My Title');
         $fixture->setObservaciones('My Title');
         $fixture->setVisible_web('My Title');
-        $fixture->setId_programa('My Title');
         $fixture->setHoras_virtuales('My Title');
         $fixture->setCalificable('My Title');
 
@@ -126,7 +124,6 @@ final class CursoControllerTest extends WebTestCase
         $fixture->setPlazo_solicitud('Value');
         $fixture->setObservaciones('Value');
         $fixture->setVisible_web('Value');
-        $fixture->setId_programa('Value');
         $fixture->setHoras_virtuales('Value');
         $fixture->setCalificable('Value');
 
@@ -150,7 +147,6 @@ final class CursoControllerTest extends WebTestCase
             'curso[plazo_solicitud]' => 'Something New',
             'curso[observaciones]' => 'Something New',
             'curso[visible_web]' => 'Something New',
-            'curso[id_programa]' => 'Something New',
             'curso[horas_virtuales]' => 'Something New',
             'curso[calificable]' => 'Something New',
         ]);
@@ -173,7 +169,6 @@ final class CursoControllerTest extends WebTestCase
         self::assertSame('Something New', $fixture[0]->getPlazo_solicitud());
         self::assertSame('Something New', $fixture[0]->getObservaciones());
         self::assertSame('Something New', $fixture[0]->getVisible_web());
-        self::assertSame('Something New', $fixture[0]->getId_programa());
         self::assertSame('Something New', $fixture[0]->getHoras_virtuales());
         self::assertSame('Something New', $fixture[0]->getCalificable());
     }
@@ -196,7 +191,6 @@ final class CursoControllerTest extends WebTestCase
         $fixture->setPlazo_solicitud('Value');
         $fixture->setObservaciones('Value');
         $fixture->setVisible_web('Value');
-        $fixture->setId_programa('Value');
         $fixture->setHoras_virtuales('Value');
         $fixture->setCalificable('Value');
 

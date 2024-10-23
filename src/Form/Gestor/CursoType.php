@@ -26,7 +26,6 @@ class CursoType extends AbstractType
             ->add('plazo_solicitud')
             ->add('observaciones')
             ->add('visible_web')
-            ->add('id_programa')
             ->add('horas_virtuales')
             ->add('calificable')
         ;
