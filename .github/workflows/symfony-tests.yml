@@ -6,7 +6,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Crear archivo .env
+      - name: Crear archivo .env temporal
         run: |
           echo "APP_ENV=test" > .env
           echo "DATABASE_URL=mysql://root:bandit650n@127.0.0.1:3306/formacion?serverVersion=8.0.32&charset=utf8mb4" >> .env
