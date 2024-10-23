@@ -3,12 +3,12 @@ gestor_controllers:
     type: attribute
     prefix: /gestor
 
-participante_controllers:
-    resource: '../src/Controller/Participante/'
-    type: attribute
-    prefix: /participante
+#participante_controllers:
+#    resource: '../src/Controller/Participante/'
+#    type: attribute
+#    prefix: /participante
 
-formador_controllers:
-    resource: '../src/Controller/Formador/'
-    type: attribute
-    prefix: /formador
+#formador_controllers:
+#    resource: '../src/Controller/Formador/'
+#    type: attribute
+#    prefix: /formador
