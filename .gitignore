@@ -28,3 +28,9 @@
 ###> phpstan/phpstan ###
 phpstan.neon
 ###< phpstan/phpstan ###
+
+# Ignorar archivos .DS_Store
+.DS_Store
+public/.DS_Store
+public/resources/.DS_Store
+public/resources/bootstrap-5.3.3/.DS_Store
