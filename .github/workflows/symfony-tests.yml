@@ -6,11 +6,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Crear archivo .env.test
+      - name: Crear archivo .env
         run: |
-          echo "APP_ENV=test" > .env.test
-          echo "DATABASE_URL=mysql://root:bandit650n@127.0.0.1:3306/formacion?serverVersion=8.0.32&charset=utf8mb4" >> .env.test
-          echo "APP_SECRET=$ecretf0rt3st" >> .env.test
+          echo "APP_ENV=test" > .env
+          echo "DATABASE_URL=mysql://root:bandit650n@127.0.0.1:3306/formacion?serverVersion=8.0.32&charset=utf8mb4" >> .env
+          echo "APP_SECRET=$ecretf0rt3st" >> .env
 
       - name: Set up PHP
         uses: shivammathur/setup-php@v2
@@ -20,7 +20,10 @@ jobs:
           ini-values: post_max_size=256M, max_execution_time=300
 
       - name: Install Composer dependencies
-        run: composer install --prefer-dist --no-progress --no-suggest --no-interaction
+        run: composer install --prefer-dist --no-progress --no-interaction
+
+      - name: Clear cache
+        run: php bin/console cache:clear
         env:
           APP_ENV: test
 
