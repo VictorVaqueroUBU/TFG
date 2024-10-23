@@ -12,6 +12,9 @@ final class CursoControllerTest extends WebTestCase
 {
     private KernelBrowser $client;
     private EntityManagerInterface $manager;
+    /**
+     * @var EntityRepository<Curso>
+     */
     private EntityRepository $repository;
     private string $path = '/curso/';
 
@@ -42,7 +45,7 @@ final class CursoControllerTest extends WebTestCase
 
     public function testNew(): void
     {
-        $this->markTestIncomplete();
+        //$this->markTestIncomplete();
         $this->client->request('GET', sprintf('%snew', $this->path));
 
         self::assertResponseStatusCodeSame(200);
