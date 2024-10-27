@@ -2,7 +2,7 @@
 
 namespace App\Tests\Controller\Gestor;
 
-use App\Entity\Curso;
+use App\Entity\Forpas\Curso;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;

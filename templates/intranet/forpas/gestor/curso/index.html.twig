@@ -1,0 +1,123 @@
+{% extends 'intranet/forpas/gestor/index.html.twig' %}
+
+{% block title %}{{ titulo }}{% endblock %}
+
+{% block content %}
+    <div class="pagina-titulo">Portal del Gestor
+        <a href="{{ path('intranet_forpas_gestor') }}"><span class="mx-3 fa-solid fa-reply" title="Volver"></span></a>
+    </div>
+
+    <div class="pagina-seccion">Listado de Cursos</div>
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success">
+            {{ message }}
+        </div>
+    {% endfor %}
+    <table class="tabla-condensada" id="datosCursos">
+        <thead class="cabecera-condensada">
+            <tr>
+                <th>Codigo</th>
+                <th>Nombre</th>
+                <th>Horas</th>
+                <th>Participantes por edicion</th>
+                <th>Ediciones estimadas</th>
+                <th>Visible web</th>
+                <th>Horas virtuales</th>
+                <th>Evaluable</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for curso in cursos %}
+            <tr>
+                <td>{{ curso.codigoCurso }}</td>
+                <td>{{ curso.nombreCurso }}</td>
+                <td>{{ curso.horas }}</td>
+                <td>{{ curso.participantesEdicion }}</td>
+                <td>{{ curso.edicionesEstimadas }}</td>
+                <td class="text-center">
+                    {% if curso.visibleWeb %}
+                        <sup class="text-success fas fa-check"></sup>
+                    {% else %}
+                        <sup class="text-danger fas fa-times"></sup>
+                    {% endif %}
+                </td>
+                <td class="text-center">
+                    {% if curso.horasVirtuales %}
+                        {{ curso.horasVirtuales }}
+                    {% else %}
+                        <sup class="text-danger fas fa-times"></sup>
+                    {% endif %}
+                </td>
+                <td class="text-center">
+                    {% if curso.calificable %}
+                        <sup class="text-success fas fa-check"></sup>
+                    {% else %}
+                        <sup class="text-danger fas fa-times"></sup>
+                    {% endif %}
+                </td>
+
+                <td>
+                    <a href="{{ path('intranet_forpas_gestor_curso_show', {'id': curso.id}) }}"><span class="mx-1 fas fa-eye" title="Ver"></span></a>
+                    <a href="{{ path('intranet_forpas_gestor_curso_edit', {'id': curso.id}) }}"><span class="mx-1 fas fa-edit" title="Editar"></span></a>
+                    <a href="{{ path('intranet_forpas_gestor_curso_delete', {'id': curso.id}) }}"><span class="mx-1 fas fa-trash" title="Elminar"></span></a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="19">No existen cursos</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
+
+{% block botones %}
+    <li class="boton-inferior nav-item me-2">
+        <a class="btn btn-primary" href="{{ path('intranet_forpas_gestor_curso_new') }}">
+            <span class="fas fa-plus"></span> Crear curso
+        </a>
+    </li>
+{% endblock %}
+
+{% block js %}
+    {{ parent() }}
+    <script type="module">
+        $('#datosCursos').dataTable({
+            buttons: [
+                {
+                    extend: 'copy',
+                    text: '<i class="fas fa-copy"></i>',
+                    titleAttr: 'Copiar',
+                },
+                {
+                    extend: 'print',
+                    text: '<i class="fas fa-print"></i>',
+                    titleAttr: 'Imprimir',
+                },
+                {
+                    extend: 'csv',
+                    text: '<i class="fas fa-file-csv"></i>',
+                    titleAttr: 'Generar fichero CSV',
+                },
+                {
+                    extend: 'excelHtml5',
+                    text: '<i class="fas fa-file-excel"></i>',
+                    titleAttr: 'Generar fichero Excel',
+                },
+            ],
+            columnDefs: [
+                {
+                    targets: [0],
+                    type: 'num',
+                },
+            ],
+            dom: '<"row"<"col-sm-12 col-md-4"B><"col-sm-12 col-md-4"l><"col-sm-12 col-md-4"f>>' +
+                '<"row"<"col-sm-12"<"table-responsive"tr>>>' +
+                '<"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
+            language: {
+                url: '{{ asset("includes/datatable.es.json") }}'
+            },
+        });
+    </script>
+{% endblock %}
