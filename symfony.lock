@@ -261,7 +261,7 @@
         ]
     },
     "symfony/ux-turbo": {
-        "version": "v2.20.0"
+        "version": "v2.21.0"
     },
     "symfony/validator": {
         "version": "7.1",
@@ -287,6 +287,9 @@
             "config/packages/web_profiler.yaml",
             "config/routes/web_profiler.yaml"
         ]
+    },
+    "symfonycasts/sass-bundle": {
+        "version": "v0.5.2"
     },
     "twig/extra-bundle": {
         "version": "v3.13.0"

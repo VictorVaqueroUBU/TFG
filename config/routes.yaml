@@ -1,14 +1,5 @@
-gestor_controllers:
-    resource: '../src/Controller/Gestor/'
+controllers:
+    resource:
+        path: ../src/Controller/
+        namespace: App\Controller
     type: attribute
-    prefix: /gestor
-
-#participante_controllers:
-#    resource: '../src/Controller/Participante/'
-#    type: attribute
-#    prefix: /participante
-
-#formador_controllers:
-#    resource: '../src/Controller/Formador/'
-#    type: attribute
-#    prefix: /formador

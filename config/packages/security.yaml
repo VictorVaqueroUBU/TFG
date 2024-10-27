@@ -34,10 +34,10 @@ security:
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
-        - { path: ^/gestor, roles: ROLE_GESTOR }
-        - { path: ^/formador, roles: ROLE_FORMADOR }
-        - { path: ^/participante, roles: ROLE_PARTICIPANTE }
-        - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }  # Ruta de login accesible para todos
+        #- { path: ^/gestor, roles: ROLE_GESTOR }
+        #- { path: ^/formador, roles: ROLE_FORMADOR }
+        #- { path: ^/participante, roles: ROLE_PARTICIPANTE }
+        #- { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }  # Ruta de login accesible para todos
 
 when@test:
     security:
