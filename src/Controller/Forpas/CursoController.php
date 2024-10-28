@@ -25,4 +25,23 @@ final class CursoController extends AbstractController
             'cursos' => $cursoRepository->findAll(),
         ]);
     }
+    #[Route('/new', name: 'new', defaults: ['titulo' => 'Crear Nuevo Curso'], methods: ['GET', 'POST'])]
+    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    {
+        $curso = new Curso();
+        $form = $this->createForm(CursoType::class, $curso);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->persist($curso);
+            $entityManager->flush();
+            $this->addFlash( 'success', 'El curso se guardó correctamente.');
+            return $this->redirectToRoute('intranet_forpas_gestor_curso_index', [], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->render('intranet/forpas/gestor/curso/new.html.twig', [
+            'curso' => $curso,
+            'form' => $form,
+        ]);
+    }
 }

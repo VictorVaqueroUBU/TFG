@@ -21,9 +21,9 @@
                 <th>Horas</th>
                 <th>Participantes por edicion</th>
                 <th>Ediciones estimadas</th>
-                <th>Visible web</th>
                 <th>Horas virtuales</th>
                 <th>Evaluable</th>
+                <th>Visible web</th>
                 <th>Acciones</th>
             </tr>
         </thead>
@@ -35,13 +35,6 @@
                 <td>{{ curso.horas }}</td>
                 <td>{{ curso.participantesEdicion }}</td>
                 <td>{{ curso.edicionesEstimadas }}</td>
-                <td class="text-center">
-                    {% if curso.visibleWeb %}
-                        <sup class="text-success fas fa-check"></sup>
-                    {% else %}
-                        <sup class="text-danger fas fa-times"></sup>
-                    {% endif %}
-                </td>
                 <td class="text-center">
                     {% if curso.horasVirtuales %}
                         {{ curso.horasVirtuales }}
@@ -56,7 +49,13 @@
                         <sup class="text-danger fas fa-times"></sup>
                     {% endif %}
                 </td>
-
+                <td class="text-center">
+                    {% if curso.visibleWeb %}
+                        <sup class="text-success fas fa-check"></sup>
+                    {% else %}
+                        <sup class="text-danger fas fa-times"></sup>
+                    {% endif %}
+                </td>
                 <td>
                     <a href="{{ path('intranet_forpas_gestor_curso_show', {'id': curso.id}) }}"><span class="mx-1 fas fa-eye" title="Ver"></span></a>
                     <a href="{{ path('intranet_forpas_gestor_curso_edit', {'id': curso.id}) }}"><span class="mx-1 fas fa-edit" title="Editar"></span></a>
