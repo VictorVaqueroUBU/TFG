@@ -51,4 +51,21 @@ final class CursoController extends AbstractController
             'curso' => $curso,
         ]);
     }
+    #[Route('/{id}/edit', name: 'edit', defaults: ['titulo' => 'Editar Curso'], methods: ['GET', 'POST'])]
+    public function edit(Request $request, Curso $curso, EntityManagerInterface $entityManager): Response
+    {
+        $form = $this->createForm(CursoType::class, $curso);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->flush();
+
+            return $this->redirectToRoute('intranet_forpas_gestor_curso_index', [], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->render('intranet/forpas/gestor/curso/edit.html.twig', [
+            'curso' => $curso,
+            'form' => $form,
+        ]);
+    }
 }

@@ -5,6 +5,8 @@ namespace App\Entity\Forpas;
 use App\Repository\Forpas\CursoRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 #[ORM\Entity(repositoryClass: CursoRepository::class)]
 class Curso
@@ -21,6 +23,11 @@ class Curso
     private ?string $nombre_curso = null;
 
     #[ORM\Column(type: Types::SMALLINT)]
+    #[Assert\Range(
+        min: 0,
+        max: 99,
+        notInRangeMessage: 'El valor debe estar entre {{ min }} y {{ max }}.'
+    )]
     private ?int $horas = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
@@ -42,6 +49,11 @@ class Curso
     private ?string $coordinador = null;
 
     #[ORM\Column(type: Types::SMALLINT)]
+    #[Assert\Range(
+        min: 0,
+        max: 25,
+        notInRangeMessage: 'El valor debe estar entre {{ min }} y {{ max }}.'
+    )]
     private ?int $participantes_edicion = null;
 
     #[ORM\Column(type: Types::SMALLINT)]
@@ -60,10 +72,27 @@ class Curso
     //private ?int $id_programa = null;
 
     #[ORM\Column(type: Types::SMALLINT)]
+    #[Assert\Range(
+        min: 0,
+        max: 99,
+        notInRangeMessage: 'El valor debe estar entre {{ min }} y {{ max }}.'
+    )]
     private ?int $horas_virtuales = null;
 
     #[ORM\Column]
     private ?bool $calificable = null;
+
+    #[Assert\Callback]
+    public function validateHoras(ExecutionContextInterface $context): void
+    {
+        if ($this->horas !== null && $this->horas_virtuales !== null) {
+            if ($this->horas < $this->horas_virtuales) {
+                $context->buildViolation('El valor de horas no puede ser menor que horas virtuales.')
+                    ->atPath('horas')
+                    ->addViolation();
+            }
+        }
+    }
 
     public function getId(): ?int
     {
