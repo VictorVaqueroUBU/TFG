@@ -68,4 +68,14 @@ final class CursoController extends AbstractController
             'form' => $form,
         ]);
     }
+    #[Route('/{id}', name: 'delete', methods: ['POST'])]
+    public function delete(Request $request, Curso $curso, EntityManagerInterface $entityManager): Response
+    {
+        if ($this->isCsrfTokenValid('delete'.$curso->getId(), $request->getPayload()->getString('_token'))) {
+            $entityManager->remove($curso);
+            $entityManager->flush();
+        }
+
+        return $this->redirectToRoute('intranet_forpas_gestor_curso_index', [], Response::HTTP_SEE_OTHER);
+    }
 }
