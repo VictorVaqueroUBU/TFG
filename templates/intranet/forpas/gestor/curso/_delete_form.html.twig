@@ -1,0 +1,5 @@
+<form method="post" action="{{ path('intranet_forpas_gestor_curso_delete', {'id': curso.id}) }}"
+      onsubmit="return confirm('Está seguro que desea eliminar este curso?');">
+    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ curso.id) }}">
+    <button class="btn btn-primary"><span class="fas fa-trash"></span> Eliminar</button>
+</form>

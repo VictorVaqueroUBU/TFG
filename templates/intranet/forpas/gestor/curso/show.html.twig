@@ -1,0 +1,109 @@
+{% extends 'intranet/forpas/gestor/index.html.twig' %}
+
+{% block title %}{{ titulo }}{% endblock %}
+
+{% block content %}
+    <div class="pagina-titulo">Portal del Gestor
+        <a href="{{ path('intranet_forpas_gestor_curso_index') }}"><span class="mx-3 fa-solid fa-reply" title="Volver"></span></a>
+    </div>
+
+    <div class="pagina-seccion">Datos del curso</div>
+
+    <div class="container-fluid py-4 g-4">
+        <div class="row py-2">
+            <div class="fila-campo">Código</div>
+            <div class="fila-valor">{{ curso.codigoCurso }}</div>
+        </div>
+        <div class="row py-2">
+            <div class="fila-campo">Nombre</div>
+            <div class="fila-valor">{{ curso.nombreCurso }}</div>
+        </div>
+        <div class="row py-2">
+            <div class="fila-campo">Horas</div>
+            <div class="fila-valor">{{ curso.horas }}</div>
+        </div>
+        <div class="row py-2">
+            <div class="fila-campo">Participantes edición</div>
+            <div class="fila-valor">{{ curso.participantesEdicion }}</div>
+        </div>
+        <div class="row py-2">
+            <div class="fila-campo">Ediciones estimadas</div>
+            <div class="fila-valor">{{ curso.edicionesEstimadas }}</div>
+        </div>
+        <div class="row py-2">
+            <div class="fila-campo">Horas virtuales</div>
+            <div class="fila-valor">
+                {% if curso.horasVirtuales %}
+                    {{ curso.horasVirtuales }}
+                {% else %}
+                    <sup class="text-danger fas fa-times"></sup>
+                {% endif %}
+            </div>
+        </div>
+        <div class="row py-2">
+            <div class="fila-campo">Evaluable</div>
+            <div class="fila-valor">
+                {% if curso.calificable %}
+                    <sup class="text-success fas fa-check"></sup>
+                {% else %}
+                    <sup class="text-danger fas fa-times"></sup>
+                {% endif %}
+            </div>
+        </div>
+        <div class="row py-2">
+            <div class="fila-campo">Visible web</div>
+            <div class="fila-valor">
+                {% if curso.visibleWeb %}
+                    <sup class="text-success fas fa-check"></sup>
+                {% else %}
+                    <sup class="text-danger fas fa-times"></sup>
+                {% endif %}
+            </div>
+        </div>
+        <div class="row py-2">
+            <div class="fila-campo">Contenidos</div>
+            <div class="fila-valor">{{ curso.contenidos }}</div>
+        </div>
+        <div class="row py-2">
+            <div class="fila-campo">Destinatarios</div>
+            <div class="fila-valor">{{ curso.requisitos }}</div>
+        </div>
+        <div class="row py-2">
+            <div class="fila-campo">Requisitos</div>
+            <div class="fila-valor">{{ curso.requisitos }}</div>
+        </div>
+        <div class="row py-2">
+            <div class="fila-campo">Objetivos</div>
+            <div class="fila-valor">{{ curso.objetivos }}</div>
+        </div>
+        <div class="row py-2">
+            <div class="fila-campo">Justificación</div>
+            <div class="fila-valor">{{ curso.justificacion }}</div>
+        </div>
+        <div class="row py-2">
+            <div class="fila-campo">Plazo solicitud</div>
+            <div class="fila-valor">{{ curso.plazoSolicitud }}</div>
+        </div>
+        <div class="row py-2">
+            <div class="fila-campo">Coordinador</div>
+            <div class="fila-valor">{{ curso.coordinador }}</div>
+        </div>
+        <div class="row py-2">
+            <div class="fila-campo">Observaciones</div>
+            <div class="fila-valor">{{ curso.observaciones }}</div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block botones %}
+    <li class="nav-item me-2">
+        <a class="btn btn-primary"
+           href="{{ path('intranet_forpas_gestor_curso_edit', {'id': curso.id}) }}">
+            <span class="fas fa-edit"></span> Editar
+        </a>
+    </li>
+
+    <li class="nav-item ms-5 me-2">
+        {{ include('intranet/forpas/gestor/curso/_delete_form.html.twig') }}
+    </li>
+{% endblock %}

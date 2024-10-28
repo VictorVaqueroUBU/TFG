@@ -44,4 +44,11 @@ final class CursoController extends AbstractController
             'form' => $form,
         ]);
     }
+    #[Route('/{id}', name: 'show', defaults: ['titulo' => 'Datos del Curso'], methods: ['GET'])]
+    public function show(Curso $curso): Response
+    {
+        return $this->render('intranet/forpas/gestor/curso/show.html.twig', [
+            'curso' => $curso,
+        ]);
+    }
 }
