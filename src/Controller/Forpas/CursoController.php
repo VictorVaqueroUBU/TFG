@@ -25,7 +25,7 @@ final class CursoController extends AbstractController
             'cursos' => $cursoRepository->findAll(),
         ]);
     }
-    #[Route('/new', name: 'new', defaults: ['titulo' => 'Crear Nuevo Curso'], methods: ['GET', 'POST'])]
+    #[Route(path: '/new', name: 'new', defaults: ['titulo' => 'Crear Nuevo Curso'], methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $curso = new Curso();
@@ -44,14 +44,14 @@ final class CursoController extends AbstractController
             'form' => $form,
         ]);
     }
-    #[Route('/{id}', name: 'show', defaults: ['titulo' => 'Datos del Curso'], methods: ['GET'])]
+    #[Route(path: '/{id}', name: 'show', defaults: ['titulo' => 'Datos del Curso'], methods: ['GET'])]
     public function show(Curso $curso): Response
     {
         return $this->render('intranet/forpas/gestor/curso/show.html.twig', [
             'curso' => $curso,
         ]);
     }
-    #[Route('/{id}/edit', name: 'edit', defaults: ['titulo' => 'Editar Curso'], methods: ['GET', 'POST'])]
+    #[Route(path: '/{id}/edit', name: 'edit', defaults: ['titulo' => 'Editar Curso'], methods: ['GET', 'POST'])]
     public function edit(Request $request, Curso $curso, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(CursoType::class, $curso);
@@ -68,7 +68,7 @@ final class CursoController extends AbstractController
             'form' => $form,
         ]);
     }
-    #[Route('/{id}', name: 'delete', methods: ['POST'])]
+    #[Route(path: '/{id}', name: 'delete', methods: ['POST'])]
     public function delete(Request $request, Curso $curso, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete'.$curso->getId(), $request->getPayload()->getString('_token'))) {

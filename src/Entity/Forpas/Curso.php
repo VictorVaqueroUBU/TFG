@@ -3,6 +3,8 @@
 namespace App\Entity\Forpas;
 
 use App\Repository\Forpas\CursoRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -24,7 +26,7 @@ class Curso
 
     #[ORM\Column(type: Types::SMALLINT)]
     #[Assert\Range(
-        min: 0,
+        min: 1,
         max: 99,
         notInRangeMessage: 'El valor debe estar entre {{ min }} y {{ max }}.'
     )]
@@ -50,13 +52,18 @@ class Curso
 
     #[ORM\Column(type: Types::SMALLINT)]
     #[Assert\Range(
-        min: 0,
-        max: 25,
+        min: 1,
+        max: 150,
         notInRangeMessage: 'El valor debe estar entre {{ min }} y {{ max }}.'
     )]
     private ?int $participantes_edicion = null;
 
     #[ORM\Column(type: Types::SMALLINT)]
+    #[Assert\Range(
+        min: 1,
+        max: 50,
+        notInRangeMessage: 'El valor debe estar entre {{ min }} y {{ max }}.'
+    )]
     private ?int $ediciones_estimadas = null;
 
     #[ORM\Column(length: 255, nullable: true)]
@@ -68,9 +75,6 @@ class Curso
     #[ORM\Column]
     private ?bool $visible_web = null;
 
-    //#[ORM\Column]
-    //private ?int $id_programa = null;
-
     #[ORM\Column(type: Types::SMALLINT)]
     #[Assert\Range(
         min: 0,
@@ -81,6 +85,17 @@ class Curso
 
     #[ORM\Column]
     private ?bool $calificable = null;
+
+    /**
+     * @var Collection<int, Edicion>
+     */
+    #[ORM\OneToMany(targetEntity: Edicion::class, mappedBy: 'curso', orphanRemoval: true)]
+    private Collection $ediciones;
+
+    public function __construct()
+    {
+        $this->ediciones = new ArrayCollection();
+    }
 
     #[Assert\Callback]
     public function validateHoras(ExecutionContextInterface $context): void
@@ -267,18 +282,6 @@ class Curso
         return $this;
     }
 
-    public function getIdPrograma(): ?int
-    {
-        return $this->id_programa;
-    }
-
-    public function setIdPrograma(int $id_programa): static
-    {
-        $this->id_programa = $id_programa;
-
-        return $this;
-    }
-
     public function getHorasVirtuales(): ?int
     {
         return $this->horas_virtuales;
@@ -299,6 +302,36 @@ class Curso
     public function setCalificable(bool $calificable): static
     {
         $this->calificable = $calificable;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Edicion>
+     */
+    public function getEdiciones(): Collection
+    {
+        return $this->ediciones;
+    }
+
+    public function addEdiciones(Edicion $edicion): static
+    {
+        if (!$this->ediciones->contains($edicion)) {
+            $this->ediciones->add($edicion);
+            $edicion->setCurso($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEdiciones(Edicion $edicion): static
+    {
+        if ($this->ediciones->removeElement($edicion)) {
+            // set the owning side to null (unless already changed)
+            if ($edicion->getCurso() === $this) {
+                $edicion->setCurso(null);
+            }
+        }
 
         return $this;
     }
