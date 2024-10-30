@@ -16,6 +16,28 @@ class EdicionRepository extends ServiceEntityRepository
         parent::__construct($registry, Edicion::class);
     }
 
+    // Método para obtener todas las ediciones de un curso específico
+    public function findByCurso(int $cursoId): array
+    {
+        return $this->createQueryBuilder('e')
+            ->leftJoin('e.curso', 'c')
+            ->addSelect('c')
+            ->where('c.id = :cursoId')
+            ->setParameter('cursoId', $cursoId)
+            ->getQuery()
+            ->getResult();
+    }
+
+    // Método para obtener todas las ediciones con sus cursos asociados
+    public function findAllWithCursos(): array
+    {
+        return $this->createQueryBuilder('e')
+            ->leftJoin('e.curso', 'c')
+            ->addSelect('c')
+            ->getQuery()
+            ->getResult();
+    }
+
 //    /**
 //     * @return Edicion[] Returns an array of Edicion objects
 //     */

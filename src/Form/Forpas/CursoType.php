@@ -16,22 +16,32 @@ class CursoType extends AbstractType
     {
         $builder
             ->add('codigo_curso', TextType::class, [
-                'label' => 'Código',
+                'label' => 'Código *',
                 'required' => true,
                 'attr' => ['maxlength' => 5]
             ])
             ->add('nombre_curso', TextType::class, [
-                'label' => 'Nombre',
+                'label' => 'Nombre *',
                 'required' => true,
                 'attr' => ['maxlength' => 255]
             ])
             ->add('horas', IntegerType::class, [
+                'label' => 'Horas *',
                 'required' => true,
                 'attr' => ['inputmode' => 'numeric']
             ])
-            ->add('participantes_edicion', null, ['label' => 'Participantes edición'])
-            ->add('ediciones_estimadas',IntegerType::class, ['required' => true])
-            ->add('horas_virtuales',IntegerType::class, ['required' => true])
+            ->add('participantes_edicion', IntegerType::class, [
+                'label' => 'Participantes edición *',
+                'required' => true,
+            ])
+            ->add('ediciones_estimadas',IntegerType::class, [
+                'label' => 'Ediciones estimadas *',
+                'required' => true,
+            ])
+            ->add('horas_virtuales',IntegerType::class, [
+                'label' => 'Horas virtuales *',
+                'required' => true,
+            ])
             ->add('calificable', CheckboxType::class, ['required' => false])
             ->add('visible_web',CheckboxType::class, ['required' => false])
             ->add('contenidos')
@@ -39,8 +49,14 @@ class CursoType extends AbstractType
             ->add('requisitos')
             ->add('objetivos')
             ->add('justificacion', null, ['label' => 'Justificación',])
-            ->add('plazo_solicitud',TextType::class, ['attr' => ['maxlength' => 255]])
-            ->add('coordinador',TextType::class, ['attr' => ['maxlength' => 255]])
+            ->add('plazo_solicitud',TextType::class, [
+                'required' => false,
+                'attr' => ['maxlength' => 255]
+            ])
+            ->add('coordinador',TextType::class, [
+                'required' => false,
+                'attr' => ['maxlength' => 255]
+            ])
             ->add('observaciones')
         ;
     }

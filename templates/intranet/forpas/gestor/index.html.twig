@@ -10,6 +10,9 @@
         {% if cursos %}
             <li><a href="{{ path('intranet_forpas_gestor_curso_index') }}">Gestionar cursos</a></li>
         {% endif %}
+        {% if ediciones %}
+            <li><a href="{{ path('intranet_forpas_gestor_edicion_index') }}">Gestionar ediciones</a></li>
+        {% endif %}
     </ul>
 {% endblock %}
 
