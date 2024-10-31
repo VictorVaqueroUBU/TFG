@@ -25,11 +25,6 @@ class Curso
     private ?string $nombre_curso = null;
 
     #[ORM\Column(type: Types::SMALLINT)]
-    #[Assert\Range(
-        min: 1,
-        max: 99,
-        notInRangeMessage: 'El valor debe estar entre {{ min }} y {{ max }}.'
-    )]
     private ?int $horas = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
@@ -51,19 +46,9 @@ class Curso
     private ?string $coordinador = null;
 
     #[ORM\Column(type: Types::SMALLINT)]
-    #[Assert\Range(
-        min: 1,
-        max: 150,
-        notInRangeMessage: 'El valor debe estar entre {{ min }} y {{ max }}.'
-    )]
     private ?int $participantes_edicion = null;
 
     #[ORM\Column(type: Types::SMALLINT)]
-    #[Assert\Range(
-        min: 1,
-        max: 50,
-        notInRangeMessage: 'El valor debe estar entre {{ min }} y {{ max }}.'
-    )]
     private ?int $ediciones_estimadas = null;
 
     #[ORM\Column(length: 255, nullable: true)]
@@ -76,11 +61,6 @@ class Curso
     private ?bool $visible_web = null;
 
     #[ORM\Column(type: Types::SMALLINT)]
-    #[Assert\Range(
-        min: 0,
-        max: 99,
-        notInRangeMessage: 'El valor debe estar entre {{ min }} y {{ max }}.'
-    )]
     private ?int $horas_virtuales = null;
 
     #[ORM\Column]

@@ -36,19 +36,9 @@ class Edicion
     private ?int $estado = null;
 
     #[ORM\Column(type: Types::SMALLINT)]
-    #[Assert\Range(
-        min: 0,
-        max: 99,
-        notInRangeMessage: 'El valor debe estar entre {{ min }} y {{ max }}.'
-    )]
     private ?int $sesiones = null;
 
     #[ORM\Column(type: Types::SMALLINT)]
-    #[Assert\Range(
-        min: 1,
-        max: 150,
-        notInRangeMessage: 'El valor debe estar entre {{ min }} y {{ max }}.'
-    )]
     private ?int $max_participantes = null;
 
     #[ORM\ManyToOne(inversedBy: 'ediciones')]

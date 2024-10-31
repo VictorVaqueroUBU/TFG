@@ -35,7 +35,6 @@ final class CursoController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->persist($curso);
             $entityManager->flush();
-            $this->addFlash( 'success', 'El curso se guardó correctamente.');
             return $this->redirectToRoute('intranet_forpas_gestor_curso_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -71,9 +70,17 @@ final class CursoController extends AbstractController
     #[Route(path: '/{id}', name: 'delete', methods: ['POST'])]
     public function delete(Request $request, Curso $curso, EntityManagerInterface $entityManager): Response
     {
+        // Verificamos si el curso tiene ediciones asociadas
+        if (!$curso->getEdiciones()->isEmpty()) {
+            // Si tiene ediciones, redirige con un mensaje de error
+            $this->addFlash('danger', 'No se puede eliminar el curso porque tiene ediciones asociadas.');
+            return $this->redirectToRoute('intranet_forpas_gestor_curso_index');
+        }
+
         if ($this->isCsrfTokenValid('delete'.$curso->getId(), $request->getPayload()->getString('_token'))) {
             $entityManager->remove($curso);
             $entityManager->flush();
+            $this->addFlash('success', 'Curso eliminado correctamente.');
         }
 
         return $this->redirectToRoute('intranet_forpas_gestor_curso_index', [], Response::HTTP_SEE_OTHER);

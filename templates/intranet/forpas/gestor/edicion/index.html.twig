@@ -4,17 +4,14 @@
 
 {% block content %}
     <div class="pagina-titulo">Portal del Gestor
-        <a href="{{ path('intranet_forpas_gestor') }}"><span class="mx-3 fa-solid fa-reply" title="Volver"></span></a>
+        <a href="#" onclick="window.location.href='{{ path('intranet_forpas_gestor') }}';">
+            <span class="mx-3 fa-solid fa-reply" title="Volver"></span>
+        </a>
     </div>
 
     <div class="pagina-seccion">
         {{ curso ? 'Ediciones del Curso ' ~ curso.codigoCurso : 'Listado de Ediciones' }}
     </div>
-    {% for message in app.flashes('success') %}
-        <div class="alert alert-success">
-            {{ message }}
-        </div>
-    {% endfor %}
     <table class="tabla-condensada" id="datosEdiciones">
         <thead class="cabecera-condensada">
         <tr>
@@ -22,12 +19,10 @@
             <th>Nombre curso</th>
             <th>Fecha inicio</th>
             <th>Fecha fin</th>
-            <th>Calendario</th>
-            <th>Horario</th>
             <th>Lugar</th>
-            <th>Estado</th>
-            <th>Sesiones</th>
+            <th>Horas</th>
             <th>Max. participantes</th>
+            <th>Estado</th>
             <th>Acciones</th>
         </tr>
         </thead>
@@ -38,9 +33,9 @@
                 <td>{{ edicion.curso.nombreCurso }}</td>
                 <td>{{ edicion.fechaInicio ? edicion.fechaInicio|date('Y-m-d H:i:s') : '' }}</td>
                 <td>{{ edicion.fechaFin ? edicion.fechaFin|date('Y-m-d H:i:s') : '' }}</td>
-                <td>{{ edicion.calendario }}</td>
-                <td>{{ edicion.horario }}</td>
                 <td>{{ edicion.lugar }}</td>
+                <td>{{ edicion.curso.horas }}</td>
+                <td>{{ edicion.maxParticipantes }}</td>
                 <td>
                     {% if edicion.estado == 0 %}
                         Abierta
@@ -50,17 +45,20 @@
                         Certificada
                     {% endif %}
                 </td>
-                <td>{{ edicion.sesiones }}</td>
-                <td>{{ edicion.maxParticipantes }}</td>
                 <td>
                     <a href="{{ path('intranet_forpas_gestor_edicion_show', {'id': edicion.id}) }}"><span class="mx-1 fas fa-eye" title="Ver"></span></a>
                     <a href="{{ path('intranet_forpas_gestor_edicion_edit', {'id': edicion.id}) }}"><span class="mx-1 fas fa-edit" title="Editar"></span></a>
-                    <a href="{{ path('intranet_forpas_gestor_edicion_delete', {'id': edicion.id}) }}"><span class="mx-1 fas fa-trash" title="Eliminar"></span></a>
+                    <form method="post" action="{{ path('intranet_forpas_gestor_edicion_delete', {'id': edicion.id}) }}" onsubmit="return confirm('¿Está seguro que desea eliminar esta edición?');" style="display:inline;">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ edicion.id) }}">
+                        <button type="submit" title="Eliminar" style="border: none; background: none; padding: 0; color: rgb(156, 31, 46); cursor: pointer;">
+                            <span class="mx-1 fas fa-trash"></span>
+                        </button>
+                    </form>
                 </td>
             </tr>
         {% else %}
             <tr>
-                <td>No existen ediciones para el curso seleccionado</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+                <td>No existen ediciones para el curso seleccionado</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
             </tr>
         {% endfor %}
         </tbody>
@@ -80,41 +78,37 @@
 {% block js %}
     {{ parent() }}
     <script type="module">
-        $('#datosEdiciones').dataTable({
-            buttons: [
-                {
-                    extend: 'copy',
-                    text: '<i class="fas fa-copy"></i>',
-                    titleAttr: 'Copiar',
+        $(function () {
+            $('#datosEdiciones').dataTable({
+                buttons: [
+                    {
+                        extend: 'copy',
+                        text: '<i class="fas fa-copy"></i>',
+                        titleAttr: 'Copiar',
+                    },
+                    {
+                        extend: 'print',
+                        text: '<i class="fas fa-print"></i>',
+                        titleAttr: 'Imprimir',
+                    },
+                    {
+                        extend: 'csv',
+                        text: '<i class="fas fa-file-csv"></i>',
+                        titleAttr: 'Generar fichero CSV',
+                    },
+                    {
+                        extend: 'excelHtml5',
+                        text: '<i class="fas fa-file-excel"></i>',
+                        titleAttr: 'Generar fichero Excel',
+                    },
+                ],
+                dom: '<"row"<"col-sm-12 col-md-4"B><"col-sm-12 col-md-4"l><"col-sm-12 col-md-4"f>>' +
+                    '<"row"<"col-sm-12"<"table-responsive"tr>>>' +
+                    '<"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
+                language: {
+                    url: '{{ asset("includes/datatable.es.json") }}'
                 },
-                {
-                    extend: 'print',
-                    text: '<i class="fas fa-print"></i>',
-                    titleAttr: 'Imprimir',
-                },
-                {
-                    extend: 'csv',
-                    text: '<i class="fas fa-file-csv"></i>',
-                    titleAttr: 'Generar fichero CSV',
-                },
-                {
-                    extend: 'excelHtml5',
-                    text: '<i class="fas fa-file-excel"></i>',
-                    titleAttr: 'Generar fichero Excel',
-                },
-            ],
-            columnDefs: [
-                {
-                    targets: [0],
-                    type: 'num',
-                },
-            ],
-            dom: '<"row"<"col-sm-12 col-md-4"B><"col-sm-12 col-md-4"l><"col-sm-12 col-md-4"f>>' +
-                '<"row"<"col-sm-12"<"table-responsive"tr>>>' +
-                '<"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
-            language: {
-                url: '{{ asset("includes/datatable.es.json") }}'
-            },
+            });
         });
     </script>
 {% endblock %}

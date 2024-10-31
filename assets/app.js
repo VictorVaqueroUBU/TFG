@@ -40,4 +40,4 @@ import '@fortawesome/fontawesome-svg-core/styles.min.css';
 // import './cookies.js';
 // import './funciones.js';
 // Estilos propios
-import './styles/app.css';
+import './styles/app.scss';

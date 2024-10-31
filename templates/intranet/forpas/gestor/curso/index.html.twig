@@ -4,25 +4,22 @@
 
 {% block content %}
     <div class="pagina-titulo">Portal del Gestor
-        <a href="{{ path('intranet_forpas_gestor') }}"><span class="mx-3 fa-solid fa-reply" title="Volver"></span></a>
+        <a href="#" onclick="window.location.href='{{ path('intranet_forpas_gestor') }}';">
+            <span class="mx-3 fa-solid fa-reply" title="Volver"></span>
+        </a>
     </div>
 
     <div class="pagina-seccion">Listado de Cursos</div>
-    {% for message in app.flashes('success') %}
-        <div class="alert alert-success">
-            {{ message }}
-        </div>
-    {% endfor %}
     <table class="tabla-condensada" id="datosCursos">
         <thead class="cabecera-condensada">
             <tr>
                 <th>Codigo</th>
                 <th>Nombre</th>
-                <th>Horas</th>
-                <th>Participantes por edicion</th>
-                <th>Ediciones estimadas</th>
+                <th>Horas totales</th>
                 <th>Horas virtuales</th>
                 <th>Evaluable</th>
+                <th>Ediciones estimadas</th>
+                <th>Participantes por edicion</th>
                 <th>Visible web</th>
                 <th>Acciones</th>
             </tr>
@@ -33,8 +30,6 @@
                 <td>{{ curso.codigoCurso }}</td>
                 <td>{{ curso.nombreCurso }}</td>
                 <td>{{ curso.horas }}</td>
-                <td>{{ curso.participantesEdicion }}</td>
-                <td>{{ curso.edicionesEstimadas }}</td>
                 <td class="text-center">
                     {% if curso.horasVirtuales %}
                         {{ curso.horasVirtuales }}
@@ -49,6 +44,8 @@
                         <sup class="text-danger fas fa-times"></sup>
                     {% endif %}
                 </td>
+                <td>{{ curso.edicionesEstimadas }}</td>
+                <td>{{ curso.participantesEdicion }}</td>
                 <td class="text-center">
                     {% if curso.visibleWeb %}
                         <sup class="text-success fas fa-check"></sup>
@@ -57,21 +54,20 @@
                     {% endif %}
                 </td>
                 <td>
-                    <a href="{{ path('intranet_forpas_gestor_curso_show', {'id': curso.id}) }}"><span class="mx-1 fas fa-eye" title="Ver"></span></a>
-                    <a href="{{ path('intranet_forpas_gestor_curso_edit', {'id': curso.id}) }}"><span class="mx-1 fas fa-edit" title="Editar"></span></a>
+                    <a href="{{ path('intranet_forpas_gestor_curso_show', {'id': curso.id}) }}" title="Ver"><span class="mx-1 fas fa-eye"></span></a>
+                    <a href="{{ path('intranet_forpas_gestor_curso_edit', {'id': curso.id}) }}" title="Editar"><span class="mx-1 fas fa-edit"></span></a>
                     <form method="post" action="{{ path('intranet_forpas_gestor_curso_delete', {'id': curso.id}) }}" onsubmit="return confirm('¿Está seguro que desea eliminar este curso?');" style="display:inline;">
                         <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ curso.id) }}">
-                        <button type="submit" style="border: none; background: none; padding: 0; color: rgb(156, 31, 46); cursor: pointer;">
-                            <span class="mx-1 fas fa-trash" title="Eliminar"></span>
+                        <button type="submit" title="Eliminar" style="border: none; background: none; padding: 0; color: rgb(156, 31, 46); cursor: pointer;">
+                            <span class="mx-1 fas fa-trash"></span>
                         </button>
                     </form>
-                    <a href="{{ path('intranet_forpas_gestor_edicion_index', {'cursoId': curso.id}) }}"><span class="mx-1 fas fa-list" title="Ver Ediciones"></span></a>
+                    <a href="{{ path('intranet_forpas_gestor_edicion_index', {'cursoId': curso.id}) }}" title="Ver Ediciones"><span class="mx-1 fas fa-list"></span></a>
                 </td>
-
             </tr>
         {% else %}
             <tr>
-                <td colspan="9">No existen cursos</td>
+                <td>No existen cursos</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
             </tr>
         {% endfor %}
         </tbody>
@@ -89,41 +85,38 @@
 {% block js %}
     {{ parent() }}
     <script type="module">
-        $('#datosCursos').dataTable({
-            buttons: [
-                {
-                    extend: 'copy',
-                    text: '<i class="fas fa-copy"></i>',
-                    titleAttr: 'Copiar',
+        $(function () {
+            $('#datosCursos').dataTable({
+                buttons: [
+                    {
+                        extend: 'copy',
+                        text: '<i class="fas fa-copy"></i>',
+                        titleAttr: 'Copiar',
+                    },
+                    {
+                        extend: 'print',
+                        text: '<i class="fas fa-print"></i>',
+                        titleAttr: 'Imprimir',
+                    },
+                    {
+                        extend: 'csv',
+                        text: '<i class="fas fa-file-csv"></i>',
+                        titleAttr: 'Generar fichero CSV',
+                    },
+                    {
+                        extend: 'excelHtml5',
+                        text: '<i class="fas fa-file-excel"></i>',
+                        titleAttr: 'Generar fichero Excel',
+                    },
+                ],
+                dom: '<"row"<"col-sm-12 col-md-4"B><"col-sm-12 col-md-4"l><"col-sm-12 col-md-4"f>>' +
+                    '<"row"<"col-sm-12"<"table-responsive"tr>>>' +
+                    '<"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
+                language: {
+                    url: '{{ asset("includes/datatable.es.json") }}'
                 },
-                {
-                    extend: 'print',
-                    text: '<i class="fas fa-print"></i>',
-                    titleAttr: 'Imprimir',
-                },
-                {
-                    extend: 'csv',
-                    text: '<i class="fas fa-file-csv"></i>',
-                    titleAttr: 'Generar fichero CSV',
-                },
-                {
-                    extend: 'excelHtml5',
-                    text: '<i class="fas fa-file-excel"></i>',
-                    titleAttr: 'Generar fichero Excel',
-                },
-            ],
-            columnDefs: [
-                {
-                    targets: [0],
-                    type: 'num',
-                },
-            ],
-            dom: '<"row"<"col-sm-12 col-md-4"B><"col-sm-12 col-md-4"l><"col-sm-12 col-md-4"f>>' +
-                '<"row"<"col-sm-12"<"table-responsive"tr>>>' +
-                '<"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
-            language: {
-                url: '{{ asset("includes/datatable.es.json") }}'
-            },
+            });
         });
     </script>
 {% endblock %}
+

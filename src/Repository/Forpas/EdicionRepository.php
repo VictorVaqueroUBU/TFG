@@ -37,6 +37,20 @@ class EdicionRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+    public function findUltimaEdicionPorCurso(string $codigoCurso): ?string
+    {
+        $result = $this->createQueryBuilder('e')
+            ->select('e.codigo_edicion')
+            ->join('e.curso', 'c')
+            ->where('c.codigo_curso = :codigoCurso')
+            ->setParameter('codigoCurso', $codigoCurso)
+            ->orderBy('e.codigo_edicion', 'DESC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+
+        return $result ? $result['codigo_edicion'] : null;
+    }
 
 //    /**
 //     * @return Edicion[] Returns an array of Edicion objects
