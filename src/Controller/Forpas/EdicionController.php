@@ -73,6 +73,13 @@ final class EdicionController extends AbstractController
             'form' => $form,
         ]);
     }
+    #[Route(path: '/{id}', name: 'show', defaults: ['titulo' => 'Datos de la Edición'], methods: ['GET'])]
+    public function show(Edicion $edicion): Response
+    {
+        return $this->render('intranet/forpas/gestor/edicion/show.html.twig', [
+            'edicion' => $edicion,
+        ]);
+    }
 
     private function generarNuevoCodigoEdicion(string $codigoCurso, ?string $ultimoCodigo): string
     {
