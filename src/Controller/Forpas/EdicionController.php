@@ -80,7 +80,27 @@ final class EdicionController extends AbstractController
             'edicion' => $edicion,
         ]);
     }
+    #[Route(path: '/{id}/edit', name: 'edit', defaults: ['titulo' => 'Editar Edición'], methods: ['GET', 'POST'])]
+    public function edit(Request $request, Edicion $edicion, EntityManagerInterface $entityManager): Response
+    {
 
+        $disableFields = (substr($edicion->getCodigoEdicion(), -2) === '00');
+        $form = $this->createForm(EdicionType::class, $edicion, [
+            'disable_fields' => $disableFields,
+        ]);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->flush();
+
+            return $this->redirectToRoute('intranet_forpas_gestor_edicion_index', [], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->render('intranet/forpas/gestor/edicion/edit.html.twig', [
+            'edicion' => $edicion,
+            'form' => $form,
+        ]);
+    }
     private function generarNuevoCodigoEdicion(string $codigoCurso, ?string $ultimoCodigo): string
     {
         $ultimoNumero = (int) substr($ultimoCodigo, -2);
