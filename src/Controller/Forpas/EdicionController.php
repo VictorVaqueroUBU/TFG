@@ -83,7 +83,6 @@ final class EdicionController extends AbstractController
     #[Route(path: '/{id}/edit', name: 'edit', defaults: ['titulo' => 'Editar Edición'], methods: ['GET', 'POST'])]
     public function edit(Request $request, Edicion $edicion, EntityManagerInterface $entityManager): Response
     {
-
         $disableFields = (substr($edicion->getCodigoEdicion(), -2) === '00');
         $form = $this->createForm(EdicionType::class, $edicion, [
             'disable_fields' => $disableFields,
@@ -101,9 +100,19 @@ final class EdicionController extends AbstractController
             'form' => $form,
         ]);
     }
+    #[Route(path: '/{id}', name: 'delete', methods: ['POST'])]
+    public function delete(Request $request, Edicion $edicion, EntityManagerInterface $entityManager): Response
+    {
+        if ($this->isCsrfTokenValid('delete'.$edicion->getId(), $request->getPayload()->getString('_token'))) {
+            $entityManager->remove($edicion);
+            $entityManager->flush();
+        }
+
+        return $this->redirectToRoute('intranet_forpas_gestor_edicion_index', [], Response::HTTP_SEE_OTHER);
+    }
     private function generarNuevoCodigoEdicion(string $codigoCurso, ?string $ultimoCodigo): string
     {
         $ultimoNumero = (int) substr($ultimoCodigo, -2);
-        return $codigoCurso . '/' . str_pad(++$ultimoNumero, 2, '0', STR_PAD_LEFT);
+        return $codigoCurso . '/' . str_pad((string) ++$ultimoNumero, 2, '0', STR_PAD_LEFT);
     }
 }

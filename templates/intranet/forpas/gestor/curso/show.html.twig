@@ -104,6 +104,6 @@
     </li>
 
     <li class="nav-item ms-5 me-2">
-        {{ include('intranet/forpas/gestor/curso/_delete_form.html.twig') }}
+        {{ include('intranet/forpas/gestor/curso/_delete_form.html.twig', { 'id': curso.id, 'buttonType': 'primary' }) }}
     </li>
 {% endblock %}

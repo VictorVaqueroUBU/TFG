@@ -56,12 +56,7 @@
                 <td>
                     <a href="{{ path('intranet_forpas_gestor_curso_show', {'id': curso.id}) }}" title="Ver"><span class="mx-1 fas fa-eye"></span></a>
                     <a href="{{ path('intranet_forpas_gestor_curso_edit', {'id': curso.id}) }}" title="Editar"><span class="mx-1 fas fa-edit"></span></a>
-                    <form method="post" action="{{ path('intranet_forpas_gestor_curso_delete', {'id': curso.id}) }}" onsubmit="return confirm('¿Está seguro que desea eliminar este curso?');" style="display:inline;">
-                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ curso.id) }}">
-                        <button type="submit" title="Eliminar" style="border: none; background: none; padding: 0; color: rgb(156, 31, 46); cursor: pointer;">
-                            <span class="mx-1 fas fa-trash"></span>
-                        </button>
-                    </form>
+                    {{ include('intranet/forpas/gestor/curso/_delete_form.html.twig', { 'id': curso.id, 'buttonType': 'inline' }) }}
                     <a href="{{ path('intranet_forpas_gestor_edicion_index', {'cursoId': curso.id}) }}" title="Ver Ediciones"><span class="mx-1 fas fa-list"></span></a>
                 </td>
             </tr>
