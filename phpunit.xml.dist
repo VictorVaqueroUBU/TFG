@@ -15,6 +15,10 @@
         <server name="SHELL_VERBOSITY" value="-1" />
         <server name="SYMFONY_PHPUNIT_REMOVE" value="" />
         <server name="SYMFONY_PHPUNIT_VERSION" value="9.5" />
+
+        <!-- Agregar las siguientes líneas para definir KERNEL_CLASS y DATABASE_URL_TEST -->
+        <server name="KERNEL_CLASS" value="App\Kernel" />
+        <server name="DATABASE_URL_TEST" value="mysql://root:bandit650n@127.0.0.1:3306/formacion?serverVersion=8.0.32&amp;charset=utf8mb4" />
     </php>
 
     <testsuites>
@@ -32,7 +36,6 @@
             <text outputFile="tests/coverage-report/coverage.txt" />
         </report>
     </coverage>
-
 
     <listeners>
         <listener class="Symfony\Bridge\PhpUnit\SymfonyTestsListener" />

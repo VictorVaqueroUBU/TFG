@@ -1,27 +1,82 @@
+name: Symfony Tests
+
+on:
+  push:
+    branches:
+      - developer
+  pull_request:
+    branches:
+      - main
+
 jobs:
-  build:
+  tests:
     runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: bandit650n
+          MYSQL_DATABASE: formacion
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -u root --password=bandit650n"
+          --health-interval=10s --health-timeout=5s --health-retries=20
 
-      - name: Set up PHP
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install PHP and extensions
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.2'
           extensions: mbstring, intl, pdo_mysql
-          ini-values: post_max_size=256M, max_execution_time=300
+          ini-values: date.timezone=UTC
+          coverage: none
 
-      - name: Install Composer dependencies
-        run: composer install --prefer-dist --no-progress --no-interaction
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress --no-suggest
 
-      - name: Clear cache
-        run: php bin/console cache:clear
+      - name: Create .env.test file
+        run: |
+          echo "DATABASE_URL_TEST=mysql://root:bandit650n@127.0.0.1:3306/formacion?serverVersion=8.0.32&charset=utf8mb4" > .env.test
+          cat .env.test
+
+      - name: Wait for MySQL to be ready
+        run: |
+          set -x
+          until mysqladmin ping -h 127.0.0.1 -u root --password=bandit650n; do
+            echo "Waiting for MySQL to be ready..."
+            sleep 5
+          done
+
+      - name: Disable foreign key checks temporarily
+        run: |
+          mysql -h 127.0.0.1 -u root --password=bandit650n -e "SET GLOBAL foreign_key_checks = 0;"
+
+      - name: Set up database schema
         env:
           APP_ENV: test
+          DATABASE_URL_TEST: mysql://root:bandit650n@127.0.0.1:3306/formacion?serverVersion=8.0.32&charset=utf8mb4
+        run: |
+          set -x
+          php bin/console doctrine:database:create --env=test || true
+          php bin/console doctrine:schema:create --env=test
 
-      - name: Run Symfony tests
-        run: ./bin/phpunit
+      - name: Enable foreign key checks again
+        run: |
+          mysql -h 127.0.0.1 -u root --password=bandit650n -e "SET GLOBAL foreign_key_checks = 1;"
+
+      # Nuevo paso para compilar los assets de frontend
+      - name: Build assets
+        run: php bin/console sass:build
+
+      - name: Run PHPUnit tests
         env:
           APP_ENV: test
+          DATABASE_URL_TEST: mysql://root:bandit650n@127.0.0.1:3306/formacion?serverVersion=8.0.32&charset=utf8mb4
+        run: |
+          set -x
+          php bin/phpunit --coverage-text
