@@ -18,10 +18,8 @@ jobs:
         env:
           MYSQL_ROOT_PASSWORD: bandit650n
           MYSQL_DATABASE: formacion
-        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
         ports:
           - 3306:3306
-        # Increase startup delay to ensure MySQL is ready before connecting
         options: >-
           --health-cmd="mysqladmin ping -h 127.0.0.1 -u root --password=bandit650n"
           --health-interval=10s --health-timeout=5s --health-retries=20
