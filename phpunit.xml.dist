@@ -27,7 +27,12 @@
         <include>
             <directory suffix=".php">src</directory>
         </include>
+        <report>
+            <html outputDirectory="tests/coverage-report" />
+            <text outputFile="tests/coverage-report/coverage.txt" />
+        </report>
     </coverage>
+
 
     <listeners>
         <listener class="Symfony\Bridge\PhpUnit\SymfonyTestsListener" />

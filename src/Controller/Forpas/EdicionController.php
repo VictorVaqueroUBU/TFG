@@ -45,6 +45,10 @@ final class EdicionController extends AbstractController
         $curso = $cursoRepository->find($cursoId);
         $edicion->setCurso($curso);
 
+        if ($curso && !$curso->getEdiciones()->contains($edicion)) {
+            $curso->addEdiciones($edicion);
+        }
+
         // Establecemos valores predeterminados
         $edicion->setSesiones(0);
         $edicion->setMaxParticipantes(0);
@@ -104,7 +108,9 @@ final class EdicionController extends AbstractController
     public function delete(Request $request, Edicion $edicion, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete'.$edicion->getId(), $request->getPayload()->getString('_token'))) {
-            $entityManager->remove($edicion);
+            // Eliminamos la edición de la colección en Curso
+            $curso = $edicion->getCurso();
+            $curso?->removeEdiciones($edicion);
             $entityManager->flush();
         }
 

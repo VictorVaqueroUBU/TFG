@@ -2,6 +2,7 @@
 
 namespace App\Tests\Controller\Forpas;
 
+use App\Entity\Forpas\Curso;
 use App\Entity\Forpas\Edicion;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
@@ -13,8 +14,7 @@ final class EdicionControllerTest extends WebTestCase
     private KernelBrowser $client;
     private EntityManagerInterface $manager;
     private EntityRepository $repository;
-    private string $path = '/edicion/';
-
+    private string $path = '/intranet/forpas/gestor/edicion/';
     protected function setUp(): void
     {
         $this->client = static::createClient();
@@ -31,54 +31,75 @@ final class EdicionControllerTest extends WebTestCase
     public function testIndex(): void
     {
         $this->client->followRedirects();
+        // Caso 1: Sin cursoId (debería ejecutarse el bloque `else`)
         $crawler = $this->client->request('GET', $this->path);
-
         self::assertResponseStatusCodeSame(200);
-        self::assertPageTitleContains('Edicion index');
+        self::assertPageTitleContains('SIRHUS: Servicio de Formación');
 
-        // Use the $crawler to perform additional assertions e.g.
-        // self::assertSame('Some text on the page', $crawler->filter('.p')->first());
+        // Caso 2: Con cursoId (debería ejecutarse el bloque `if ($cursoId)`)
+        $cursoId = 1; // Cambia este valor según un curso existente en tu base de datos de prueba
+        $crawler = $this->client->request('GET', $this->path, ['cursoId' => $cursoId]);
+        self::assertResponseStatusCodeSame(200);
     }
-
     public function testNew(): void
     {
-        $this->markTestIncomplete();
-        $this->client->request('GET', sprintf('%snew', $this->path));
+        $curso = new Curso();
+        $curso->setCodigoCurso('24001');
+        $curso->setNombreCurso('Nombre del curso');
+        $curso->setHoras(20);
+        $curso->setParticipantesEdicion(20);
+        $curso->setEdicionesEstimadas(2);
+        $curso->setVisibleWeb(1);
+        $curso->setHorasVirtuales(20);
+        $curso->setCalificable(1);
+
+        $this->manager->persist($curso);
+        $this->manager->flush();
+
+        $this->client->request('GET', sprintf('%snew/%d', $this->path, $curso->getId()));
 
         self::assertResponseStatusCodeSame(200);
 
-        $this->client->submitForm('Save', [
+        $this->client->submitForm('Guardar', [
             'edicion[codigo_edicion]' => 'Testing',
-            'edicion[fecha_inicio]' => 'Testing',
-            'edicion[fecha_fin]' => 'Testing',
+            'edicion[fecha_inicio]' => '2024-01-01',
+            'edicion[fecha_fin]' => '2024-01-01',
             'edicion[calendario]' => 'Testing',
             'edicion[horario]' => 'Testing',
             'edicion[lugar]' => 'Testing',
-            'edicion[estado]' => 'Testing',
-            'edicion[sesiones]' => 'Testing',
-            'edicion[max_participantes]' => 'Testing',
-            'edicion[curso]' => 'Testing',
+            'edicion[estado]' => 0,
+            'edicion[sesiones]' => 2,
+            'edicion[max_participantes]' => 20,
         ]);
 
         self::assertResponseRedirects($this->path);
-
         self::assertSame(1, $this->repository->count([]));
     }
-
     public function testShow(): void
     {
-        $this->markTestIncomplete();
         $fixture = new Edicion();
-        $fixture->setCodigo_edicion('My Title');
-        $fixture->setFecha_inicio('My Title');
-        $fixture->setFecha_fin('My Title');
+        $fixture->setCodigoEdicion('24001/01');
+        $fixture->setFechaInicio(new \DateTime('2024-01-01'));
+        $fixture->setFechaFin(new \DateTime('2024-01-01'));
         $fixture->setCalendario('My Title');
         $fixture->setHorario('My Title');
         $fixture->setLugar('My Title');
-        $fixture->setEstado('My Title');
-        $fixture->setSesiones('My Title');
-        $fixture->setMax_participantes('My Title');
-        $fixture->setCurso('My Title');
+        $fixture->setEstado(0);
+        $fixture->setSesiones(2);
+        $fixture->setMaxParticipantes(20);
+
+        $curso = new \App\Entity\Forpas\Curso();
+        $curso->setCodigoCurso('24001');
+        $curso->setNombreCurso('Curso de prueba');
+        $curso->setHoras(20);
+        $curso->setParticipantesEdicion(20);
+        $curso->setEdicionesEstimadas(2);
+        $curso->setVisibleWeb(1);
+        $curso->setHorasVirtuales(20);
+        $curso->setCalificable(1);
+
+        $this->manager->persist($curso);
+        $fixture->setCurso($curso);
 
         $this->manager->persist($fixture);
         $this->manager->flush();
@@ -86,82 +107,101 @@ final class EdicionControllerTest extends WebTestCase
         $this->client->request('GET', sprintf('%s%s', $this->path, $fixture->getId()));
 
         self::assertResponseStatusCodeSame(200);
-        self::assertPageTitleContains('Edicion');
+        self::assertPageTitleContains('SIRHUS: Servicio de Formación');
 
         // Use assertions to check that the properties are properly displayed.
     }
-
     public function testEdit(): void
     {
-        $this->markTestIncomplete();
         $fixture = new Edicion();
-        $fixture->setCodigo_edicion('Value');
-        $fixture->setFecha_inicio('Value');
-        $fixture->setFecha_fin('Value');
+        $fixture->setCodigoEdicion('24001/01');
+        $fixture->setFechaInicio(new \DateTime('2024-01-01 10:00'));
+        $fixture->setFechaFin(new \DateTime('2024-01-02 10:00'));
         $fixture->setCalendario('Value');
         $fixture->setHorario('Value');
         $fixture->setLugar('Value');
-        $fixture->setEstado('Value');
-        $fixture->setSesiones('Value');
-        $fixture->setMax_participantes('Value');
-        $fixture->setCurso('Value');
+        $fixture->setEstado(0);
+        $fixture->setSesiones(2);
+        $fixture->setMaxParticipantes(20);
 
+        $curso = new Curso();
+        $curso->setCodigoCurso('24001');
+        $curso->setNombreCurso('Nombre del curso');
+        $curso->setHoras(20);
+        $curso->setParticipantesEdicion(20);
+        $curso->setEdicionesEstimadas(2);
+        $curso->setVisibleWeb(1);
+        $curso->setHorasVirtuales(20);
+        $curso->setCalificable(1);
+
+        $this->manager->persist($curso);
+        $fixture->setCurso($curso);
         $this->manager->persist($fixture);
         $this->manager->flush();
 
-        $this->client->request('GET', sprintf('%s%s/edit', $this->path, $fixture->getId()));
+        $this->client->request('GET', sprintf('/intranet/forpas/gestor/edicion/%d/edit', $fixture->getId()));
+        self::assertResponseStatusCodeSame(200);
 
-        $this->client->submitForm('Update', [
+        $this->client->submitForm('Actualizar', [
             'edicion[codigo_edicion]' => 'Something New',
-            'edicion[fecha_inicio]' => 'Something New',
-            'edicion[fecha_fin]' => 'Something New',
+            'edicion[fecha_inicio]' => '2024-01-01T10:00',
+            'edicion[fecha_fin]' => '2024-01-02T10:00',
             'edicion[calendario]' => 'Something New',
             'edicion[horario]' => 'Something New',
             'edicion[lugar]' => 'Something New',
-            'edicion[estado]' => 'Something New',
-            'edicion[sesiones]' => 'Something New',
-            'edicion[max_participantes]' => 'Something New',
-            'edicion[curso]' => 'Something New',
+            'edicion[estado]' => 0,
+            'edicion[sesiones]' => 2,
+            'edicion[max_participantes]' => 20,
+            'edicion[curso]' => $curso->getId(),
         ]);
 
-        self::assertResponseRedirects('/edicion/');
+        self::assertResponseRedirects('/intranet/forpas/gestor/edicion/');
 
-        $fixture = $this->repository->findAll();
+        $updatedFixture = $this->repository->find($fixture->getId());
 
-        self::assertSame('Something New', $fixture[0]->getCodigo_edicion());
-        self::assertSame('Something New', $fixture[0]->getFecha_inicio());
-        self::assertSame('Something New', $fixture[0]->getFecha_fin());
-        self::assertSame('Something New', $fixture[0]->getCalendario());
-        self::assertSame('Something New', $fixture[0]->getHorario());
-        self::assertSame('Something New', $fixture[0]->getLugar());
-        self::assertSame('Something New', $fixture[0]->getEstado());
-        self::assertSame('Something New', $fixture[0]->getSesiones());
-        self::assertSame('Something New', $fixture[0]->getMax_participantes());
-        self::assertSame('Something New', $fixture[0]->getCurso());
+        self::assertEquals(new \DateTime('2024-01-01 10:00'), $updatedFixture->getFechaInicio());
+        self::assertEquals(new \DateTime('2024-01-02 10:00'), $updatedFixture->getFechaFin());
+        self::assertSame('Something New', $updatedFixture->getCalendario());
+        self::assertSame('Something New', $updatedFixture->getHorario());
+        self::assertSame('Something New', $updatedFixture->getLugar());
+        self::assertSame(0, $updatedFixture->getEstado());
+        self::assertSame(2, $updatedFixture->getSesiones());
+        self::assertSame(20, $updatedFixture->getMaxParticipantes());
+        self::assertSame($curso->getId(), $updatedFixture->getCurso()->getId());
     }
-
     public function testRemove(): void
     {
-        $this->markTestIncomplete();
         $fixture = new Edicion();
-        $fixture->setCodigo_edicion('Value');
-        $fixture->setFecha_inicio('Value');
-        $fixture->setFecha_fin('Value');
+        $fixture->setCodigoEdicion('Value');
+        $fixture->setFechaInicio(new \DateTime('2024-01-01'));
+        $fixture->setFechaFin(new \DateTime('2024-01-01'));
         $fixture->setCalendario('Value');
         $fixture->setHorario('Value');
         $fixture->setLugar('Value');
-        $fixture->setEstado('Value');
-        $fixture->setSesiones('Value');
-        $fixture->setMax_participantes('Value');
-        $fixture->setCurso('Value');
+        $fixture->setEstado(0);
+        $fixture->setSesiones(2);
+        $fixture->setMaxParticipantes(20);
+
+        $curso = new \App\Entity\Forpas\Curso();
+        $curso->setCodigoCurso('24001');
+        $curso->setNombreCurso('Curso de prueba');
+        $curso->setHoras(20);
+        $curso->setParticipantesEdicion(20);
+        $curso->setEdicionesEstimadas(2);
+        $curso->setVisibleWeb(1);
+        $curso->setHorasVirtuales(20);
+        $curso->setCalificable(1);
+
+        $this->manager->persist($curso);
+        $fixture->setCurso($curso);
 
         $this->manager->persist($fixture);
         $this->manager->flush();
 
         $this->client->request('GET', sprintf('%s%s', $this->path, $fixture->getId()));
-        $this->client->submitForm('Delete');
+        $this->client->submitForm('Eliminar');
 
-        self::assertResponseRedirects('/edicion/');
+        self::assertResponseRedirects('/intranet/forpas/gestor/edicion/');
         self::assertSame(0, $this->repository->count([]));
     }
 }

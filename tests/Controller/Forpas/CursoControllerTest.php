@@ -46,30 +46,28 @@ final class CursoControllerTest extends WebTestCase
     public function testNew(): void
     {
         $this->client->request('GET', sprintf('%snew', $this->path));
-
         self::assertResponseStatusCodeSame(200);
 
         $this->client->submitForm('Guardar', [
             'curso[codigo_curso]' => 'Test',
             'curso[nombre_curso]' => 'Testing',
-            'curso[horas]' => '20',
+            'curso[horas]' => 20,
             'curso[objetivos]' => 'Testing',
             'curso[contenidos]' => 'Testing',
             'curso[destinatarios]' => 'Testing',
             'curso[requisitos]' => 'Testing',
             'curso[justificacion]' => 'Testing',
             'curso[coordinador]' => 'Testing',
-            'curso[participantes_edicion]' => '20',
-            'curso[ediciones_estimadas]' => '2',
+            'curso[participantes_edicion]' => 20,
+            'curso[ediciones_estimadas]' => 2,
             'curso[plazo_solicitud]' => 'Testing',
             'curso[observaciones]' => 'Testing',
-            'curso[visible_web]' => '1',
-            'curso[horas_virtuales]' => '20',
-            'curso[calificable]' => '1',
+            'curso[visible_web]' => 1,
+            'curso[horas_virtuales]' => 20,
+            'curso[calificable]' => 1,
         ]);
 
         self::assertResponseRedirects($this->path);
-
         self::assertSame(1, $this->repository->count([]));
     }
 
@@ -78,20 +76,20 @@ final class CursoControllerTest extends WebTestCase
         $fixture = new Curso();
         $fixture->setCodigoCurso('My Title');
         $fixture->setNombreCurso('My Title');
-        $fixture->setHoras('20');
+        $fixture->setHoras(20);
         $fixture->setObjetivos('My Title');
         $fixture->setContenidos('My Title');
         $fixture->setDestinatarios('My Title');
         $fixture->setRequisitos('My Title');
         $fixture->setJustificacion('My Title');
         $fixture->setCoordinador('My Title');
-        $fixture->setParticipantesEdicion('20');
-        $fixture->setEdicionesEstimadas('2');
+        $fixture->setParticipantesEdicion(20);
+        $fixture->setEdicionesEstimadas(2);
         $fixture->setPlazoSolicitud('My Title');
         $fixture->setObservaciones('My Title');
-        $fixture->setVisibleWeb('1');
-        $fixture->setHorasVirtuales('20');
-        $fixture->setCalificable('1');
+        $fixture->setVisibleWeb(1);
+        $fixture->setHorasVirtuales(20);
+        $fixture->setCalificable(1);
 
         $this->manager->persist($fixture);
         $this->manager->flush();
@@ -109,20 +107,20 @@ final class CursoControllerTest extends WebTestCase
         $fixture = new Curso();
         $fixture->setCodigoCurso('Value');
         $fixture->setNombreCurso('Value');
-        $fixture->setHoras('20');
+        $fixture->setHoras(20);
         $fixture->setObjetivos('Value');
         $fixture->setContenidos('Value');
         $fixture->setDestinatarios('Value');
         $fixture->setRequisitos('Value');
         $fixture->setJustificacion('Value');
         $fixture->setCoordinador('Value');
-        $fixture->setParticipantesEdicion('20');
-        $fixture->setEdicionesEstimadas('2');
+        $fixture->setParticipantesEdicion(20);
+        $fixture->setEdicionesEstimadas(2);
         $fixture->setPlazoSolicitud('Value');
         $fixture->setObservaciones('Value');
-        $fixture->setVisibleWeb('1');
-        $fixture->setHorasVirtuales('20');
-        $fixture->setCalificable('1');
+        $fixture->setVisibleWeb(1);
+        $fixture->setHorasVirtuales(20);
+        $fixture->setCalificable(1);
 
         $this->manager->persist($fixture);
         $this->manager->flush();
@@ -132,20 +130,20 @@ final class CursoControllerTest extends WebTestCase
         $this->client->submitForm('Actualizar', [
             'curso[codigo_curso]' => 'New',
             'curso[nombre_curso]' => 'Something New',
-            'curso[horas]' => '20',
+            'curso[horas]' => 20,
             'curso[objetivos]' => 'Something New',
             'curso[contenidos]' => 'Something New',
             'curso[destinatarios]' => 'Something New',
             'curso[requisitos]' => 'Something New',
             'curso[justificacion]' => 'Something New',
             'curso[coordinador]' => 'Something New',
-            'curso[participantes_edicion]' => '20',
-            'curso[ediciones_estimadas]' => '2',
+            'curso[participantes_edicion]' => 20,
+            'curso[ediciones_estimadas]' => 2,
             'curso[plazo_solicitud]' => 'Something New',
             'curso[observaciones]' => 'Something New',
-            'curso[visible_web]' => '1',
-            'curso[horas_virtuales]' => '20',
-            'curso[calificable]' => '1',
+            'curso[visible_web]' => 1,
+            'curso[horas_virtuales]' => 20,
+            'curso[calificable]' => 1,
         ]);
 
         self::assertResponseRedirects('/intranet/forpas/gestor/curso/');
@@ -169,26 +167,25 @@ final class CursoControllerTest extends WebTestCase
         self::assertSame(20, $fixture[0]->getHorasVirtuales());
         self::assertTrue( $fixture[0]->isCalificable());
     }
-
     public function testRemove(): void
     {
         $fixture = new Curso();
         $fixture->setCodigoCurso('Value');
         $fixture->setNombreCurso('Value');
-        $fixture->setHoras('20');
+        $fixture->setHoras(20);
         $fixture->setObjetivos('Value');
         $fixture->setContenidos('Value');
         $fixture->setDestinatarios('Value');
         $fixture->setRequisitos('Value');
         $fixture->setJustificacion('Value');
         $fixture->setCoordinador('Value');
-        $fixture->setParticipantesEdicion('20');
-        $fixture->setEdicionesEstimadas('2');
+        $fixture->setParticipantesEdicion(20);
+        $fixture->setEdicionesEstimadas(2);
         $fixture->setPlazoSolicitud('Value');
         $fixture->setObservaciones('Value');
-        $fixture->setVisibleWeb('1');
-        $fixture->setHorasVirtuales('20');
-        $fixture->setCalificable('1');
+        $fixture->setVisibleWeb(1);
+        $fixture->setHorasVirtuales(20);
+        $fixture->setCalificable(1);
 
         $this->manager->persist($fixture);
         $this->manager->flush();
@@ -198,5 +195,27 @@ final class CursoControllerTest extends WebTestCase
 
         self::assertResponseRedirects('/intranet/forpas/gestor/curso/');
         self::assertSame(0, $this->repository->count([]));
+    }
+    public function testAddEdiciones(): void
+    {
+        $curso = new Curso();
+        $edicion = new \App\Entity\Forpas\Edicion();
+
+        $curso->addEdiciones($edicion);
+
+        $this->assertTrue($curso->getEdiciones()->contains($edicion));
+        $this->assertSame($curso, $edicion->getCurso());
+    }
+
+    public function testRemoveEdiciones(): void
+    {
+        $curso = new Curso();
+        $edicion = new \App\Entity\Forpas\Edicion();
+
+        $curso->addEdiciones($edicion);
+        $curso->removeEdiciones($edicion);
+
+        $this->assertFalse($curso->getEdiciones()->contains($edicion));
+        $this->assertNull($edicion->getCurso());
     }
 }

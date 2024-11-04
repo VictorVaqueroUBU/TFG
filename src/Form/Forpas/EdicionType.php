@@ -74,10 +74,16 @@ class EdicionType extends AbstractType
                     'Cerrada' => 1,
                     'Certificada' => 2,
                 ],
+            ])
+            ->add('curso', EntityType::class, [
+                'class' => Curso::class,
+                'choice_label' => 'nombreCurso',
+                'label' => 'Curso',
+                'disabled' => $disabled,
+                'placeholder' => 'Seleccione un curso',
+                'required' => true,
             ]);
-        ;
     }
-
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([

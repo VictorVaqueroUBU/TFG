@@ -1,0 +1,3 @@
+src/lib/hash.lo: /Users/vaquero/www/tfg/xdebug-3.3.2/src/lib/hash.c \
+  /Users/vaquero/www/tfg/xdebug-3.3.2/src/lib/hash.h \
+  /Users/vaquero/www/tfg/xdebug-3.3.2/src/lib/llist.h
