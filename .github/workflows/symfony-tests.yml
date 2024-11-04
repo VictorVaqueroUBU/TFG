@@ -42,6 +42,10 @@ jobs:
       - name: Install Composer dependencies
         run: composer install --prefer-dist --no-progress --no-interaction
 
+      - name: Create test database
+        run: |
+          mysql -u root -pbandit650n -e "CREATE DATABASE IF NOT EXISTS formacion_test;"
+
       - name: Clear cache
         run: php bin/console cache:clear
         env:
