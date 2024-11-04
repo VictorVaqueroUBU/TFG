@@ -1,0 +1,99 @@
+{% extends 'intranet/forpas/gestor/index.html.twig' %}
+
+{% block title %}{{ titulo }}{% endblock %}
+
+{% block content %}
+    <div class="pagina-titulo">Portal del Gestor
+        <a href="{{ path('intranet_forpas_gestor_edicion_index') }}"><span class="mx-3 fa-solid fa-reply" title="Volver"></span></a>
+    </div>
+
+    <div class="pagina-seccion">Datos de la Edición</div>
+
+    <div class="container-fluid py-4 g-4">
+        <div class="row py-2">
+            <div class="fila-campo">Código</div>
+            <div class="fila-valor">{{ edicion.codigoEdicion }}</div>
+        </div>
+        <div class="row py-2">
+            <div class="fila-campo">Nombre del curso</div>
+            <div class="fila-valor">{{ edicion.curso.nombreCurso }}</div>
+        </div>
+        <div class="row py-2">
+            <div class="fila-campo">Fecha inicio</div>
+            <div class="fila-valor">{{ edicion.fechaInicio ? edicion.fechaInicio|date('Y-m-d H:i:s') : '' }}</div>
+        </div>
+        <div class="row py-2">
+            <div class="fila-campo">Fecha fin</div>
+            <div class="fila-valor">{{ edicion.fechaFin ? edicion.fechaFin|date('Y-m-d H:i:s') : '' }}</div>
+        </div>
+        <div class="row py-2">
+            <div class="fila-campo">Lugar</div>
+            <div class="fila-valor">{{ edicion.lugar }}</div>
+        </div>
+        <div class="row py-2">
+            <div class="fila-campo">Calendario</div>
+            <div class="fila-valor">{{ edicion.calendario }}</div>
+        </div>
+        <div class="row py-2">
+            <div class="fila-campo">Horario</div>
+            <div class="fila-valor">{{ edicion.horario }}</div>
+        </div>
+        <div class="row py-2">
+            <div class="fila-campo">Sesiones</div>
+            <div class="fila-valor">{{ edicion.sesiones }}</div>
+        </div>
+        <div class="row py-2">
+            <div class="fila-campo">Max. participantes</div>
+            <div class="fila-valor">{{ edicion.maxParticipantes }}</div>
+        </div>
+        <div class="row py-2">
+            <div class="fila-campo">Horas totales</div>
+            <div class="fila-valor">{{ edicion.curso.horas }}</div>
+        </div>
+        <div class="row py-2">
+            <div class="fila-campo">Horas virtuales</div>
+            <div class="fila-valor">
+                {% if edicion.curso.horasVirtuales %}
+                    {{ edicion.curso.horasVirtuales }}
+                {% else %}
+                    <sup class="text-danger fas fa-times"></sup>
+                {% endif %}
+            </div>
+        </div>
+        <div class="row py-2">
+            <div class="fila-campo">Evaluable</div>
+            <div class="fila-valor">
+                {% if edicion.curso.calificable %}
+                    <sup class="text-success fas fa-check"></sup>
+                {% else %}
+                    <sup class="text-danger fas fa-times"></sup>
+                {% endif %}
+            </div>
+        </div>
+        <div class="row py-2">
+            <div class="fila-campo">Estado</div>
+            <div class="fila-valor">
+                {% if edicion.estado == 0 %}
+                    Abierta
+                {% elseif edicion.estado == 1 %}
+                    Evaluada
+                {% elseif edicion.estado == 2 %}
+                    Certificada
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block botones %}
+    <li class="nav-item me-2">
+        <a class="btn btn-primary"
+           href="{{ path('intranet_forpas_gestor_edicion_edit', {'id': edicion.id}) }}">
+            <span class="fas fa-edit"></span> Editar
+        </a>
+    </li>
+
+    <li class="nav-item ms-5 me-2">
+        {{ include('intranet/forpas/gestor/edicion/_delete_form.html.twig', { 'id': edicion.id, 'buttonType': 'primary' }) }}
+    </li>
+{% endblock %}

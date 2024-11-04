@@ -1,5 +1,9 @@
 twig:
+    default_path: '%kernel.project_dir%/templates'
     file_name_pattern: '*.twig'
+    form_themes: ['form/sirhus_tema.html.twig']
+    globals:
+        app_environment: '%env(APP_ENV)%'
 
 when@test:
     twig:

@@ -1,0 +1,117 @@
+{% extends 'intranet/forpas/gestor/index.html.twig' %}
+
+{% block title %}{{ titulo }}{% endblock %}
+
+{% block content %}
+    <div class="pagina-titulo">Portal del Gestor
+        <a href="#" onclick="window.location.href='{{ path('intranet_forpas_gestor') }}';">
+            <span class="mx-3 fa-solid fa-reply" title="Volver"></span>
+        </a>
+    </div>
+
+    <div class="pagina-seccion">Listado de Cursos</div>
+    <table class="tabla-condensada" id="datosCursos">
+        <thead class="cabecera-condensada">
+            <tr>
+                <th>Codigo</th>
+                <th>Nombre</th>
+                <th>Horas totales</th>
+                <th>Horas virtuales</th>
+                <th>Evaluable</th>
+                <th>Ediciones estimadas</th>
+                <th>Participantes por edicion</th>
+                <th>Visible web</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for curso in cursos %}
+            <tr>
+                <td>{{ curso.codigoCurso }}</td>
+                <td>{{ curso.nombreCurso }}</td>
+                <td>{{ curso.horas }}</td>
+                <td class="text-center">
+                    {% if curso.horasVirtuales %}
+                        {{ curso.horasVirtuales }}
+                    {% else %}
+                        <sup class="text-danger fas fa-times"></sup>
+                    {% endif %}
+                </td>
+                <td class="text-center">
+                    {% if curso.calificable %}
+                        <sup class="text-success fas fa-check"></sup>
+                    {% else %}
+                        <sup class="text-danger fas fa-times"></sup>
+                    {% endif %}
+                </td>
+                <td>{{ curso.edicionesEstimadas }}</td>
+                <td>{{ curso.participantesEdicion }}</td>
+                <td class="text-center">
+                    {% if curso.visibleWeb %}
+                        <sup class="text-success fas fa-check"></sup>
+                    {% else %}
+                        <sup class="text-danger fas fa-times"></sup>
+                    {% endif %}
+                </td>
+                <td>
+                    <a href="{{ path('intranet_forpas_gestor_curso_show', {'id': curso.id}) }}" title="Ver"><span class="mx-1 fas fa-eye"></span></a>
+                    <a href="{{ path('intranet_forpas_gestor_curso_edit', {'id': curso.id}) }}" title="Editar"><span class="mx-1 fas fa-edit"></span></a>
+                    {{ include('intranet/forpas/gestor/curso/_delete_form.html.twig', { 'id': curso.id, 'buttonType': 'inline' }) }}
+                    <a href="{{ path('intranet_forpas_gestor_edicion_index', {'cursoId': curso.id}) }}" title="Ver Ediciones"><span class="mx-1 fas fa-list"></span></a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td>No existen cursos</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
+
+{% block botones %}
+    <li class="boton-inferior nav-item me-2">
+        <a class="btn btn-primary" href="{{ path('intranet_forpas_gestor_curso_new') }}">
+            <span class="fas fa-plus"></span> Crear curso
+        </a>
+    </li>
+{% endblock %}
+
+{% block js %}
+    {{ parent() }}
+    <script type="module">
+        $(function () {
+            $('#datosCursos').dataTable({
+                buttons: [
+                    {
+                        extend: 'copy',
+                        text: '<i class="fas fa-copy"></i>',
+                        titleAttr: 'Copiar',
+                    },
+                    {
+                        extend: 'print',
+                        text: '<i class="fas fa-print"></i>',
+                        titleAttr: 'Imprimir',
+                    },
+                    {
+                        extend: 'csv',
+                        text: '<i class="fas fa-file-csv"></i>',
+                        titleAttr: 'Generar fichero CSV',
+                    },
+                    {
+                        extend: 'excelHtml5',
+                        text: '<i class="fas fa-file-excel"></i>',
+                        titleAttr: 'Generar fichero Excel',
+                    },
+                ],
+                dom: '<"row"<"col-sm-12 col-md-4"B><"col-sm-12 col-md-4"l><"col-sm-12 col-md-4"f>>' +
+                    '<"row"<"col-sm-12"<"table-responsive"tr>>>' +
+                    '<"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
+                language: {
+                    url: '{{ asset("includes/datatable.es.json") }}'
+                },
+            });
+        });
+    </script>
+{% endblock %}
+

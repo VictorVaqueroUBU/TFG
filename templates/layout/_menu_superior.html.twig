@@ -1,0 +1,47 @@
+<div class="container-fluid">
+    <a class="navbar-brand" href="#" title="Intranet de Recursos Humanos de la Universidad de Sevilla">
+        <img class="pe-2" style="margin-top: -15px" src="{{ asset('images/logo-us-negativo.png') }}" height="30"
+             alt="Universidad de Sevilla"> Intranet</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse"
+            aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarCollapse">
+        <ul class="navbar-nav me-auto mb-2 mb-md-0 ps-3">
+            <li class="nav-item px-1">
+                <a class="nav-link text-light" href="#" title="Planificación del PTGAS">Planificación</a>
+            </li>
+            <li class="nav-item px-1">
+                <a class="nav-link text-light" href="#" title="Gestión del PTGAS">Gestión</a>
+            </li>
+            <li class="nav-item px-1">
+                <a class="nav-link text-light" href="#" title="Formación del PTGAS">Formación</a>
+            </li>
+            <li class="nav-item px-1">
+                <a class="nav-link text-light" href="#" title="Acción Social">Acción Social</a>
+            </li>
+            <li class="nav-item px-1">
+                <a class="nav-link text-light" href="#" title="Servicio de Prevención de Riesgos Laborales">Prevención</a>
+            </li>
+ {#           <li class="nav-item">
+                <a class="nav-link" href="{{ path('portal_directorio') }}">Directorio</a>
+            </li>#}
+        </ul>
+        <ul class="navbar-nav mb-2 mb-md-0 ps-3">
+            {# Menú para funciones especiales #}
+            <li class="nav-item px-1">
+                <a class="nav-link text-light" href="#" title="Aplicaciones del usuario">
+                    <span class="fas fa-tools d-none d-md-inline"></span> Mis aplicaciones</a></li>
+            <li class="nav-item px-1">
+                <a class="nav-link text-light" href="#" title="Directorio de Recursos Humanos">
+                    <span class="fas fa-users d-none d-md-inline"></span> Directorio</a></li>
+            <li class="nav-item px-1">
+                <a class="nav-link text-light" href="#" title="Buscador de Recursos Humanos">
+                    <span class="fas fa-search d-none d-md-inline"></span> Buscar</a></li>
+            <li class="nav-item px-1">
+                <a class="nav-link text-light" href="#" title="Portal de Recursos Humanos">
+                    <span class="fas fa-globe d-none d-md-inline"></span> Portal</a></li>
+        </ul>
+{#        {{ render_esi(path('intranet_usuario_menu')) }}#}
+    </div>
+</div>

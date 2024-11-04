@@ -1,34 +1,27 @@
-name: Run Symfony PHPUnit Tests
-
-on:
-  push:
-    branches:
-      - main
-      - developer
-  pull_request:
-    branches:
-      - main
-      - developer
-
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
-    - name: Set up PHP
-      uses: shivammathur/setup-php@v2
-      with:
-        php-version: '8.2'  # Ajusta según la versión de PHP que utilices
-        extensions: mbstring, intl, pdo_mysql
-        ini-values: post_max_size=256M, max_execution_time=300
-        coverage: none
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: mbstring, intl, pdo_mysql
+          ini-values: post_max_size=256M, max_execution_time=300
 
-    - name: Install Composer dependencies
-      run: composer install --prefer-dist --no-progress --no-suggest --no-interaction
+      - name: Install Composer dependencies
+        run: composer install --prefer-dist --no-progress --no-interaction
 
-    - name: Run Symfony tests
-      run: ./bin/phpunit
+      - name: Clear cache
+        run: php bin/console cache:clear
+        env:
+          APP_ENV: test
 
+      - name: Run Symfony tests
+        run: ./bin/phpunit
+        env:
+          APP_ENV: test

@@ -1,0 +1,19 @@
+{% extends '/intranet/forpas/index.html.twig' %}
+
+{% block title %}{{ titulo }}{% endblock %}
+
+{% block content %}
+    <div class="pagina-titulo">Portal del Gestor</div>
+
+    <div class="pagina-seccion">Programación</div>
+    <ul>
+        {% if cursos %}
+            <li><a href="{{ path('intranet_forpas_gestor_curso_index') }}">Gestionar cursos</a></li>
+        {% endif %}
+        {% if ediciones %}
+            <li><a href="{{ path('intranet_forpas_gestor_edicion_index') }}">Gestionar ediciones</a></li>
+        {% endif %}
+    </ul>
+{% endblock %}
+
+{% block migas %}{% endblock %}
