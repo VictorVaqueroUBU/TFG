@@ -4,14 +4,12 @@ on:
   push:
     branches:
       - developer
-      - main
   pull_request:
     branches:
-      - developer
       - main
 
 jobs:
-  test:
+  tests:
     runs-on: ubuntu-latest
 
     services:
@@ -19,47 +17,39 @@ jobs:
         image: mysql:8.0
         env:
           MYSQL_ROOT_PASSWORD: bandit650n
-          MYSQL_DATABASE: formacion_test
+          MYSQL_DATABASE: formacion
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
         ports:
           - 3306:3306
+        # Increase startup delay to ensure MySQL is ready before connecting
         options: >-
-          --health-cmd="mysqladmin ping"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=3
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -u root --password=bandit650n"
+          --health-interval=10s --health-timeout=5s --health-retries=20
 
     steps:
-      - name: Check out the code
-        uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-      - name: Set up PHP
+      - name: Install PHP and extensions
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.2'
           extensions: mbstring, intl, pdo_mysql
-          coverage: xdebug
-          ini-values: post_max_size=256M, max_execution_time=180
+          ini-values: date.timezone=UTC
+          coverage: none
 
-      - name: Install Composer dependencies
+      - name: Install dependencies
         run: composer install --prefer-dist --no-progress --no-suggest
 
       - name: Copy .env.test
-        run: cp .env.test .env
+        run: echo "DATABASE_URL_TEST=mysql://root:bandit650n@127.0.0.1:3306/formacion?serverVersion=8.0.32&charset=utf8mb4" > .env.test
 
-      - name: Wait for MySQL to be ready
-        run: |
-          sudo apt-get install -y netcat
-          until nc -z -v -w30 127.0.0.1 3306
-          do
-            echo "Waiting for database connection..."
-            sleep 1
-          done
-          echo "Database is up!"
-
-      - name: Set up database schema
-        run: |
-          php bin/console doctrine:database:create --if-not-exists --env=test
-          php bin/console doctrine:migrations:migrate --no-interaction --env=test
+      - name: Run database migrations
+        env:
+          DATABASE_URL_TEST: mysql://root:bandit650n@127.0.0.1:3306/formacion?serverVersion=8.0.32&charset=utf8mb4
+        run: php bin/console doctrine:migrations:migrate --no-interaction --env=test
 
       - name: Run PHPUnit tests
-        run: php bin/phpunit --testdox
+        env:
+          DATABASE_URL_TEST: mysql://root:bandit650n@127.0.0.1:3306/formacion?serverVersion=8.0.32&charset=utf8mb4
+        run: php bin/phpunit --coverage-text
