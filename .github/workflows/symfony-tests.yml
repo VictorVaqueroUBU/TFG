@@ -23,7 +23,7 @@ jobs:
         ports:
           - 3306:3306
         options: >-
-          --health-cmd="mysqladmin ping"
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -pbandit650n"
           --health-interval=10s
           --health-timeout=5s
           --health-retries=3
@@ -42,9 +42,19 @@ jobs:
       - name: Install Composer dependencies
         run: composer install --prefer-dist --no-progress --no-interaction
 
-      - name: Create test database
+      - name: Wait for MySQL to be ready
         run: |
-          mysql -u root -pbandit650n -e "CREATE DATABASE IF NOT EXISTS formacion_test;"
+          for i in {1..10}; do
+            if mysqladmin ping -h 127.0.0.1 -pbandit650n --silent; then
+              echo "MySQL is ready!"
+              break
+            fi
+            echo "Waiting for MySQL..."
+            sleep 5
+          done
+
+      - name: Create test database
+        run: mysql -h 127.0.0.1 -u root -pbandit650n -e "CREATE DATABASE IF NOT EXISTS formacion_test;"
 
       - name: Clear cache
         run: php bin/console cache:clear
