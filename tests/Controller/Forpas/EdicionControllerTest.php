@@ -13,6 +13,9 @@ final class EdicionControllerTest extends WebTestCase
 {
     private KernelBrowser $client;
     private EntityManagerInterface $manager;
+    /**
+     * @var EntityRepository<Edicion>
+     */
     private EntityRepository $repository;
     private string $path = '/intranet/forpas/gestor/edicion/';
     protected function setUp(): void
@@ -49,9 +52,9 @@ final class EdicionControllerTest extends WebTestCase
         $curso->setHoras(20);
         $curso->setParticipantesEdicion(20);
         $curso->setEdicionesEstimadas(2);
-        $curso->setVisibleWeb(1);
+        $curso->setVisibleWeb(true);
         $curso->setHorasVirtuales(20);
-        $curso->setCalificable(1);
+        $curso->setCalificable(true);
 
         $this->manager->persist($curso);
         $this->manager->flush();
@@ -94,9 +97,9 @@ final class EdicionControllerTest extends WebTestCase
         $curso->setHoras(20);
         $curso->setParticipantesEdicion(20);
         $curso->setEdicionesEstimadas(2);
-        $curso->setVisibleWeb(1);
+        $curso->setVisibleWeb(true);
         $curso->setHorasVirtuales(20);
-        $curso->setCalificable(1);
+        $curso->setCalificable(true);
 
         $this->manager->persist($curso);
         $fixture->setCurso($curso);
@@ -130,9 +133,9 @@ final class EdicionControllerTest extends WebTestCase
         $curso->setHoras(20);
         $curso->setParticipantesEdicion(20);
         $curso->setEdicionesEstimadas(2);
-        $curso->setVisibleWeb(1);
+        $curso->setVisibleWeb(true);
         $curso->setHorasVirtuales(20);
-        $curso->setCalificable(1);
+        $curso->setCalificable(true);
 
         $this->manager->persist($curso);
         $fixture->setCurso($curso);
@@ -188,9 +191,9 @@ final class EdicionControllerTest extends WebTestCase
         $curso->setHoras(20);
         $curso->setParticipantesEdicion(20);
         $curso->setEdicionesEstimadas(2);
-        $curso->setVisibleWeb(1);
+        $curso->setVisibleWeb(true);
         $curso->setHorasVirtuales(20);
-        $curso->setCalificable(1);
+        $curso->setCalificable(true);
 
         $this->manager->persist($curso);
         $fixture->setCurso($curso);

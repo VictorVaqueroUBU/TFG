@@ -87,9 +87,9 @@ final class CursoControllerTest extends WebTestCase
         $fixture->setEdicionesEstimadas(2);
         $fixture->setPlazoSolicitud('My Title');
         $fixture->setObservaciones('My Title');
-        $fixture->setVisibleWeb(1);
+        $fixture->setVisibleWeb(true);
         $fixture->setHorasVirtuales(20);
-        $fixture->setCalificable(1);
+        $fixture->setCalificable(true);
 
         $this->manager->persist($fixture);
         $this->manager->flush();
@@ -118,9 +118,9 @@ final class CursoControllerTest extends WebTestCase
         $fixture->setEdicionesEstimadas(2);
         $fixture->setPlazoSolicitud('Value');
         $fixture->setObservaciones('Value');
-        $fixture->setVisibleWeb(1);
+        $fixture->setVisibleWeb(true);
         $fixture->setHorasVirtuales(20);
-        $fixture->setCalificable(1);
+        $fixture->setCalificable(true);
 
         $this->manager->persist($fixture);
         $this->manager->flush();
@@ -183,9 +183,9 @@ final class CursoControllerTest extends WebTestCase
         $fixture->setEdicionesEstimadas(2);
         $fixture->setPlazoSolicitud('Value');
         $fixture->setObservaciones('Value');
-        $fixture->setVisibleWeb(1);
+        $fixture->setVisibleWeb(true);
         $fixture->setHorasVirtuales(20);
-        $fixture->setCalificable(1);
+        $fixture->setCalificable(true);
 
         $this->manager->persist($fixture);
         $this->manager->flush();
