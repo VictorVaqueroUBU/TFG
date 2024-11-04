@@ -39,7 +39,7 @@ jobs:
       - name: Install dependencies
         run: composer install --prefer-dist --no-progress --no-suggest
 
-      - name: Copy .env.test
+      - name: Copy .env.test with DATABASE_URL_TEST
         run: echo "DATABASE_URL_TEST=mysql://root:bandit650n@127.0.0.1:3306/formacion?serverVersion=8.0.32&charset=utf8mb4" > .env.test
 
       - name: Wait for MySQL to be ready
@@ -54,11 +54,19 @@ jobs:
           echo "Testing MySQL connection"
           mysql -h 127.0.0.1 -u root --password=bandit650n -e "SHOW DATABASES;"
 
+      - name: Check .env.test content
+        run: cat .env.test
+
       - name: Run database migrations
         env:
           APP_ENV: test
           DATABASE_URL_TEST: mysql://root:bandit650n@127.0.0.1:3306/formacion?serverVersion=8.0.32&charset=utf8mb4
         run: php bin/console doctrine:migrations:migrate --no-interaction --env=test
+
+      - name: Verify Test Database Structure
+        run: |
+          echo "Checking if 'formacion_test' database has tables"
+          mysql -h 127.0.0.1 -u root --password=bandit650n -e "USE formacion_test; SHOW TABLES;"
 
       - name: Run PHPUnit tests
         env:
