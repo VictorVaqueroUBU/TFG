@@ -18,8 +18,8 @@ jobs:
       mysql:
         image: mysql:8.0
         env:
-          MYSQL_ROOT_PASSWORD: root
-          MYSQL_DATABASE: test_database
+          MYSQL_ROOT_PASSWORD: bandit650n
+          MYSQL_DATABASE: formacion
         ports:
           - 3306:3306
         options: >-
