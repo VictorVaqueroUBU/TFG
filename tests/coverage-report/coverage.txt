@@ -1,12 +1,26 @@
 
 
-Code Coverage Report:     
-  2024-11-04 11:31:17     
-                          
- Summary:                 
-  Classes:  0.00% (0/9)   
-  Methods:  7.41% (6/81)  
-  Lines:    3.86% (14/363)
+Code Coverage Report:      
+  2024-11-04 12:19:22      
+                           
+ Summary:                  
+  Classes: 66.67% (6/9)    
+  Methods: 95.06% (77/81)  
+  Lines:   97.52% (354/363)
 
+App\Controller\Forpas\CursoController
+  Methods:  80.00% ( 4/ 5)   Lines:  94.12% ( 32/ 34)
+App\Controller\Forpas\EdicionController
+  Methods:  83.33% ( 5/ 6)   Lines:  96.43% ( 54/ 56)
 App\Entity\Forpas\Curso
-  Methods:  15.79% ( 6/38)   Lines:  21.88% ( 14/ 64)
+  Methods: 100.00% (38/38)   Lines: 100.00% ( 64/ 64)
+App\Entity\Forpas\Edicion
+  Methods: 100.00% (21/21)   Lines: 100.00% ( 31/ 31)
+App\Form\Forpas\CursoType
+  Methods: 100.00% ( 2/ 2)   Lines: 100.00% ( 79/ 79)
+App\Form\Forpas\EdicionType
+  Methods: 100.00% ( 2/ 2)   Lines: 100.00% ( 70/ 70)
+App\Repository\Forpas\CursoRepository
+  Methods: 100.00% ( 1/ 1)   Lines: 100.00% (  1/  1)
+App\Repository\Forpas\EdicionRepository
+  Methods: 100.00% ( 4/ 4)   Lines: 100.00% ( 23/ 23)
