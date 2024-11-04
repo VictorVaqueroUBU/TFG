@@ -56,10 +56,12 @@ jobs:
 
       - name: Run database migrations
         env:
+          APP_ENV: test
           DATABASE_URL_TEST: mysql://root:bandit650n@127.0.0.1:3306/formacion?serverVersion=8.0.32&charset=utf8mb4
         run: php bin/console doctrine:migrations:migrate --no-interaction --env=test
 
       - name: Run PHPUnit tests
         env:
+          APP_ENV: test
           DATABASE_URL_TEST: mysql://root:bandit650n@127.0.0.1:3306/formacion?serverVersion=8.0.32&charset=utf8mb4
         run: php bin/phpunit --coverage-text
