@@ -3,6 +3,8 @@
 namespace App\Entity\Forpas;
 
 use App\Repository\Forpas\EdicionRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -17,10 +19,10 @@ class Edicion
     #[ORM\Column(length: 10)]
     private ?string $codigo_edicion = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $fecha_inicio = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $fecha_fin = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
@@ -44,6 +46,17 @@ class Edicion
     #[ORM\ManyToOne(inversedBy: 'ediciones')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Curso $curso = null;
+
+    /**
+     * @var Collection<int, ParticipanteEdicion>
+     */
+    #[ORM\OneToMany(targetEntity: ParticipanteEdicion::class, mappedBy: 'edicion', orphanRemoval: true)]
+    private Collection $participantesEdicion;
+
+    public function __construct()
+    {
+        $this->participantesEdicion = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -166,6 +179,36 @@ class Edicion
     public function setCurso(?Curso $curso): static
     {
         $this->curso = $curso;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ParticipanteEdicion>
+     */
+    public function getParticipantesEdicion(): Collection
+    {
+        return $this->participantesEdicion;
+    }
+
+    public function addParticipantesEdicion(ParticipanteEdicion $participanteEdicion): static
+    {
+        if (!$this->participantesEdicion->contains($participanteEdicion)) {
+            $this->participantesEdicion->add($participanteEdicion);
+            $participanteEdicion->setEdicion($this);
+        }
+
+        return $this;
+    }
+
+    public function removeParticipantesEdicion(ParticipanteEdicion $participanteEdicion): static
+    {
+        if ($this->participantesEdicion->removeElement($participanteEdicion)) {
+            // set the owning side to null (unless already changed)
+            if ($participanteEdicion->getEdicion() === $this) {
+                $participanteEdicion->setEdicion(null);
+            }
+        }
 
         return $this;
     }

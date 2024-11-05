@@ -118,8 +118,8 @@ final class EdicionControllerTest extends WebTestCase
     {
         $fixture = new Edicion();
         $fixture->setCodigoEdicion('24001/01');
-        $fixture->setFechaInicio(new \DateTime('2024-01-01 10:00'));
-        $fixture->setFechaFin(new \DateTime('2024-01-02 10:00'));
+        $fixture->setFechaInicio(new \DateTime('2024-01-01'));
+        $fixture->setFechaFin(new \DateTime('2024-01-02'));
         $fixture->setCalendario('Value');
         $fixture->setHorario('Value');
         $fixture->setLugar('Value');
@@ -147,8 +147,8 @@ final class EdicionControllerTest extends WebTestCase
 
         $this->client->submitForm('Actualizar', [
             'edicion[codigo_edicion]' => 'Something New',
-            'edicion[fecha_inicio]' => '2024-01-01T10:00',
-            'edicion[fecha_fin]' => '2024-01-02T10:00',
+            'edicion[fecha_inicio]' => '2024-01-01',
+            'edicion[fecha_fin]' => '2024-01-02',
             'edicion[calendario]' => 'Something New',
             'edicion[horario]' => 'Something New',
             'edicion[lugar]' => 'Something New',
@@ -162,8 +162,8 @@ final class EdicionControllerTest extends WebTestCase
 
         $updatedFixture = $this->repository->find($fixture->getId());
 
-        self::assertEquals(new \DateTime('2024-01-01 10:00'), $updatedFixture->getFechaInicio());
-        self::assertEquals(new \DateTime('2024-01-02 10:00'), $updatedFixture->getFechaFin());
+        self::assertEquals(new \DateTime('2024-01-01'), $updatedFixture->getFechaInicio());
+        self::assertEquals(new \DateTime('2024-01-02'), $updatedFixture->getFechaFin());
         self::assertSame('Something New', $updatedFixture->getCalendario());
         self::assertSame('Something New', $updatedFixture->getHorario());
         self::assertSame('Something New', $updatedFixture->getLugar());

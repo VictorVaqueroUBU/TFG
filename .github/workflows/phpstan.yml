@@ -3,12 +3,10 @@ name: Run PHPStan
 on:
   push:
     branches:
-      - main
       - developer
   pull_request:
     branches:
       - main
-      - developer
 
 jobs:
   phpstan:
