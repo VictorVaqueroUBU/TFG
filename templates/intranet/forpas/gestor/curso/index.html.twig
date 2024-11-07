@@ -27,9 +27,9 @@
         <tbody>
         {% for curso in cursos %}
             <tr>
-                <td>{{ curso.codigoCurso }}</td>
+                <td class="text-center">{{ curso.codigoCurso }}</td>
                 <td>{{ curso.nombreCurso }}</td>
-                <td>{{ curso.horas }}</td>
+                <td class="text-center">{{ curso.horas }}</td>
                 <td class="text-center">
                     {% if curso.horasVirtuales %}
                         {{ curso.horasVirtuales }}
@@ -44,8 +44,8 @@
                         <sup class="text-danger fas fa-times"></sup>
                     {% endif %}
                 </td>
-                <td>{{ curso.edicionesEstimadas }}</td>
-                <td>{{ curso.participantesEdicion }}</td>
+                <td class="text-center">{{ curso.edicionesEstimadas }}</td>
+                <td class="text-center">{{ curso.participantesEdicion }}</td>
                 <td class="text-center">
                     {% if curso.visibleWeb %}
                         <sup class="text-success fas fa-check"></sup>

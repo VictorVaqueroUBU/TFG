@@ -13,6 +13,9 @@
         {% if ediciones %}
             <li><a href="{{ path('intranet_forpas_gestor_edicion_index') }}">Gestionar ediciones</a></li>
         {% endif %}
+        {% if participantes %}
+            <li><a href="{{ path('intranet_forpas_gestor_participante_index') }}">Gestionar participantes</a></li>
+        {% endif %}
     </ul>
 {% endblock %}
 

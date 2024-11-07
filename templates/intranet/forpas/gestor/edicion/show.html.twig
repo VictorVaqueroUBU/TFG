@@ -4,7 +4,9 @@
 
 {% block content %}
     <div class="pagina-titulo">Portal del Gestor
-        <a href="{{ path('intranet_forpas_gestor_edicion_index') }}"><span class="mx-3 fa-solid fa-reply" title="Volver"></span></a>
+        <a href="#" onclick="window.location.href='{{ path('intranet_forpas_gestor') }}';">
+            <span class="mx-3 fa-solid fa-reply" title="Volver"></span>
+        </a>
     </div>
 
     <div class="pagina-seccion">Datos de la Edición</div>
@@ -86,6 +88,13 @@
 {% endblock %}
 
 {% block botones %}
+    <li class="nav-item me-2">
+        <a class="btn btn-primary" href="#"
+           onclick="window.location.href='{{ path('intranet_forpas_gestor_edicion_index', {'cursoId': edicion.curso.id}) }}';">
+            <span class="fas fa-reply"></span> Volver
+        </a>
+    </li>
+
     <li class="nav-item me-2">
         <a class="btn btn-primary"
            href="{{ path('intranet_forpas_gestor_edicion_edit', {'id': edicion.id}) }}">

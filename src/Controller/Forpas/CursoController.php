@@ -26,15 +26,20 @@ final class CursoController extends AbstractController
         ]);
     }
     #[Route(path: '/new', name: 'new', defaults: ['titulo' => 'Crear Nuevo Curso'], methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    public function new(Request $request, EntityManagerInterface $entityManager, CursoRepository $cursoRepository): Response
     {
         $curso = new Curso();
+        $year = (int) date('Y');
+        $primerCodigoLibre = $cursoRepository->findPrimerCodigoCursoLibre($year);
+        $curso->setCodigoCurso($primerCodigoLibre);
+
         $form = $this->createForm(CursoType::class, $curso);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->persist($curso);
             $entityManager->flush();
+            $this->addFlash('success', 'La creación del curso se ha realizada satisfactoriamente.');
             return $this->redirectToRoute('intranet_forpas_gestor_curso_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -58,7 +63,7 @@ final class CursoController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
-
+            $this->addFlash('success', 'Los datos del curso se han modificado satisfactoriamente.');
             return $this->redirectToRoute('intranet_forpas_gestor_curso_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -73,7 +78,7 @@ final class CursoController extends AbstractController
         // Verificamos si el curso tiene ediciones asociadas
         if (!$curso->getEdiciones()->isEmpty()) {
             // Si tiene ediciones, redirige con un mensaje de error
-            $this->addFlash('danger', 'No se puede eliminar el curso porque tiene ediciones asociadas.');
+            $this->addFlash('warning', 'No se puede eliminar el curso porque tiene ediciones creadas.');
             return $this->redirectToRoute('intranet_forpas_gestor_curso_index');
         }
 

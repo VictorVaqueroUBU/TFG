@@ -176,12 +176,12 @@ class Participante
         return $this;
     }
 
-    public function getGrupo(): ?int
+    public function getGrupo(): ?string
     {
         return $this->grupo;
     }
 
-    public function setGrupo(?int $grupo): static
+    public function setGrupo(?string $grupo): static
     {
         $this->grupo = $grupo;
 
@@ -397,7 +397,7 @@ class Participante
         return $this->titulacion_fecha;
     }
 
-    public function setTitulacionFecha(\DateTimeInterface $titulacion_fecha): static
+    public function setTitulacionFecha(?\DateTimeInterface $titulacion_fecha): static
     {
         $this->titulacion_fecha = $titulacion_fecha;
 

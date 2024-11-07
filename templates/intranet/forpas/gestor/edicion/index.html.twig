@@ -31,11 +31,11 @@
             <tr>
                 <td>{{ edicion.codigoEdicion }}</td>
                 <td>{{ edicion.curso.nombreCurso }}</td>
-                <td>{{ edicion.fechaInicio ? edicion.fechaInicio|date('Y-m-d H:i:s') : '' }}</td>
-                <td>{{ edicion.fechaFin ? edicion.fechaFin|date('Y-m-d H:i:s') : '' }}</td>
+                <td class="text-center">{{ edicion.fechaInicio ? edicion.fechaInicio|date('Y-m-d') : '' }}</td>
+                <td class="text-center">{{ edicion.fechaFin ? edicion.fechaFin|date('Y-m-d') : '' }}</td>
                 <td>{{ edicion.lugar }}</td>
-                <td>{{ edicion.curso.horas }}</td>
-                <td>{{ edicion.maxParticipantes }}</td>
+                <td class="text-center">{{ edicion.curso.horas }}</td>
+                <td class="text-center">{{ edicion.maxParticipantes }}</td>
                 <td>
                     {% if edicion.estado == 0 %}
                         Abierta
@@ -49,6 +49,7 @@
                     <a href="{{ path('intranet_forpas_gestor_edicion_show', {'id': edicion.id}) }}"><span class="mx-1 fas fa-eye" title="Ver"></span></a>
                     <a href="{{ path('intranet_forpas_gestor_edicion_edit', {'id': edicion.id}) }}"><span class="mx-1 fas fa-edit" title="Editar"></span></a>
                     {{ include('intranet/forpas/gestor/edicion/_delete_form.html.twig', { 'id': edicion.id, 'buttonType': 'inline' }) }}
+                    <a href="{{ path('intranet_forpas_gestor_participante_edicion_index', {'edicionId': edicion.id}) }}"><span class="mx-1 fas fa-users-between-lines" title="Inscripciones"></span></a>
                 </td>
             </tr>
         {% else %}
@@ -62,7 +63,14 @@
 
 {% block botones %}
     {% if curso %}
-        <li class="boton-inferior nav-item me-2">
+        <li class="nav-item me-2">
+            <a class="btn btn-primary" href="#"
+               onclick="window.location.href='{{ path('intranet_forpas_gestor_curso_index') }}';">
+                <span class="fas fa-reply"></span> Volver
+            </a>
+        </li>
+
+        <li class="nav-item me-2">
             <a class="btn btn-primary" href="{{ path('intranet_forpas_gestor_edicion_new', {'cursoId': curso.id}) }}">
                 <span class="fas fa-plus"></span> Crear edición
             </a>
