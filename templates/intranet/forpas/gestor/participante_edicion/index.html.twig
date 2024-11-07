@@ -1,0 +1,108 @@
+{% extends 'intranet/forpas/gestor/index.html.twig' %}
+
+{% block title %}{{ titulo }}{% endblock %}
+
+{% block content %}
+    <div class="pagina-titulo">Portal del Gestor
+        <a href="#" onclick="window.location.href='{{ path('intranet_forpas_gestor') }}';">
+            <span class="mx-3 fa-solid fa-reply" title="Volver"></span>
+        </a>
+    </div>
+
+    <div class="pagina-seccion">
+        {{ edicion ? 'Inscripciones de la Edición: ' ~ edicion.codigoEdicion ~ ' - ' ~ edicion.curso.nombreCurso :
+        'Listado de Inscripciones' }}
+    </div>
+    <table class="tabla-condensada" id="datosParticipantesEdicion">
+        <thead class="cabecera-condensada">
+            <tr>
+                <th>NIF</th>
+                <th>Apellidos</th>
+                <th>Nombre</th>
+                <th>Puesto</th>
+                <th>Unidad</th>
+                <th>Correo</th>
+                <th>Teléfono</th>
+                <th>Fecha Solicitud</th>
+                <th>Baja_justificada</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for pe in participantes_edicion %}
+            <tr>
+                <td>{{ pe.participante.nif }}</td>
+                <td>{{ pe.participante.apellidos }}</td>
+                <td>{{ pe.participante.nombre }}</td>
+                <td>{{ pe.participante.puestoTrabajo }}</td>
+                <td>{{ pe.participante.unidad }}</td>
+                <td>{{ pe.participante.correoAux }}</td>
+                <td>{{ pe.participante.telefonoTrabajo }}</td>
+                <td>{{ pe.fechaSolicitud ? pe.fechaSolicitud|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ pe.bajaJustificada ? pe.bajaJustificada|date('Y-m-d H:i:s') : '' }}</td>
+                <td>
+                    <a href="{{ path('intranet_forpas_gestor_participante_edicion_show', {'id': pe.id}) }}" title="Ver"><span class="mx-1 fas fa-eye"></span></a>
+                    <a href="{{ path('intranet_forpas_gestor_participante_edicion_edit', {'id': pe.id}) }}" title="Editar"><span class="mx-1 fas fa-edit"></span></a>
+                    {{ include('intranet/forpas/gestor/participante_edicion/_delete_form.html.twig', { 'id': pe.id, 'buttonType': 'inline' }) }}
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td>No existen Inscripciones</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
+
+{% block botones %}
+    <li class="nav-item me-2">
+        <a class="btn btn-primary" href="#"
+           onclick="window.location.href='{{ path('intranet_forpas_gestor_edicion_index', {'cursoId': edicion.curso.id}) }}';">
+            <span class="fas fa-reply"></span> Volver
+        </a>
+    </li>
+    <li class="boton-inferior nav-item me-2">
+        <a class="btn btn-primary" href="{{ path('intranet_forpas_gestor_participante_append', {'id': edicion.id}) }}">
+            <span class="fas fa-plus"></span> Añadir Participante
+        </a>
+    </li>
+{% endblock %}
+
+{% block js %}
+    {{ parent() }}
+    <script type="module">
+        $(function () {
+            $('#datosParticipantesEdicion').dataTable({
+                buttons: [
+                    {
+                        extend: 'copy',
+                        text: '<i class="fas fa-copy"></i>',
+                        titleAttr: 'Copiar',
+                    },
+                    {
+                        extend: 'print',
+                        text: '<i class="fas fa-print"></i>',
+                        titleAttr: 'Imprimir',
+                    },
+                    {
+                        extend: 'csv',
+                        text: '<i class="fas fa-file-csv"></i>',
+                        titleAttr: 'Generar fichero CSV',
+                    },
+                    {
+                        extend: 'excelHtml5',
+                        text: '<i class="fas fa-file-excel"></i>',
+                        titleAttr: 'Generar fichero Excel',
+                    },
+                ],
+                dom: '<"row"<"col-sm-12 col-md-4"B><"col-sm-12 col-md-4"l><"col-sm-12 col-md-4"f>>' +
+                    '<"row"<"col-sm-12"<"table-responsive"tr>>>' +
+                    '<"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
+                language: {
+                    url: '{{ asset("includes/datatable.es.json") }}'
+                },
+            });
+        });
+    </script>
+{% endblock %}

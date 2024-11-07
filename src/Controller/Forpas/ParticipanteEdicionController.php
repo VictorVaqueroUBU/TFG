@@ -20,6 +20,17 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route(path: '/intranet/forpas/gestor/participante_edicion', name: 'intranet_forpas_gestor_participante_edicion_')]
 final class ParticipanteEdicionController extends AbstractController
 {
+    #[Route(path: '/edicion/{edicionId}', name: 'index', defaults: ['titulo' => 'Listado de Inscripciones'], methods: ['GET'])]
+    public function index(int $edicionId, ParticipanteEdicionRepository $participanteEdicionRepository, EdicionRepository $edicionRepository): Response
+    {
+        // Buscamos las inscripciones filtradas por la edición específica
+        $inscripciones = $participanteEdicionRepository->findBy(['edicion' => $edicionId]);
+        $edicion = $edicionRepository->find($edicionId);
+        return $this->render('intranet/forpas/gestor/participante_edicion/index.html.twig', [
+            'participantes_edicion' => $inscripciones,
+            'edicion' => $edicion,
+        ]);
+    }
     #[Route(path: '/new/{id}/{edicionId}', name: 'new', defaults: ['titulo' => 'Crear Nueva Inscripción'], methods: ['GET', 'POST'])]
     public function new(int $id, int $edicionId, Request $request, EntityManagerInterface $entityManager,
                         ParticipanteRepository $participanteRepository, EdicionRepository $edicionRepository): Response
