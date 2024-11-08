@@ -49,5 +49,12 @@ final class ParticipanteEdicionController extends AbstractController
         $this->addFlash('success', 'Inscripción realizada satisfactoriamente.');
         return $this->redirectToRoute('intranet_forpas_gestor_participante_edicion_index', ['edicionId' => $edicionId], Response::HTTP_SEE_OTHER);
     }
+    #[Route(path: '/{id}', name: 'show', defaults: ['titulo' => 'Datos de la Inscripción'], methods: ['GET'])]
+    public function show(ParticipanteEdicion $participanteEdicion): Response
+    {
+        return $this->render('intranet/forpas/gestor/participante_edicion/show.html.twig', [
+            'participante_edicion' => $participanteEdicion,
+        ]);
+    }
 
 }
