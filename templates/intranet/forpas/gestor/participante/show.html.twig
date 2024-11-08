@@ -1,0 +1,144 @@
+{% extends 'intranet/forpas/gestor/index.html.twig' %}
+
+{% block title %}{{ titulo }}{% endblock %}
+
+{% block content %}
+    <div class="pagina-titulo">Portal del Gestor
+        <a href="#" onclick="window.location.href='{{ path('intranet_forpas_gestor') }}';">
+            <span class="mx-3 fa-solid fa-reply" title="Volver"></span>
+        </a>
+    </div>
+
+    <div class="pagina-seccion">Datos del Participante</div>
+
+    <div class="container-fluid py-4 g-4">
+        <div class="row py-2">
+            <div class="fila-campo">Nif</div>
+            <div class="fila-valor">{{ participante.nif }}</div>
+        </div>
+        <div class="row py-2">
+            <div class="fila-campo">Apellidos</div>
+            <div class="fila-valor">{{ participante.apellidos }}</div>
+        </div>
+        <div class="row py-2">
+            <div class="fila-campo">Nombre</div>
+            <div class="fila-valor">{{ participante.nombre }}</div>
+        </div>
+        <div class="row py-2">
+            <div class="fila-campo">Código CCE</div>
+            <div class="fila-valor">{{ participante.codigoCce }}</div>
+        </div>
+        <div class="row py-2">
+            <div class="fila-campo">Descripción CCE</div>
+            <div class="fila-valor">{{ participante.descripcionCce }}</div>
+        </div>
+        <div class="row py-2">
+            <div class="fila-campo">Grupo</div>
+            <div class="fila-valor">{{ participante.grupo }}</div>
+        </div>
+        <div class="row py-2">
+            <div class="fila-campo">Nivel</div>
+            <div class="fila-valor">{{ participante.nivel }}</div>
+        </div>
+        <div class="row py-2">
+            <div class="fila-campo">Puesto trabajo</div>
+            <div class="fila-valor">{{ participante.puestoTrabajo }}</div>
+        </div>
+        <div class="row py-2">
+            <div class="fila-campo">Unidad</div>
+            <div class="fila-valor">{{ participante.unidad }}</div>
+        </div>
+        <div class="row py-2">
+            <div class="fila-campo">Subunidad</div>
+            <div class="fila-valor">{{ participante.subunidad }}</div>
+        </div>
+        <div class="row py-2">
+            <div class="fila-campo">Centro Destino</div>
+            <div class="fila-valor">{{ participante.centroDestino }}</div>
+        </div>
+        <div class="row py-2">
+            <div class="fila-campo">Código RPT</div>
+            <div class="fila-valor">{{ participante.codigoRpt }}</div>
+        </div>
+        <div class="row py-2">
+            <div class="fila-campo">Código Plaza</div>
+            <div class="fila-valor">{{ participante.codigoPlaza }}</div>
+        </div>
+        <div class="row py-2">
+            <div class="fila-campo">TR Jurídico</div>
+            <div class="fila-valor">{{ participante.tRJuridico }}</div>
+        </div>
+        <div class="row py-2">
+            <div class="fila-campo">Situación ADM</div>
+            <div class="fila-valor">{{ participante.situacionAdmin }}</div>
+        </div>
+        <div class="row py-2">
+            <div class="fila-campo">Teléfono Trabajo</div>
+            <div class="fila-valor">{{ participante.telefonoTrabajo }}</div>
+        </div>
+        <div class="row py-2">
+            <div class="fila-campo">Teléfono Móvil</div>
+            <div class="fila-valor">{{ participante.telefonoMovil }}</div>
+        </div>
+        <div class="row py-2">
+            <div class="fila-campo">Teléfono Particular</div>
+            <div class="fila-valor">{{ participante.telefonoParticular }}</div>
+        </div>
+        <div class="row py-2">
+            <div class="fila-campo">Correo Aux</div>
+            <div class="fila-valor">{{ participante.correoAux }}</div>
+        </div>
+        <div class="row py-2">
+            <div class="fila-campo">UVUS</div>
+            <div class="fila-valor">{{ participante.uvus }}</div>
+        </div>
+        <div class="row py-2">
+            <div class="fila-campo">Organización</div>
+            <div class="fila-valor">{{ participante.organizacion }}</div>
+        </div>
+        <div class="row py-2">
+            <div class="fila-campo">Turno</div>
+            <div class="fila-valor">{{ participante.turno }}</div>
+        </div>
+        <div class="row py-2">
+            <div class="fila-campo">Fecha Nacimiento</div>
+            <div class="fila-valor">{{ participante.fechaNacimiento ? participante.fechaNacimiento|date('Y-m-d') : '' }}</div>
+        </div>
+        <div class="row py-2">
+            <div class="fila-campo">Titulación Nivel</div>
+            <div class="fila-valor">{{ participante.titulacionNivel }}</div>
+        </div>
+        <div class="row py-2">
+            <div class="fila-campo">Titulación</div>
+            <div class="fila-valor">{{ participante.titulacion }}</div>
+        </div>
+        <div class="row py-2">
+            <div class="fila-campo">Titulación Fecha</div>
+            <div class="fila-valor">{{ participante.titulacionFecha ? participante.titulacionFecha|date('Y-m-d') : '' }}</div>
+        </div>
+        <div class="row py-2">
+            <div class="fila-campo">Sexo</div>
+            <div class="fila-valor">{{ participante.sexo }}</div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block botones %}
+    <li class="nav-item me-2">
+        <a class="btn btn-primary" href="#"
+           onclick="window.location.href='{{ path('intranet_forpas_gestor_participante_index') }}';">
+            <span class="fas fa-reply"></span> Volver
+        </a>
+    </li>
+
+    <li class="nav-item me-2">
+        <a class="btn btn-primary"
+           href="{{ path('intranet_forpas_gestor_participante_edit', {'id': participante.id}) }}">
+            <span class="fas fa-edit"></span> Editar
+        </a>
+    </li>
+
+    <li class="nav-item ms-5 me-2">
+        {{ include('intranet/forpas/gestor/participante/_delete_form.html.twig', { 'id': participante.id, 'buttonType': 'primary' }) }}
+    </li>
+{% endblock %}

@@ -59,4 +59,11 @@ final class ParticipanteController extends AbstractController
             'edicion' => $edicion,
         ]);
     }
+    #[Route(path: '/{id}', name: 'show', defaults: ['titulo' => 'Datos del Participante'], methods: ['GET'])]
+    public function show(Participante $participante): Response
+    {
+        return $this->render('intranet/forpas/gestor/participante/show.html.twig', [
+            'participante' => $participante,
+        ]);
+    }
 }
