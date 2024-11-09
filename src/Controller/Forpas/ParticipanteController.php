@@ -66,4 +66,21 @@ final class ParticipanteController extends AbstractController
             'participante' => $participante,
         ]);
     }
+    #[Route(path: '/{id}/edit', name: 'edit', defaults: ['titulo' => 'Editar Participante'], methods: ['GET', 'POST'])]
+    public function edit(Request $request, Participante $participante, EntityManagerInterface $entityManager): Response
+    {
+        $form = $this->createForm(ParticipanteType::class, $participante);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->flush();
+            $this->addFlash('success', 'Los datos del participante se han modificado satisfactoriamente.');
+            return $this->redirectToRoute('intranet_forpas_gestor_participante_index', [], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->render('intranet/forpas/gestor/participante/edit.html.twig', [
+            'participante' => $participante,
+            'form' => $form,
+        ]);
+    }
 }
