@@ -75,4 +75,24 @@ final class ParticipanteEdicionController extends AbstractController
             'edicionId' => $edicionId,
         ]);
     }
+    #[Route(path: '/{id}', name: 'delete', methods: ['POST'])]
+    public function delete(Request $request, ParticipanteEdicion $participanteEdicion, EntityManagerInterface $entityManager): Response
+    {
+        $fechaActual = new \DateTime();
+        $fechaInicioEdicion = $participanteEdicion->getEdicion()->getFechaInicio();
+
+        if ($fechaInicioEdicion <= $fechaActual) {
+            $this->addFlash('warning', 'No se puede eliminar a un participante de una edición que ya ha comenzado. Use baja justificada');
+        } else {
+
+            if ($this->isCsrfTokenValid('delete' . $participanteEdicion->getId(), $request->getPayload()->getString('_token'))) {
+                $entityManager->remove($participanteEdicion);
+                $entityManager->flush();
+                $this->addFlash('success', 'Participante eliminado correctamente.');
+            }
+        }
+
+        $edicionId = $participanteEdicion->getEdicion()->getId();
+        return $this->redirectToRoute('intranet_forpas_gestor_participante_edicion_index', ['edicionId' => $edicionId], Response::HTTP_SEE_OTHER);
+    }
 }

@@ -83,4 +83,22 @@ final class ParticipanteController extends AbstractController
             'form' => $form,
         ]);
     }
+    #[Route(path: '/{id}', name: 'delete', methods: ['POST'])]
+    public function delete(Request $request, Participante $participante, EntityManagerInterface $entityManager): Response
+    {
+        // Verificamos si el participante tiene ediciones asociadas
+        if (!$participante->getParticipanteEdiciones()->isEmpty()) {
+            // Si tiene ediciones, redirige con un mensaje de error
+            $this->addFlash('danger', 'No se puede eliminar al participante porque tiene ediciones asociadas.');
+            return $this->redirectToRoute('intranet_forpas_gestor_participante_index');
+        }
+
+        if ($this->isCsrfTokenValid('delete'.$participante->getId(), $request->getPayload()->getString('_token'))) {
+            $entityManager->remove($participante);
+            $entityManager->flush();
+            $this->addFlash('success', 'Participante eliminado correctamente.');
+        }
+
+        return $this->redirectToRoute('intranet_forpas_gestor_participante_index', [], Response::HTTP_SEE_OTHER);
+    }
 }
