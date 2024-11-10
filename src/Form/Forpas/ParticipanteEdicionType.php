@@ -63,7 +63,7 @@ class ParticipanteEdicionType extends AbstractType
             ->add('libro', IntegerType::class, [
                 'label' => 'Libro',
                 'required' => false,
-                'attr' => ['placeholder' => 'YYYY'],
+                'attr' => ['placeholder' => 'Introduzca los 4 dígitos del año del libro'],
             ])
             ->add('numero_titulo', IntegerType::class, [
                 'label' => 'Número de Título',

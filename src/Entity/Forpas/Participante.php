@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use DateTimeInterface;
 
 #[ORM\Entity(repositoryClass: ParticipanteRepository::class)]
 class Participante
@@ -80,13 +81,13 @@ class Participante
     private ?string $telefono_movil = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $fecha_nacimiento = null;
+    private ?DateTimeInterface $fecha_nacimiento = null;
 
     #[ORM\Column(type: Types::SMALLINT, nullable: true)]
     private ?int $titulacion_nivel = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $titulacion_fecha = null;
+    private ?DateTimeInterface $titulacion_fecha = null;
 
     #[ORM\Column(length: 75, nullable: true)]
     private ?string $titulacion = null;
@@ -368,12 +369,12 @@ class Participante
         return $this;
     }
 
-    public function getFechaNacimiento(): ?\DateTimeInterface
+    public function getFechaNacimiento(): ?DateTimeInterface
     {
         return $this->fecha_nacimiento;
     }
 
-    public function setFechaNacimiento(?\DateTimeInterface $fecha_nacimiento): static
+    public function setFechaNacimiento(?DateTimeInterface $fecha_nacimiento): static
     {
         $this->fecha_nacimiento = $fecha_nacimiento;
 
@@ -392,12 +393,12 @@ class Participante
         return $this;
     }
 
-    public function getTitulacionFecha(): ?\DateTimeInterface
+    public function getTitulacionFecha(): ?DateTimeInterface
     {
         return $this->titulacion_fecha;
     }
 
-    public function setTitulacionFecha(?\DateTimeInterface $titulacion_fecha): static
+    public function setTitulacionFecha(?DateTimeInterface $titulacion_fecha): static
     {
         $this->titulacion_fecha = $titulacion_fecha;
 

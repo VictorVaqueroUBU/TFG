@@ -10,7 +10,7 @@
     </div>
 
     <div class="pagina-seccion">
-        {{ edicion ? 'Inscripciones de la Edición: ' ~ edicion.codigoEdicion ~ ' - ' ~ edicion.curso.nombreCurso :
+        {{ edicion ? titulo ~ ': ' ~ edicion.codigoEdicion ~ ' - ' ~ edicion.curso.nombreCurso :
         'Listado de Inscripciones' }}
     </div>
     <table class="tabla-condensada" id="datosParticipantesEdicion">

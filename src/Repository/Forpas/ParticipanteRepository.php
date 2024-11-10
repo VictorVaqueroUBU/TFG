@@ -2,7 +2,9 @@
 
 namespace App\Repository\Forpas;
 
+use App\Entity\Forpas\Edicion;
 use App\Entity\Forpas\Participante;
+use App\Entity\Forpas\ParticipanteEdicion;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -20,10 +22,10 @@ class ParticipanteRepository extends ServiceEntityRepository
      * Este método busca todos los participantes que tienen una unidad asignada (`unidad IS NOT NULL`)
      * y que no están inscritos en ninguna edición del curso al que pertenece la edición especificada.
      *
-     * @param EdicionRepository $edicion La edición actual para la cual se buscan participantes disponibles.
+     * @param Edicion $edicion La edición actual para la cual se buscan participantes disponibles.
      * @return Participante[] Retorna un arreglo de objetos `Participante` que cumplen con los criterios.
      */
-    public function findPossibleEntries($edicion)
+    public function findPossibleEntries(Edicion $edicion): array
     {
         // Obtener el ID del curso de la edición actual
         $cursoId = $edicion->getCurso()->getId();
@@ -34,7 +36,7 @@ class ParticipanteRepository extends ServiceEntityRepository
         // Crear una subconsulta para filtrar participantes inscritos en el curso actual
         $subQuery = $this->getEntityManager()->createQueryBuilder()
             ->select('1')
-            ->from('App\Entity\Forpas\ParticipanteEdicion', 'pe')
+            ->from(ParticipanteEdicion::class, 'pe')
             ->join('pe.edicion', 'e')
             ->where('pe.participante = p.id')
             ->andWhere('e.curso = :cursoId');

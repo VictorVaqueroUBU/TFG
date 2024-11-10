@@ -47,7 +47,7 @@ class EdicionRepository extends ServiceEntityRepository
      * @param string $codigoCurso Código del curso
      * @return string|null Retorna el primer código de edición libre en el formato "codigoCurso/XX"
      */
-    public function findPrimerCodigoEdicionLibre($codigoCurso): ?string
+    public function findPrimerCodigoEdicionLibre(string $codigoCurso): ?string
     {
         // Obtenemos todas las ediciones para el curso en orden ascendente
         $result = $this->createQueryBuilder('e')

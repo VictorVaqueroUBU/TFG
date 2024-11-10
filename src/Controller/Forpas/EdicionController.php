@@ -2,7 +2,6 @@
 
 namespace App\Controller\Forpas;
 
-use App\Entity\Forpas\Curso;
 use App\Entity\Forpas\Edicion;
 use App\Form\Forpas\EdicionType;
 use App\Repository\Forpas\CursoRepository;
@@ -45,10 +44,6 @@ final class EdicionController extends AbstractController
         $curso = $cursoRepository->find($cursoId);
         $edicion->setCurso($curso);
 
-        if ($curso && !$curso->getEdiciones()->contains($edicion)) {
-            $curso->addEdiciones($edicion);
-        }
-
         // Establecemos valores predeterminados
         $edicion->setSesiones(0);
         $edicion->setMaxParticipantes(0);
@@ -58,7 +53,7 @@ final class EdicionController extends AbstractController
         $nuevoCodigo = $edicionRepository->findPrimerCodigoEdicionLibre($curso->getCodigoCurso());
         $edicion->setCodigoEdicion($nuevoCodigo);
 
-        // Comprobamos si la edición es 00 para que bloquee todos los input
+        // Comprobamos si la edición es 00 para que bloquee todos los inputs
         $disableFields = (str_ends_with($edicion->getCodigoEdicion(), '00'));
         $form = $this->createForm(EdicionType::class, $edicion, [
             'disable_fields' => $disableFields,
@@ -68,6 +63,11 @@ final class EdicionController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->persist($edicion);
             $entityManager->flush();
+
+            if (!$curso->getEdiciones()->contains($edicion)) {
+                $curso->addEdiciones($edicion);
+            }
+
             $this->addFlash('success', 'La creación de la edición se ha realizada satisfactoriamente.');
             return $this->redirectToRoute('intranet_forpas_gestor_edicion_index', ['cursoId'=> $cursoId], Response::HTTP_SEE_OTHER);
         }
@@ -88,7 +88,7 @@ final class EdicionController extends AbstractController
     #[Route(path: '/{id}/edit', name: 'edit', defaults: ['titulo' => 'Editar Edición'], methods: ['GET', 'POST'])]
     public function edit(Request $request, Edicion $edicion, EntityManagerInterface $entityManager): Response
     {
-        $disableFields = (substr($edicion->getCodigoEdicion(), -2) === '00');
+        $disableFields = (str_ends_with($edicion->getCodigoEdicion(), '00'));
         $form = $this->createForm(EdicionType::class, $edicion, [
             'disable_fields' => $disableFields,
         ]);

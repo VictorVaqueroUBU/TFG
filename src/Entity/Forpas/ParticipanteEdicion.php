@@ -5,6 +5,7 @@ namespace App\Entity\Forpas;
 use App\Repository\Forpas\ParticipanteEdicionRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use DateTimeInterface;
 
 #[ORM\Entity(repositoryClass: ParticipanteEdicionRepository::class)]
 class ParticipanteEdicion
@@ -23,12 +24,12 @@ class ParticipanteEdicion
     private ?Edicion $edicion = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $fecha_solicitud = null;
+    private ?DateTimeInterface $fecha_solicitud = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $baja_justificada = null;
+    private ?DateTimeInterface $baja_justificada = null;
 
-    #[ORM\Column(type: Types::DECIMAL, precision: 3, scale: 2, nullable: true)]
+    #[ORM\Column(type: Types::DECIMAL, precision: 4, scale: 2, nullable: true)]
     private ?string $prueba_final = null;
 
     #[ORM\Column(length: 1, nullable: true)]
@@ -78,24 +79,24 @@ class ParticipanteEdicion
         return $this;
     }
 
-    public function getFechaSolicitud(): ?\DateTimeInterface
+    public function getFechaSolicitud(): ?DateTimeInterface
     {
         return $this->fecha_solicitud;
     }
 
-    public function setFechaSolicitud(\DateTimeInterface $fecha_solicitud): static
+    public function setFechaSolicitud(?DateTimeInterface $fecha_solicitud): static
     {
         $this->fecha_solicitud = $fecha_solicitud;
 
         return $this;
     }
 
-    public function getBajaJustificada(): ?\DateTimeInterface
+    public function getBajaJustificada(): ?DateTimeInterface
     {
         return $this->baja_justificada;
     }
 
-    public function setBajaJustificada(?\DateTimeInterface $baja_justificada): static
+    public function setBajaJustificada(?DateTimeInterface $baja_justificada): static
     {
         $this->baja_justificada = $baja_justificada;
 

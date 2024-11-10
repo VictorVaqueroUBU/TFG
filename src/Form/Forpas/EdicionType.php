@@ -13,7 +13,6 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Callback;
-use Symfony\Component\Validator\Constraints\GreaterThanOrEqual;
 use Symfony\Component\Validator\Constraints\Range;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
@@ -39,12 +38,6 @@ class EdicionType extends AbstractType
                 'widget' => 'single_text',
                 'label' => 'Fecha de inicio',
                 'disabled' => $disabled,
-                'constraints' => [
-                    new GreaterThanOrEqual([
-                        'value' => 'today',
-                        'message' => 'La fecha de inicio no puede ser anterior a hoy.',
-                    ]),
-                ],
             ])
             ->add('fecha_fin', DateType::class, [
                 'widget' => 'single_text',

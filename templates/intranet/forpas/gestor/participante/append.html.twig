@@ -10,7 +10,7 @@
     </div>
 
     <div class="pagina-seccion">
-        {{ edicion ? 'Añadir participante a la edición: ' ~ edicion.codigoEdicion ~ ' - ' ~ edicion.curso.nombreCurso :
+        {{ edicion ? titulo ~ ': ' ~ edicion.codigoEdicion ~ ' - ' ~ edicion.curso.nombreCurso :
         'Participantes Seleccionables' }}
     </div>
     <table class="tabla-condensada" id="datosParticipantesSeleccionables">

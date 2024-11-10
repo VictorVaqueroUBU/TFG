@@ -10,7 +10,7 @@
     </div>
 
     <div class="pagina-seccion">
-        {{ curso ? 'Ediciones del Curso ' ~ curso.codigoCurso : 'Listado de Ediciones' }}
+        {{ curso ? titulo  ~ ' ' ~ curso.codigoCurso : 'Listado de Ediciones' }}
     </div>
     <table class="tabla-condensada" id="datosEdiciones">
         <thead class="cabecera-condensada">
@@ -36,20 +36,17 @@
                 <td>{{ edicion.lugar }}</td>
                 <td class="text-center">{{ edicion.curso.horas }}</td>
                 <td class="text-center">{{ edicion.maxParticipantes }}</td>
-                <td>
-                    {% if edicion.estado == 0 %}
-                        Abierta
-                    {% elseif edicion.estado == 1 %}
-                        Evaluada
-                    {% elseif edicion.estado == 2 %}
-                        Certificada
-                    {% endif %}
-                </td>
+                <td>{{ edicion.estado | edicionEstadoTexto }}</td>
                 <td>
                     <a href="{{ path('intranet_forpas_gestor_edicion_show', {'id': edicion.id}) }}"><span class="mx-1 fas fa-eye" title="Ver"></span></a>
                     <a href="{{ path('intranet_forpas_gestor_edicion_edit', {'id': edicion.id}) }}"><span class="mx-1 fas fa-edit" title="Editar"></span></a>
                     {{ include('intranet/forpas/gestor/edicion/_delete_form.html.twig', { 'id': edicion.id, 'buttonType': 'inline' }) }}
-                    <a href="{{ path('intranet_forpas_gestor_participante_edicion_index', {'edicionId': edicion.id}) }}"><span class="mx-1 fas fa-users-between-lines" title="Inscripciones"></span></a>
+                    <a href="{{ path('intranet_forpas_gestor_participante_edicion_index', {'edicionId': edicion.id}) }}">
+                        <span class="mx-1 fas fa-users-between-lines" title="Participantes"></span></a>
+                    {% if edicion.codigoEdicion ends with '/00' == false %}
+                        <a href="{{ path('intranet_forpas_gestor_formador_edicion_index', {'edicionId': edicion.id}) }}">
+                            <span class="mx-1 fas fa-user" title="Formadores"></span></a>
+                    {% endif %}
                 </td>
             </tr>
         {% else %}

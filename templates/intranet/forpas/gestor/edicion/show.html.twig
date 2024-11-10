@@ -9,7 +9,7 @@
         </a>
     </div>
 
-    <div class="pagina-seccion">Datos de la Edición</div>
+    <div class="pagina-seccion">{{ titulo }}</div>
 
     <div class="container-fluid py-4 g-4">
         <div class="row py-2">
@@ -22,11 +22,11 @@
         </div>
         <div class="row py-2">
             <div class="fila-campo">Fecha inicio</div>
-            <div class="fila-valor">{{ edicion.fechaInicio ? edicion.fechaInicio|date('Y-m-d H:i:s') : '' }}</div>
+            <div class="fila-valor">{{ edicion.fechaInicio ? edicion.fechaInicio|date('Y-m-d') : '' }}</div>
         </div>
         <div class="row py-2">
             <div class="fila-campo">Fecha fin</div>
-            <div class="fila-valor">{{ edicion.fechaFin ? edicion.fechaFin|date('Y-m-d H:i:s') : '' }}</div>
+            <div class="fila-valor">{{ edicion.fechaFin ? edicion.fechaFin|date('Y-m-d') : '' }}</div>
         </div>
         <div class="row py-2">
             <div class="fila-campo">Lugar</div>
@@ -74,15 +74,7 @@
         </div>
         <div class="row py-2">
             <div class="fila-campo">Estado</div>
-            <div class="fila-valor">
-                {% if edicion.estado == 0 %}
-                    Abierta
-                {% elseif edicion.estado == 1 %}
-                    Evaluada
-                {% elseif edicion.estado == 2 %}
-                    Certificada
-                {% endif %}
-            </div>
+            <div class="fila-valor">{{ edicion.estado | edicionEstadoTexto }}</div>
         </div>
     </div>
 {% endblock %}

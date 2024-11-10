@@ -12,6 +12,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use DateTime;
 
 /**
  * Controlador para gestionar las inscripciones de los participantes del PTGAS.
@@ -32,7 +33,7 @@ final class ParticipanteEdicionController extends AbstractController
         ]);
     }
     #[Route(path: '/new/{id}/{edicionId}', name: 'new', defaults: ['titulo' => 'Crear Nueva Inscripción'], methods: ['GET', 'POST'])]
-    public function new(int $id, int $edicionId, Request $request, EntityManagerInterface $entityManager,
+    public function new(int $id, int $edicionId, EntityManagerInterface $entityManager,
                         ParticipanteRepository $participanteRepository, EdicionRepository $edicionRepository): Response
     {
         // Obtenemos el participante y la edición
@@ -42,10 +43,19 @@ final class ParticipanteEdicionController extends AbstractController
         $participanteEdicion = new ParticipanteEdicion();
         $participanteEdicion->setParticipante($participante);
         $participanteEdicion->setEdicion($edicion);
-        $participanteEdicion->setFechaSolicitud(new \DateTime());
-
+        $participanteEdicion->setFechaSolicitud(new DateTime());
         $entityManager->persist($participanteEdicion);
         $entityManager->flush();
+
+        // Añadimos la inscripción a las colecciones de Participante y Edición si no está ya presente
+        if (!$participante->getParticipanteEdiciones()->contains($participanteEdicion)) {
+            $participante->addParticipanteEdiciones($participanteEdicion);
+        }
+
+        if (!$edicion->getParticipantesEdicion()->contains($participanteEdicion)) {
+            $edicion->addParticipantesEdicion($participanteEdicion);
+        }
+
         $this->addFlash('success', 'Inscripción realizada satisfactoriamente.');
         return $this->redirectToRoute('intranet_forpas_gestor_participante_edicion_index', ['edicionId' => $edicionId], Response::HTTP_SEE_OTHER);
     }
@@ -78,21 +88,26 @@ final class ParticipanteEdicionController extends AbstractController
     #[Route(path: '/{id}', name: 'delete', methods: ['POST'])]
     public function delete(Request $request, ParticipanteEdicion $participanteEdicion, EntityManagerInterface $entityManager): Response
     {
-        $fechaActual = new \DateTime();
+        $fechaActual = new DateTime();
         $fechaInicioEdicion = $participanteEdicion->getEdicion()->getFechaInicio();
+
+        $edicionId = $participanteEdicion->getEdicion()->getId();
 
         if ($fechaInicioEdicion <= $fechaActual) {
             $this->addFlash('warning', 'No se puede eliminar a un participante de una edición que ya ha comenzado. Use baja justificada');
         } else {
 
             if ($this->isCsrfTokenValid('delete' . $participanteEdicion->getId(), $request->getPayload()->getString('_token'))) {
-                $entityManager->remove($participanteEdicion);
+                // Eliminamos la inscripción de las colecciones de Participante y Edición
+                $participante = $participanteEdicion->getParticipante();
+                $edicion = $participanteEdicion->getEdicion();
+                $participante?->removeParticipanteEdiciones($participanteEdicion);
+                $edicion?->removeParticipantesEdicion($participanteEdicion);
                 $entityManager->flush();
                 $this->addFlash('success', 'Participante eliminado correctamente.');
             }
         }
 
-        $edicionId = $participanteEdicion->getEdicion()->getId();
         return $this->redirectToRoute('intranet_forpas_gestor_participante_edicion_index', ['edicionId' => $edicionId], Response::HTTP_SEE_OTHER);
     }
 }
