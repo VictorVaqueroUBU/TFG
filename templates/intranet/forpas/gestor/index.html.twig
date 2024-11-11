@@ -16,6 +16,9 @@
         {% if participantes %}
             <li><a href="{{ path('intranet_forpas_gestor_participante_index') }}">Gestionar participantes</a></li>
         {% endif %}
+        {% if formadores %}
+            <li><a href="{{ path('intranet_forpas_gestor_formador_index') }}">Gestionar formadores</a></li>
+        {% endif %}
     </ul>
 {% endblock %}
 
