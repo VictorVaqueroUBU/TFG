@@ -51,4 +51,21 @@ final class FormadorController extends AbstractController
             'formador' => $formador,
         ]);
     }
+    #[Route(path: '/{id}/edit', name: 'edit', defaults: ['titulo' => 'Editar Formador'], methods: ['GET', 'POST'])]
+    public function edit(Request $request, Formador $formador, EntityManagerInterface $entityManager): Response
+    {
+        $form = $this->createForm(FormadorType::class, $formador);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->flush();
+            $this->addFlash('success', 'Los datos del formador se han modificado satisfactoriamente.');
+            return $this->redirectToRoute('intranet_forpas_gestor_formador_index', [], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->render('intranet/forpas/gestor/formador/edit.html.twig', [
+            'formador' => $formador,
+            'form' => $form,
+        ]);
+    }
 }
