@@ -68,4 +68,22 @@ final class FormadorController extends AbstractController
             'form' => $form,
         ]);
     }
+    #[Route(path: '/{id}', name: 'delete', methods: ['POST'])]
+    public function delete(Request $request, Formador $formador, EntityManagerInterface $entityManager): Response
+    {
+        // Verificamos si el formador tiene ediciones asociadas
+        if (!$formador->getFormadorEdiciones()->isEmpty()) {
+            // Si tiene ediciones, redirige con un mensaje de error
+            $this->addFlash('danger', 'No se puede eliminar al formador porque tiene ediciones asociadas.');
+            return $this->redirectToRoute('intranet_forpas_gestor_formador_index');
+        }
+
+        if ($this->isCsrfTokenValid('delete'.$formador->getId(), $request->getPayload()->getString('_token'))) {
+            $entityManager->remove($formador);
+            $entityManager->flush();
+            $this->addFlash('success', 'Formador eliminado correctamente.');
+        }
+
+        return $this->redirectToRoute('intranet_forpas_gestor_formador_index', [], Response::HTTP_SEE_OTHER);
+    }
 }

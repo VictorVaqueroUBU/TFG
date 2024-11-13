@@ -5,7 +5,7 @@
 {% block content %}
     <div class="pagina-titulo">Portal del Gestor</div>
 
-    <div class="pagina-seccion">Programación</div>
+    <div class="pagina-seccion">{{ titulo }}</div>
     <ul>
         {% if cursos %}
             <li><a href="{{ path('intranet_forpas_gestor_curso_index') }}">Gestionar cursos</a></li>

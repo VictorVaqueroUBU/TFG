@@ -57,7 +57,7 @@ class EdicionType extends AbstractType
                 'disabled' => $disabled,
             ])
             ->add('sesiones', IntegerType::class, [
-                'label' => 'Nº de sesiones',
+                'label' => 'Nº de sesiones*',
                 'disabled' => $disabled,
                 'constraints' => [
                     new Range([
@@ -68,7 +68,7 @@ class EdicionType extends AbstractType
                 ],
             ])
             ->add('max_participantes', IntegerType::class, [
-                'label' => 'Max. participantes',
+                'label' => 'Max. participantes*',
                 'disabled' => $disabled,
                 'constraints' => [
                     new Range([
@@ -79,7 +79,7 @@ class EdicionType extends AbstractType
                 ],
             ])
             ->add('estado', ChoiceType::class, [
-                'label' => 'Estado',
+                'label' => 'Estado*',
                 'disabled' => $disabled,
                 'choices' => [
                     'Abierta' => 0,

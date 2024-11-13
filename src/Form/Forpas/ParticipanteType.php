@@ -18,15 +18,17 @@ class ParticipanteType extends AbstractType
     {
         $builder
             ->add('nif', TextType::class, [
-                'label' => 'NIF',
+                'label' => 'NIF*',
                 'required' => true,
                 'attr' => ['maxlength' => 9],
             ])
             ->add('apellidos', TextType::class, [
+                'label' => 'Apellidos*',
                 'required' => true,
                 'attr' => ['maxlength' => 50],
             ])
             ->add('nombre', TextType::class, [
+                'label' => 'Nombre*',
                 'required' => true,
                 'attr' => ['maxlength' => 50],
             ])
