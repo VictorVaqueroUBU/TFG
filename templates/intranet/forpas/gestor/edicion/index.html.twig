@@ -12,6 +12,25 @@
     <div class="pagina-seccion">
         {{ curso ? titulo  ~ ' ' ~ curso.codigoCurso : 'Listado de Ediciones' }}
     </div>
+
+    {% if curso is null %}
+        <div class="mb-4">
+            <form id="filterForm" method="get" action="{{ path('intranet_forpas_gestor_edicion_index') }}">
+                <div class="form-group row">
+                    <label for="yearSelect" class="col-sm-2 ps-0 text-sm-end fw-bold">Seleccionar año a consultar:</label>
+                    <div class="col-sm-9 py-3 bg-secondary bg-opacity-25 border-start border-4 border-secondary">
+                        <select id="yearSelect" name="year" class="form-select" onchange="document.getElementById('filterForm').submit();">
+                            {% set current_year = "now"|date("Y") %}
+                            {% for i in range(current_year + 1, current_year - 4) %}
+                                <option value="{{ i }}" {% if i == year %}selected{% endif %}>{{ i }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </form>
+        </div>
+    {% endif %}
+
     <table class="tabla-condensada" id="datosEdiciones">
         <thead class="cabecera-condensada">
         <tr>
@@ -43,7 +62,10 @@
                     {{ include('intranet/forpas/gestor/edicion/_delete_form.html.twig', { 'id': edicion.id, 'buttonType': 'inline' }) }}
                     <a href="{{ path('intranet_forpas_gestor_participante_edicion_index', {'edicionId': edicion.id}) }}">
                         <span class="mx-1 fas fa-users-between-lines" title="Participantes"></span></a>
-
+                    {% if edicion.codigoEdicion ends with '/00' == false %}
+                        <a href="{{ path('intranet_forpas_gestor_formador_edicion_index', {'edicionId': edicion.id}) }}">
+                            <span class="mx-1 fas fa-user" title="Formadores"></span></a>
+                    {% endif %}
                 </td>
             </tr>
         {% else %}

@@ -29,7 +29,7 @@ final class ParticipanteController extends AbstractController
     #[Route(path: '/new', name: 'new', defaults: ['titulo' => 'Crear Nuevo Participante'], methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
-        $participante = new participante();
+        $participante = new Participante();
         $form = $this->createForm(ParticipanteType::class, $participante);
         $form->handleRequest($request);
 

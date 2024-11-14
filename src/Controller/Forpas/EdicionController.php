@@ -23,17 +23,20 @@ final class EdicionController extends AbstractController
     public function index(Request $request, EdicionRepository $edicionRepository, CursoRepository $cursoRepository): Response
     {
         $cursoId = $request->query->get('cursoId');
+        $year = $request->query->get('year', date('Y'));
+
         if ($cursoId) {
             $ediciones = $edicionRepository->findByCurso($cursoId);
             $curso = $cursoRepository->find($cursoId);
         } else {
-            $ediciones = $edicionRepository->findAllWithCursos();
+            $ediciones = $edicionRepository->findByYear($year);
             $curso = null;
         }
 
         return $this->render('intranet/forpas/gestor/edicion/index.html.twig', [
             'ediciones' => $ediciones,
             'curso' => $curso,
+            'year' => $year,
         ]);
     }
     #[Route(path: '/new/{cursoId}', name: 'new', defaults: ['titulo' => 'Crear Nueva Edición'], methods: ['GET', 'POST'])]

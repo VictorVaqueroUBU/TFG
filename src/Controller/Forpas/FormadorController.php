@@ -4,6 +4,7 @@ namespace App\Controller\Forpas;
 
 use App\Entity\Forpas\Formador;
 use App\Form\Forpas\FormadorType;
+use App\Repository\Forpas\EdicionRepository;
 use App\Repository\Forpas\FormadorRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -42,6 +43,20 @@ final class FormadorController extends AbstractController
         return $this->render('intranet/forpas/gestor/formador/new.html.twig', [
             'formador' => $formador,
             'form' => $form,
+        ]);
+    }
+    #[Route(path: '/append/{id}', name: 'append', defaults: ['titulo' => 'Seleccionar Formador'], methods: ['GET'])]
+    public function append(int $id, EdicionRepository $edicionRepository, FormadorRepository $formadorRepository): Response
+    {
+        // Obtenemos la edición actual
+        $edicion = $edicionRepository->find($id);
+
+        // Buscamos los formadores seleccionables
+        $formadores = $formadorRepository->findPossibleTeacher($edicion);
+
+        return $this->render('intranet/forpas/gestor/formador/append.html.twig', [
+            'formadores_posibles' => $formadores,
+            'edicion' => $edicion,
         ]);
     }
     #[Route(path: '/{id}', name: 'show', defaults: ['titulo' => 'Datos del Formador'], methods: ['GET'])]

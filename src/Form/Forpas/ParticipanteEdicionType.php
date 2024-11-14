@@ -42,6 +42,15 @@ class ParticipanteEdicionType extends AbstractType
                 'label' => 'Baja Justificada',
                 'required' => false,
             ])
+            ->add('apto', ChoiceType::class, [
+                'label' => 'Prueba de Aptitud',
+                'required' => false,
+                'choices' => [
+                    'Apto/a' => 1,
+                    'No Apto/a' => 0,
+                    'No Presentado/a' => -1,
+                ],
+            ])
             ->add('prueba_final', NumberType::class, [
                 'label' => 'Prueba Final',
                 'required' => false,
@@ -73,18 +82,10 @@ class ParticipanteEdicionType extends AbstractType
                 'label' => 'Observaciones',
                 'required' => false,
             ])
-            ->add('apto', ChoiceType::class, [
-                'label' => 'Prueba de Aptitud',
-                'required' => false,
-                'choices' => [
-                    'Apto/a' => 1,
-                    'No Apto/a' => 0,
-                    'No Presentado/a' => -1,
-                ],
-            ])
             ->add('direccion', TextType::class, [
                 'label' => 'Dirección',
                 'required' => false,
+                'disabled' => true,
                 'attr' => ['maxlength' => 30],
             ])
         ;

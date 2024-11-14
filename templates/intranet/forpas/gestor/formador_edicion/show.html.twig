@@ -1,0 +1,57 @@
+{% extends 'intranet/forpas/gestor/index.html.twig' %}
+
+{% block title %}{{ titulo }}{% endblock %}
+
+{% block content %}
+<div class="pagina-titulo">Portal del Gestor
+    <a href="#" onclick="window.location.href='{{ path('intranet_forpas_gestor') }}';">
+        <span class="mx-3 fa-solid fa-reply" title="Volver"></span>
+    </a>
+</div>
+
+<div class="pagina-seccion">{{ titulo }}</div>
+
+<div class="container-fluid py-4 g-4">
+    <div class="row py-2">
+        <div class="fila-campo">Nif</div>
+        <div class="fila-valor">{{ formador_edicion.formador.nif }}</div>
+    </div>
+    <div class="row py-2">
+        <div class="fila-campo">Apellidos</div>
+        <div class="fila-valor">{{ formador_edicion.formador.apellidos }}</div>
+    </div>
+    <div class="row py-2">
+        <div class="fila-campo">Nombre</div>
+        <div class="fila-valor">{{ formador_edicion.formador.nombre }}</div>
+    </div>
+    <div class="row py-2">
+        <div class="fila-campo">Organización</div>
+        <div class="fila-valor">{{ formador_edicion.formador.organizacion }}</div>
+    </div>
+    <div class="row py-2">
+        <div class="fila-campo">Correo</div>
+        <div class="fila-valor">{{ formador_edicion.formador.correo}}</div>
+    </div>
+    <div class="row py-2">
+        <div class="fila-campo">Teléfono</div>
+        <div class="fila-valor">{{ formador_edicion.formador.telefono}}</div>
+    </div>
+    <div class="row py-2">
+        <div class="fila-campo">Régimen Jurídico del Formador</div>
+        <div class="fila-valor">{{ formador_edicion.formador.formadorRJ  | formadorRJTexto }}</div>
+    </div>
+    <div class="row py-2">
+        <div class="fila-campo">Observaciones</div>
+        <div class="fila-valor">{{ formador_edicion.formador.observaciones}}</div>
+    </div>
+</div>
+{% endblock %}
+
+{% block botones %}
+    <li class="nav-item me-2">
+        <a class="btn btn-primary" href="#"
+           onclick="window.location.href='{{ path('intranet_forpas_gestor_formador_edicion_index', {'edicionId': formador_edicion.edicion.id}) }}';">
+            <span class="fas fa-reply"></span> Volver
+        </a>
+    </li>
+{% endblock %}

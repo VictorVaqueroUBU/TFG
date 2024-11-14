@@ -17,6 +17,24 @@ class CursoRepository extends ServiceEntityRepository
     }
 
     /**
+     * Método para encontrar todos los cursos cuyo código corresponde al año especificado.
+     *
+     * @param int $year El año para el cual se buscan los cursos (e.g., 2024).
+     * @return array Un array de objetos `Curso` que cumplen con el criterio de búsqueda.
+     */
+    public function findByYear(int $year): array
+    {
+        $yearCode = substr((string)$year, -2); // Obtiene los últimos 2 dígitos del año
+
+        return $this->createQueryBuilder('c')
+            ->andWhere('c.codigo_curso LIKE :yearCode')
+            ->andWhere('LENGTH(c.codigo_curso) = 5') // Asegura que el código tenga 5 caracteres
+            ->setParameter('yearCode', $yearCode . '%')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
      * Encuentra el primer código de curso libre en función del año.
      *
      * @param int $year Año para el cual se desea obtener el primer código de curso libre (por ejemplo, 2024).

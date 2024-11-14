@@ -17,7 +17,9 @@ class EdicionRepository extends ServiceEntityRepository
     }
     /**
      * Método para obtener todas las ediciones de un curso específico
-     * @return Edicion[]
+     *
+     * @param int $cursoId El ID del curso para el cual se buscan las ediciones.
+     * @return array Un array de objetos `Edicion` que cumplen con el criterio de búsqueda.
      */
     public function findByCurso(int $cursoId): array
     {
@@ -30,14 +32,20 @@ class EdicionRepository extends ServiceEntityRepository
             ->getResult();
     }
     /**
-     * Método para obtener todas las ediciones con sus cursos asociados
-     * @return Edicion[]
+     * Método para encontrar todas las ediciones asociadas a cursos de un año específico.
+     *
+     * @param int $year El año para el cual se buscan las ediciones (e.g., 2024).
+     * @return array Un array de objetos `Edicion` que cumplen con el criterio de búsqueda.
      */
-    public function findAllWithCursos(): array
+    public function findByYear(int $year): array
     {
+        $yearCode = substr((string)$year, -2); // Obtiene los últimos 2 dígitos del año
+
         return $this->createQueryBuilder('e')
             ->leftJoin('e.curso', 'c')
-            ->addSelect('c')
+            ->andWhere('c.codigo_curso LIKE :yearCode')
+            ->andWhere('LENGTH(c.codigo_curso) = 5')
+            ->setParameter('yearCode', $yearCode . '%')
             ->getQuery()
             ->getResult();
     }

@@ -59,14 +59,14 @@ final class ParticipanteEdicionController extends AbstractController
         $this->addFlash('success', 'Inscripción realizada satisfactoriamente.');
         return $this->redirectToRoute('intranet_forpas_gestor_participante_edicion_index', ['edicionId' => $edicionId], Response::HTTP_SEE_OTHER);
     }
-    #[Route(path: '/{id}', name: 'show', defaults: ['titulo' => 'Datos de la Inscripción'], methods: ['GET'])]
+    #[Route(path: '/{id}', name: 'show', defaults: ['titulo' => 'Datos del Participante'], methods: ['GET'])]
     public function show(ParticipanteEdicion $participanteEdicion): Response
     {
         return $this->render('intranet/forpas/gestor/participante_edicion/show.html.twig', [
             'participante_edicion' => $participanteEdicion,
         ]);
     }
-    #[Route(path: '/{id}/edit', name: 'edit', defaults: ['titulo' => 'Editar Inscripción'], methods: ['GET', 'POST'])]
+    #[Route(path: '/{id}/edit', name: 'edit', defaults: ['titulo' => 'Editar Inscripción del Participante'], methods: ['GET', 'POST'])]
     public function edit(Request $request, ParticipanteEdicion $participanteEdicion, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(ParticipanteEdicionType::class, $participanteEdicion);

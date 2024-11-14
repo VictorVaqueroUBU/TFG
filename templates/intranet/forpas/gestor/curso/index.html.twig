@@ -4,12 +4,29 @@
 
 {% block content %}
     <div class="pagina-titulo">Portal del Gestor
-        <a href="#" onclick="window.location.href='{{ path('intranet_forpas_gestor') }}';">
+        <a href="{{ path('intranet_forpas_gestor') }}">
             <span class="mx-3 fa-solid fa-reply" title="Volver"></span>
         </a>
     </div>
 
     <div class="pagina-seccion">{{ titulo }}</div>
+
+    <div class="mb-4">
+        <form id="filterForm" method="get" action="{{ path('intranet_forpas_gestor_curso_index') }}">
+            <div class="form-group row">
+                <label for="yearSelect" class="col-sm-2 ps-0 text-sm-end fw-bold">Seleccionar año a consultar:</label>
+                <div class="col-sm-9 py-3 bg-secondary bg-opacity-25 border-start border-4 border-secondary">
+                    <select id="yearSelect" name="year" class="form-select" onchange="document.getElementById('filterForm').submit();">
+                        {% set current_year = "now"|date("Y") %}
+                        {% for i in range(current_year + 1, current_year - 4) %}
+                            <option value="{{ i }}" {% if i == year %}selected{% endif %}>{{ i }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+        </form>
+    </div>
+
     <table class="tabla-condensada" id="datosCursos">
         <thead class="cabecera-condensada">
             <tr>

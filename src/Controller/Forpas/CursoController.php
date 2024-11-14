@@ -19,10 +19,14 @@ use Symfony\Component\Routing\Attribute\Route;
 final class CursoController extends AbstractController
 {
     #[Route(path: '/', name: 'index', defaults: ['titulo' => 'Listado de Cursos'], methods: ['GET'])]
-    public function index(CursoRepository $cursoRepository): Response
+    public function index(Request $request, CursoRepository $cursoRepository): Response
     {
+        $year = $request->query->get('year', date('Y')); // Obtiene el año actual si no se selecciona ninguno
+        $cursos = $cursoRepository->findByYear($year);
+
         return $this->render('intranet/forpas/gestor/curso/index.html.twig', [
-            'cursos' => $cursoRepository->findAll(),
+            'cursos' => $cursos,
+            'year' => $year,
         ]);
     }
     #[Route(path: '/new', name: 'new', defaults: ['titulo' => 'Crear Nuevo Curso'], methods: ['GET', 'POST'])]
