@@ -56,6 +56,7 @@
                 <td>{{ fe.incompatibilidad ? fe.incompatibilidad|date('Y-m-d') : '' }}</td>
                 <td>
                     <a href="{{ path('intranet_forpas_gestor_formador_edicion_show', {'id': fe.id}) }}" title="Ver"><span class="mx-1 fas fa-eye"></span></a>
+                    <a href="{{ path('intranet_forpas_gestor_formador_edicion_edit', {'id': fe.id}) }}" title="Editar"><span class="mx-1 fas fa-edit"></span></a>
                 </td>
             </tr>
         {% else %}

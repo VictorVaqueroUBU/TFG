@@ -3,11 +3,13 @@
 namespace App\Controller\Forpas;
 
 use App\Entity\Forpas\FormadorEdicion;
+use App\Form\Forpas\FormadorEdicionType;
 use App\Repository\Forpas\EdicionRepository;
 use App\Repository\Forpas\FormadorEdicionRepository;
 use App\Repository\Forpas\FormadorRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -60,6 +62,25 @@ final class FormadorEdicionController extends AbstractController
     {
         return $this->render('intranet/forpas/gestor/formador_edicion/show.html.twig', [
             'formador_edicion' => $formadorEdicion,
+        ]);
+    }
+    #[Route(path: '/{id}/edit', name: 'edit', defaults: ['titulo' => 'Editar datos sobre la asignación del Formador'], methods: ['GET', 'POST'])]
+    public function edit(Request $request, FormadorEdicion $formadorEdicion, EntityManagerInterface $entityManager): Response
+    {
+        $form = $this->createForm(FormadorEdicionType::class, $formadorEdicion);
+        $form->handleRequest($request);
+        $edicionId = $formadorEdicion->getEdicion()->getId();
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->flush();
+            $this->addFlash('success', 'Datos modificados satisfactoriamente.');
+            return $this->redirectToRoute('intranet_forpas_gestor_formador_edicion_index', ['edicionId' => $edicionId], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->render('intranet/forpas/gestor/formador_edicion/edit.html.twig', [
+            'formador_edicion' => $formadorEdicion,
+            'form' => $form,
+            'edicionId' => $edicionId,
         ]);
     }
 }

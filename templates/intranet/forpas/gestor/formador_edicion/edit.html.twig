@@ -1,0 +1,15 @@
+{% extends 'intranet/forpas/gestor/index.html.twig' %}
+
+{% block title %}{{ titulo }}{% endblock %}
+
+{% block content %}
+    <div class="pagina-titulo">Portal del Gestor
+        <a href="#" onclick="window.location.href='{{ path('intranet_forpas_gestor_formador_edicion_index', {'edicionId': edicionId}) }}';">
+            <span class="mx-3 fa-solid fa-reply" title="Volver"></span>
+        </a>
+    </div>
+
+    <div class="pagina-seccion">{{ titulo }}</div>
+
+    {{ include('intranet/forpas/gestor/formador_edicion/_form.html.twig', {'button_label': 'Actualizar'}) }}
+{% endblock %}
