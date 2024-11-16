@@ -83,4 +83,21 @@ final class FormadorEdicionController extends AbstractController
             'edicionId' => $edicionId,
         ]);
     }
+    #[Route(path: '/{id}', name: 'delete', methods: ['POST'])]
+    public function delete(Request $request, FormadorEdicion $formadorEdicion, EntityManagerInterface $entityManager): Response
+    {
+        $edicionId = $formadorEdicion->getEdicion()->getId();
+
+        if ($this->isCsrfTokenValid('delete'.$formadorEdicion->getId(), $request->getPayload()->getString('_token'))) {
+            // Eliminamos la asignación de las colecciones de Formador y Edición
+            $formador = $formadorEdicion->getFormador();
+            $edicion = $formadorEdicion->getEdicion();
+            $formador?->removeFormadorEdiciones($formadorEdicion);
+            $edicion?->removeFormadoresEdicion($formadorEdicion);
+            $entityManager->flush();
+            $this->addFlash('success', 'Formador eliminado correctamente.');
+        }
+
+        return $this->redirectToRoute('intranet_forpas_gestor_formador_edicion_index', ['edicionId' => $edicionId], Response::HTTP_SEE_OTHER);
+    }
 }

@@ -83,7 +83,7 @@ class ParticipanteEdicionType extends AbstractType
                 'required' => false,
             ])
             ->add('direccion', TextType::class, [
-                'label' => 'Dirección',
+                'label' => 'Inscripción',
                 'required' => false,
                 'disabled' => true,
                 'attr' => ['maxlength' => 30],

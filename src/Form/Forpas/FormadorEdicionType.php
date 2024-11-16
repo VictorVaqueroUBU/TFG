@@ -5,6 +5,7 @@ namespace App\Form\Forpas;
 use App\Entity\Forpas\Edicion;
 use App\Entity\Forpas\Formador;
 use App\Entity\Forpas\FormadorEdicion;
+use App\Twig\AppExtension;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -17,6 +18,13 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class FormadorEdicionType extends AbstractType
 {
+    private AppExtension $appExtension;
+
+    public function __construct(AppExtension $appExtension)
+    {
+        $this->appExtension = $appExtension;
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
@@ -39,10 +47,10 @@ class FormadorEdicionType extends AbstractType
             ->add('formadorRJ', TextType::class, [
                 'label' => 'R.Jurídico',
                 'mapped' => false,
-                'data' => $builder->getData()->getFormador()->getFormadorRJ(),
+                'data' => $this->appExtension->formadorRJTexto($builder->getData()->getFormador()->getFormadorRJ()),
                 'disabled' => true,
             ])
-            ->add('sin_coste',CheckboxType::class, [
+            ->add('sin_coste', CheckboxType::class, [
                 'label' => 'Sin Coste',
                 'required' => false,
             ])
@@ -116,7 +124,7 @@ class FormadorEdicionType extends AbstractType
                 'choices' => [
                     'Presupuesto propio' => false,
                     'Presupuesto FEDAP' => true,
-                 ],
+                ],
             ])
             ->add('evaluacion', ChoiceType::class, [
                 'label' => 'Evaluación',
@@ -127,10 +135,15 @@ class FormadorEdicionType extends AbstractType
                     'NO Evalua' => 2,
                 ],
             ])
+            ->add('observaciones', TextType::class, [
+                'label' => 'Observaciones',
+                'required' => false,
+            ])
             ->add('coincide_turno', ChoiceType::class, [
                 'label' => 'Compatibilidad turno',
                 'disabled' => true,
                 'choices' => [
+                    'Sin especificar' => null,
                     '1) Durante mi jornada de trabajo' => 1,
                     '2) Fuera de mi jornada de trabajo' => 2,
                     '3) Durante y Fuera de mi jornada de trabajo' => 3,
@@ -140,12 +153,9 @@ class FormadorEdicionType extends AbstractType
                 'label' => 'Observaciones turno',
                 'disabled' => true,
             ])
-            ->add('observaciones', TextType::class, [
-                'label' => 'Observaciones',
-                'required' => false,
-            ])
         ;
     }
+
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
