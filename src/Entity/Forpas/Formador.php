@@ -7,7 +7,9 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
+#[UniqueEntity(fields: ['nif'], message: 'El NIF indicado ya está dado de alta.')]
 #[ORM\Entity(repositoryClass: FormadorRepository::class)]
 class Formador
 {
@@ -16,7 +18,7 @@ class Formador
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 9)]
+    #[ORM\Column(length: 9, unique: true)]
     private ?string $nif = null;
 
     #[ORM\Column(length: 50)]

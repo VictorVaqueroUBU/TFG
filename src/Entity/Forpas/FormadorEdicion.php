@@ -16,11 +16,11 @@ class FormadorEdicion
 
     #[ORM\ManyToOne(inversedBy: 'formadorEdiciones')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?formador $formador = null;
+    private ?Formador $formador = null;
 
     #[ORM\ManyToOne(inversedBy: 'formadoresEdicion')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?edicion $edicion = null;
+    private ?Edicion $edicion = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 5, scale: 2, nullable: true)]
     private ?string $horas_impartidas = null;
@@ -72,24 +72,24 @@ class FormadorEdicion
         return $this->id;
     }
 
-    public function getFormador(): ?formador
+    public function getFormador(): ?Formador
     {
         return $this->formador;
     }
 
-    public function setFormador(?formador $formador): static
+    public function setFormador(?Formador $formador): static
     {
         $this->formador = $formador;
 
         return $this;
     }
 
-    public function getEdicion(): ?edicion
+    public function getEdicion(): ?Edicion
     {
         return $this->edicion;
     }
 
-    public function setEdicion(?edicion $edicion): static
+    public function setEdicion(?Edicion $edicion): static
     {
         $this->edicion = $edicion;
 

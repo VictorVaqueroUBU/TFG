@@ -39,19 +39,19 @@ final class FormadorEdicionController extends AbstractController
         $formador = $formadorRepository->find($id);
         $edicion = $edicionRepository->find($edicionId);
 
-        $fomadorEdicion = new FormadorEdicion();
-        $fomadorEdicion->setFormador($formador);
-        $fomadorEdicion->setEdicion($edicion);
+        $formadorEdicion = new FormadorEdicion();
+        $formadorEdicion->setFormador($formador);
+        $formadorEdicion->setEdicion($edicion);
 
         // Añadimos las asignaciones a las colecciones de Formador y Edición si no está ya presente
-        if (!$formador->getFormadorEdiciones()->contains($fomadorEdicion)) {
-            $formador->addFormadorEdiciones($fomadorEdicion);
-            $entityManager->persist($fomadorEdicion);
+        if (!$formador->getFormadorEdiciones()->contains($formadorEdicion)) {
+            $formador->addFormadorEdiciones($formadorEdicion);
+            $entityManager->persist($formadorEdicion);
             $entityManager->flush();
         }
 
-        if (!$edicion->getFormadoresEdicion()->contains($fomadorEdicion)) {
-            $edicion->addPFormadoresEdicion($fomadorEdicion);
+        if (!$edicion->getFormadoresEdicion()->contains($formadorEdicion)) {
+            $edicion->addFormadoresEdicion($formadorEdicion);
         }
 
         $this->addFlash('success', 'Asignación de formador realizada satisfactoriamente.');

@@ -7,18 +7,12 @@
 
     <div class="pagina-seccion">{{ titulo }}</div>
     <ul>
-        {% if cursos %}
-            <li><a href="{{ path('intranet_forpas_gestor_curso_index') }}">Gestionar cursos</a></li>
-        {% endif %}
+        <li><a href="{{ path('intranet_forpas_gestor_curso_index') }}">Gestionar cursos</a></li>
         {% if ediciones %}
             <li><a href="{{ path('intranet_forpas_gestor_edicion_index') }}">Gestionar ediciones</a></li>
         {% endif %}
-        {% if participantes %}
-            <li><a href="{{ path('intranet_forpas_gestor_participante_index') }}">Gestionar participantes</a></li>
-        {% endif %}
-        {% if formadores %}
-            <li><a href="{{ path('intranet_forpas_gestor_formador_index') }}">Gestionar formadores</a></li>
-        {% endif %}
+        <li><a href="{{ path('intranet_forpas_gestor_participante_index') }}">Gestionar participantes</a></li>
+        <li><a href="{{ path('intranet_forpas_gestor_formador_index') }}">Gestionar formadores</a></li>
     </ul>
 {% endblock %}
 

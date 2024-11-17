@@ -98,7 +98,7 @@ class EdicionType extends AbstractType
     /**
      * Validación personalizada para asegurar que la fecha de fin sea posterior a la fecha de inicio.
      */
-    public function validateFechaFin($fechaFin, ExecutionContextInterface $context): void
+    public function validateFechaFin(?\DateTimeInterface $fechaFin, ExecutionContextInterface $context): void
     {
         $form = $context->getRoot();
         $fechaInicio = $form->get('fecha_inicio')->getData();

@@ -25,3 +25,9 @@ services:
 
     App\Twig\AppExtension:
         tags: ['twig.extension']
+
+    # Decorador para forzar la asociación del RequestStack al SessionTokenStorage
+    csrf.token_storage:
+        class: Symfony\Component\Security\Csrf\TokenStorage\SessionTokenStorage
+        arguments:
+            - '@request_stack'

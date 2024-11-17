@@ -2,6 +2,7 @@
 
 namespace App\Entity\Forpas;
 
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use App\Repository\Forpas\EdicionRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -9,6 +10,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use DateTimeInterface;
 
+#[UniqueEntity(fields: ['codigo_edicion'], message: 'El código de la edición ya existe.')]
 #[ORM\Entity(repositoryClass: EdicionRepository::class)]
 class Edicion
 {
@@ -17,7 +19,7 @@ class Edicion
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 10)]
+    #[ORM\Column(length: 10, unique: true)]
     private ?string $codigo_edicion = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]

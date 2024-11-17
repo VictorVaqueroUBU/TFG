@@ -37,7 +37,7 @@ final class CursoControllerTest extends WebTestCase
         $crawler = $this->client->request('GET', $this->path);
 
         self::assertResponseStatusCodeSame(200);
-        self::assertPageTitleContains('SIRHUS: Servicio de Formación');
+        self::assertPageTitleContains('Listado de Cursos');
 
         // Use the $crawler to perform additional assertions e.g.
         // self::assertSame('Some text on the page', $crawler->filter('.p')->first());
@@ -97,7 +97,7 @@ final class CursoControllerTest extends WebTestCase
         $this->client->request('GET', sprintf('%s%s', $this->path, $fixture->getId()));
 
         self::assertResponseStatusCodeSame(200);
-        self::assertPageTitleContains('SIRHUS: Servicio de Formación');
+        self::assertPageTitleContains('Datos del Curso');
 
         // Use assertions to check that the properties are properly displayed.
     }

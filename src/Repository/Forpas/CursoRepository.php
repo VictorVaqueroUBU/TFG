@@ -20,7 +20,7 @@ class CursoRepository extends ServiceEntityRepository
      * Método para encontrar todos los cursos cuyo código corresponde al año especificado.
      *
      * @param int $year El año para el cual se buscan los cursos (e.g., 2024).
-     * @return array Un array de objetos `Curso` que cumplen con el criterio de búsqueda.
+     * @return Curso[] Un array de objetos `Curso` que cumplen con el criterio de búsqueda.
      */
     public function findByYear(int $year): array
     {

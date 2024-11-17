@@ -2,6 +2,7 @@
 
 namespace App\Entity\Forpas;
 
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use App\Repository\Forpas\ParticipanteRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -9,6 +10,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use DateTimeInterface;
 
+#[UniqueEntity(fields: ['nif'], message: 'El NIF indicado ya está dado de alta.')]
 #[ORM\Entity(repositoryClass: ParticipanteRepository::class)]
 class Participante
 {
@@ -17,7 +19,7 @@ class Participante
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 9)]
+    #[ORM\Column(length: 9, unique: true)]
     private ?string $nif = null;
 
     #[ORM\Column(length: 50)]

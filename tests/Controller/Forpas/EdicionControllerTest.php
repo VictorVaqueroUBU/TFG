@@ -22,14 +22,23 @@ final class EdicionControllerTest extends WebTestCase
     {
         $this->client = static::createClient();
         $this->manager = static::getContainer()->get('doctrine')->getManager();
-        $this->repository = $this->manager->getRepository(Edicion::class);
 
-        foreach ($this->repository->findAll() as $object) {
+        // Limpiar datos de ediciones y cursos
+        $edicionRepository = $this->manager->getRepository(Edicion::class);
+        foreach ($edicionRepository->findAll() as $object) {
+            $this->manager->remove($object);
+        }
+
+        $cursoRepository = $this->manager->getRepository(Curso::class);
+        foreach ($cursoRepository->findAll() as $object) {
             $this->manager->remove($object);
         }
 
         $this->manager->flush();
+
+        $this->repository = $this->manager->getRepository(Edicion::class);
     }
+
 
     public function testIndex(): void
     {
@@ -37,7 +46,7 @@ final class EdicionControllerTest extends WebTestCase
         // Caso 1: Sin cursoId (debería ejecutarse el bloque `else`)
         $crawler = $this->client->request('GET', $this->path);
         self::assertResponseStatusCodeSame(200);
-        self::assertPageTitleContains('SIRHUS: Servicio de Formación');
+        self::assertPageTitleContains('Listado de ediciones');
 
         // Caso 2: Con cursoId (debería ejecutarse el bloque `if ($cursoId)`)
         $cursoId = 1; // Cambia este valor según un curso existente en tu base de datos de prueba
@@ -75,13 +84,13 @@ final class EdicionControllerTest extends WebTestCase
             'edicion[max_participantes]' => 20,
         ]);
 
-        self::assertResponseRedirects($this->path);
+        self::assertResponseRedirects($this->path . '?cursoId=' . $curso->getId());
         self::assertSame(1, $this->repository->count([]));
     }
     public function testShow(): void
     {
         $fixture = new Edicion();
-        $fixture->setCodigoEdicion('24001/01');
+        $fixture->setCodigoEdicion('24002/01');
         $fixture->setFechaInicio(new \DateTime('2024-01-01'));
         $fixture->setFechaFin(new \DateTime('2024-01-01'));
         $fixture->setCalendario('My Title');
@@ -91,8 +100,8 @@ final class EdicionControllerTest extends WebTestCase
         $fixture->setSesiones(2);
         $fixture->setMaxParticipantes(20);
 
-        $curso = new \App\Entity\Forpas\Curso();
-        $curso->setCodigoCurso('24001');
+        $curso = new Curso();
+        $curso->setCodigoCurso('24002');
         $curso->setNombreCurso('Curso de prueba');
         $curso->setHoras(20);
         $curso->setParticipantesEdicion(20);
@@ -110,14 +119,14 @@ final class EdicionControllerTest extends WebTestCase
         $this->client->request('GET', sprintf('%s%s', $this->path, $fixture->getId()));
 
         self::assertResponseStatusCodeSame(200);
-        self::assertPageTitleContains('SIRHUS: Servicio de Formación');
+        self::assertPageTitleContains('Datos de la Edición');
 
         // Use assertions to check that the properties are properly displayed.
     }
     public function testEdit(): void
     {
         $fixture = new Edicion();
-        $fixture->setCodigoEdicion('24001/01');
+        $fixture->setCodigoEdicion('24003/01');
         $fixture->setFechaInicio(new \DateTime('2024-01-01'));
         $fixture->setFechaFin(new \DateTime('2024-01-02'));
         $fixture->setCalendario('Value');
@@ -128,7 +137,7 @@ final class EdicionControllerTest extends WebTestCase
         $fixture->setMaxParticipantes(20);
 
         $curso = new Curso();
-        $curso->setCodigoCurso('24001');
+        $curso->setCodigoCurso('24003');
         $curso->setNombreCurso('Nombre del curso');
         $curso->setHoras(20);
         $curso->setParticipantesEdicion(20);
@@ -158,7 +167,7 @@ final class EdicionControllerTest extends WebTestCase
             'edicion[curso]' => $curso->getId(),
         ]);
 
-        self::assertResponseRedirects('/intranet/forpas/gestor/edicion/');
+        self::assertResponseRedirects($this->path . '?cursoId=' . $curso->getId());
 
         $updatedFixture = $this->repository->find($fixture->getId());
 

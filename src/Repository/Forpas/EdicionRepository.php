@@ -19,7 +19,7 @@ class EdicionRepository extends ServiceEntityRepository
      * Método para obtener todas las ediciones de un curso específico
      *
      * @param int $cursoId El ID del curso para el cual se buscan las ediciones.
-     * @return array Un array de objetos `Edicion` que cumplen con el criterio de búsqueda.
+     * @return Edicion[] Un array de objetos `Edicion` que cumplen con el criterio de búsqueda.
      */
     public function findByCurso(int $cursoId): array
     {
@@ -35,7 +35,7 @@ class EdicionRepository extends ServiceEntityRepository
      * Método para encontrar todas las ediciones asociadas a cursos de un año específico.
      *
      * @param int $year El año para el cual se buscan las ediciones (e.g., 2024).
-     * @return array Un array de objetos `Edicion` que cumplen con el criterio de búsqueda.
+     * @return Edicion[] Un array de objetos `Edicion` que cumplen con el criterio de búsqueda.
      */
     public function findByYear(int $year): array
     {
