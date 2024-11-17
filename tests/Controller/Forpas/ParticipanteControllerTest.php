@@ -93,7 +93,7 @@ final class ParticipanteControllerTest extends WebTestCase
         $fixture->setApellidos('My Title');
         $fixture->setNombre('My Title');
         $fixture->setDescripcionCce('My Title');
-        $fixture->setCodigoCce('My Title');
+        $fixture->setCodigoCce('Title');
         $fixture->setGrupo('A1');
         $fixture->setNivel(27);
         $fixture->setPuestoTrabajo('My Title');
