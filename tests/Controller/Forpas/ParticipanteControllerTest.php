@@ -2,10 +2,10 @@
 
 namespace App\Tests\Controller\Forpas;
 
+Use DateTime;
 use App\Entity\Forpas\Curso;
 use App\Entity\Forpas\Edicion;
 use App\Entity\Forpas\Participante;
-use App\Entity\Forpas\ParticipanteEdicion;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
@@ -25,18 +25,30 @@ final class ParticipanteControllerTest extends WebTestCase
     {
         $this->client = static::createClient();
         $this->manager = static::getContainer()->get('doctrine')->getManager();
-        $this->repository = $this->manager->getRepository(Participante::class);
 
-        foreach ($this->repository->findAll() as $object) {
-            $this->manager->remove($object);
+        // Limpiar datos de ParticipanteEdicion, Edicion, Curso y Participante
+        $repositories = [
+            Participante::class,
+            Edicion::class,
+            Curso::class,
+        ];
+
+        foreach ($repositories as $repositoryClass) {
+            $repository = $this->manager->getRepository($repositoryClass);
+            foreach ($repository->findAll() as $object) {
+                $this->manager->remove($object);
+            }
         }
 
         $this->manager->flush();
+
+        // Asigna el repositorio de Participante para los tests
+        $this->repository = $this->manager->getRepository(Participante::class);
     }
     public function testIndex(): void
     {
         $this->client->followRedirects();
-        $crawler = $this->client->request('GET', $this->path);
+        $this->client->request('GET', $this->path);
 
         self::assertResponseStatusCodeSame(200);
         self::assertPageTitleContains('Listado de Participantes');
@@ -110,9 +122,9 @@ final class ParticipanteControllerTest extends WebTestCase
         $fixture->setTurno('My Title');
         $fixture->setTelefonoParticular('My Title');
         $fixture->setTelefonoMovil('My Title');
-        $fixture->setFechaNacimiento(new \DateTime('2024-01-01'));
+        $fixture->setFechaNacimiento(new DateTime('2024-01-01'));
         $fixture->setTitulacionNivel(1);
-        $fixture->setTitulacionFecha(new \DateTime('2024-01-01'));
+        $fixture->setTitulacionFecha(new DateTime('2024-01-01'));
         $fixture->setTitulacion('My Title');
         $fixture->setDniSinLetra('My Title');
         $fixture->setUvus('My Title');
@@ -153,9 +165,9 @@ final class ParticipanteControllerTest extends WebTestCase
         $fixture->setTurno('Value');
         $fixture->setTelefonoParticular('Value');
         $fixture->setTelefonoMovil('Value');
-        $fixture->setFechaNacimiento(new \DateTime('2024-01-01'));
+        $fixture->setFechaNacimiento(new DateTime('2024-01-01'));
         $fixture->setTitulacionNivel(1);
-        $fixture->setTitulacionFecha(new \DateTime('2024-01-01'));
+        $fixture->setTitulacionFecha(new DateTime('2024-01-01'));
         $fixture->setTitulacion('Value');
         $fixture->setDniSinLetra('Value');
         $fixture->setUvus('Value');
@@ -222,9 +234,9 @@ final class ParticipanteControllerTest extends WebTestCase
         self::assertSame('Something New', $fixture[0]->getTurno());
         self::assertSame('Something', $fixture[0]->getTelefonoParticular());
         self::assertSame('Something', $fixture[0]->getTelefonoMovil());
-        self::assertEquals(new \DateTime('2024-01-01'), $fixture[0]->getFechaNacimiento());
+        self::assertEquals(new DateTime('2024-01-01'), $fixture[0]->getFechaNacimiento());
         self::assertSame(1, $fixture[0]->getTitulacionNivel());
-        self::assertEquals(new \DateTime('2024-01-01'), $fixture[0]->getTitulacionFecha());
+        self::assertEquals(new DateTime('2024-01-01'), $fixture[0]->getTitulacionFecha());
         self::assertSame('Something New', $fixture[0]->getTitulacion());
         self::assertSame('Some', $fixture[0]->getDniSinLetra());
         self::assertSame('Something New', $fixture[0]->getUvus());
@@ -255,9 +267,9 @@ final class ParticipanteControllerTest extends WebTestCase
         $fixture->setTurno('Value');
         $fixture->setTelefonoParticular('Value');
         $fixture->setTelefonoMovil('Value');
-        $fixture->setFechaNacimiento(new \DateTime('2024-01-01'));
+        $fixture->setFechaNacimiento(new DateTime('2024-01-01'));
         $fixture->setTitulacionNivel(1);
-        $fixture->setTitulacionFecha(new \DateTime('2024-01-01'));
+        $fixture->setTitulacionFecha(new DateTime('2024-01-01'));
         $fixture->setTitulacion('Value');
         $fixture->setDniSinLetra('Value');
         $fixture->setUvus('Value');
@@ -311,7 +323,7 @@ final class ParticipanteControllerTest extends WebTestCase
         $id = $edicion->getId();
 
         // Realizar la solicitud al controlador
-        $this->client->request('GET', "/intranet/forpas/gestor/participante/append/{$id}");
+        $this->client->request('GET', "/intranet/forpas/gestor/participante/append/$id");
 
         // Verificar el código de respuesta HTTP
         self::assertResponseStatusCodeSame(200);

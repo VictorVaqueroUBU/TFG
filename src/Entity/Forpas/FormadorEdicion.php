@@ -5,7 +5,7 @@ namespace App\Entity\Forpas;
 use App\Repository\Forpas\FormadorEdicionRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-
+Use DateTimeInterface;
 #[ORM\Entity(repositoryClass: FormadorEdicionRepository::class)]
 class FormadorEdicion
 {
@@ -41,13 +41,13 @@ class FormadorEdicion
     private ?bool $evaluacion = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $hoja_firma = null;
+    private ?DateTimeInterface $hoja_firma = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $datos_banco = null;
+    private ?DateTimeInterface $datos_banco = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $incompatibilidad = null;
+    private ?DateTimeInterface $incompatibilidad = null;
 
     #[ORM\Column(length: 30, nullable: true)]
     private ?string $grabado_sorolla = null;
@@ -62,10 +62,10 @@ class FormadorEdicion
     private ?string $coincide_turno_observaciones = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $control_personal_enviado = null;
+    private ?DateTimeInterface $control_personal_enviado = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $control_personal_recibido = null;
+    private ?DateTimeInterface $control_personal_recibido = null;
 
     public function getId(): ?int
     {
@@ -168,36 +168,36 @@ class FormadorEdicion
         return $this;
     }
 
-    public function getHojaFirma(): ?\DateTimeInterface
+    public function getHojaFirma(): ?DateTimeInterface
     {
         return $this->hoja_firma;
     }
 
-    public function setHojaFirma(?\DateTimeInterface $hoja_firma): static
+    public function setHojaFirma(?DateTimeInterface $hoja_firma): static
     {
         $this->hoja_firma = $hoja_firma;
 
         return $this;
     }
 
-    public function getDatosBanco(): ?\DateTimeInterface
+    public function getDatosBanco(): ?DateTimeInterface
     {
         return $this->datos_banco;
     }
 
-    public function setDatosBanco(?\DateTimeInterface $datos_banco): static
+    public function setDatosBanco(?DateTimeInterface $datos_banco): static
     {
         $this->datos_banco = $datos_banco;
 
         return $this;
     }
 
-    public function getIncompatibilidad(): ?\DateTimeInterface
+    public function getIncompatibilidad(): ?DateTimeInterface
     {
         return $this->incompatibilidad;
     }
 
-    public function setIncompatibilidad(?\DateTimeInterface $incompatibilidad): static
+    public function setIncompatibilidad(?DateTimeInterface $incompatibilidad): static
     {
         $this->incompatibilidad = $incompatibilidad;
 
@@ -252,24 +252,24 @@ class FormadorEdicion
         return $this;
     }
 
-    public function getControlPersonalEnviado(): ?\DateTimeInterface
+    public function getControlPersonalEnviado(): ?DateTimeInterface
     {
         return $this->control_personal_enviado;
     }
 
-    public function setControlPersonalEnviado(?\DateTimeInterface $control_personal_enviado): static
+    public function setControlPersonalEnviado(?DateTimeInterface $control_personal_enviado): static
     {
         $this->control_personal_enviado = $control_personal_enviado;
 
         return $this;
     }
 
-    public function getControlPersonalRecibido(): ?\DateTimeInterface
+    public function getControlPersonalRecibido(): ?DateTimeInterface
     {
         return $this->control_personal_recibido;
     }
 
-    public function setControlPersonalRecibido(?\DateTimeInterface $control_personal_recibido): static
+    public function setControlPersonalRecibido(?DateTimeInterface $control_personal_recibido): static
     {
         $this->control_personal_recibido = $control_personal_recibido;
 

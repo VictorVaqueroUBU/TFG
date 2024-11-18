@@ -2,6 +2,7 @@
 
 namespace App\Tests\Controller\Forpas;
 
+use DateTime;
 use App\Entity\Forpas\Curso;
 use App\Entity\Forpas\Edicion;
 use Doctrine\ORM\EntityManagerInterface;
@@ -44,13 +45,13 @@ final class EdicionControllerTest extends WebTestCase
     {
         $this->client->followRedirects();
         // Caso 1: Sin cursoId (debería ejecutarse el bloque `else`)
-        $crawler = $this->client->request('GET', $this->path);
+        $this->client->request('GET', $this->path);
         self::assertResponseStatusCodeSame(200);
         self::assertPageTitleContains('Listado de ediciones');
 
         // Caso 2: Con cursoId (debería ejecutarse el bloque `if ($cursoId)`)
         $cursoId = 1; // Cambia este valor según un curso existente en tu base de datos de prueba
-        $crawler = $this->client->request('GET', $this->path, ['cursoId' => $cursoId]);
+        $this->client->request('GET', $this->path, ['cursoId' => $cursoId]);
         self::assertResponseStatusCodeSame(200);
     }
     public function testNew(): void
@@ -91,8 +92,8 @@ final class EdicionControllerTest extends WebTestCase
     {
         $fixture = new Edicion();
         $fixture->setCodigoEdicion('24002/01');
-        $fixture->setFechaInicio(new \DateTime('2024-01-01'));
-        $fixture->setFechaFin(new \DateTime('2024-01-01'));
+        $fixture->setFechaInicio(new DateTime('2024-01-01'));
+        $fixture->setFechaFin(new DateTime('2024-01-01'));
         $fixture->setCalendario('My Title');
         $fixture->setHorario('My Title');
         $fixture->setLugar('My Title');
@@ -127,8 +128,8 @@ final class EdicionControllerTest extends WebTestCase
     {
         $fixture = new Edicion();
         $fixture->setCodigoEdicion('24003/01');
-        $fixture->setFechaInicio(new \DateTime('2024-01-01'));
-        $fixture->setFechaFin(new \DateTime('2024-01-02'));
+        $fixture->setFechaInicio(new DateTime('2024-01-01'));
+        $fixture->setFechaFin(new DateTime('2024-01-02'));
         $fixture->setCalendario('Value');
         $fixture->setHorario('Value');
         $fixture->setLugar('Value');
@@ -171,8 +172,8 @@ final class EdicionControllerTest extends WebTestCase
 
         $updatedFixture = $this->repository->find($fixture->getId());
 
-        self::assertEquals(new \DateTime('2024-01-01'), $updatedFixture->getFechaInicio());
-        self::assertEquals(new \DateTime('2024-01-02'), $updatedFixture->getFechaFin());
+        self::assertEquals(new DateTime('2024-01-01'), $updatedFixture->getFechaInicio());
+        self::assertEquals(new DateTime('2024-01-02'), $updatedFixture->getFechaFin());
         self::assertSame('Something New', $updatedFixture->getCalendario());
         self::assertSame('Something New', $updatedFixture->getHorario());
         self::assertSame('Something New', $updatedFixture->getLugar());
@@ -185,8 +186,8 @@ final class EdicionControllerTest extends WebTestCase
     {
         $fixture = new Edicion();
         $fixture->setCodigoEdicion('Value');
-        $fixture->setFechaInicio(new \DateTime('2024-01-01'));
-        $fixture->setFechaFin(new \DateTime('2024-01-01'));
+        $fixture->setFechaInicio(new DateTime('2024-01-01'));
+        $fixture->setFechaFin(new DateTime('2024-01-01'));
         $fixture->setCalendario('Value');
         $fixture->setHorario('Value');
         $fixture->setLugar('Value');
@@ -194,7 +195,7 @@ final class EdicionControllerTest extends WebTestCase
         $fixture->setSesiones(2);
         $fixture->setMaxParticipantes(20);
 
-        $curso = new \App\Entity\Forpas\Curso();
+        $curso = new Curso();
         $curso->setCodigoCurso('24001');
         $curso->setNombreCurso('Curso de prueba');
         $curso->setHoras(20);
