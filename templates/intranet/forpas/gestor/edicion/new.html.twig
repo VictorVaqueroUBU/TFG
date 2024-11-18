@@ -4,10 +4,12 @@
 
 {% block content %}
     <div class="pagina-titulo">Portal del Gestor
-        <a href="{{ path('intranet_forpas_gestor_edicion_index') }}"><span class="mx-3 fa-solid fa-reply" title="Volver"></span></a>
+        <a href="#" onclick="window.location.href='{{ path('intranet_forpas_gestor') }}';">
+            <span class="mx-3 fa-solid fa-reply" title="Volver"></span>
+        </a>
     </div>
 
-    <div class="pagina-seccion">Crear Nueva Edición</div>
+    <div class="pagina-seccion">{{ titulo }}</div>
 
     {{ include('intranet/forpas/gestor/edicion/_form.html.twig') }}
 

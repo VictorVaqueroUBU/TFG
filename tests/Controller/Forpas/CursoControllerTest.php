@@ -3,6 +3,7 @@
 namespace App\Tests\Controller\Forpas;
 
 use App\Entity\Forpas\Curso;
+use App\Entity\Forpas\Edicion;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
@@ -34,10 +35,10 @@ final class CursoControllerTest extends WebTestCase
     public function testIndex(): void
     {
         $this->client->followRedirects();
-        $crawler = $this->client->request('GET', $this->path);
+        $this->client->request('GET', $this->path);
 
         self::assertResponseStatusCodeSame(200);
-        self::assertPageTitleContains('SIRHUS: Servicio de Formación');
+        self::assertPageTitleContains('Listado de Cursos');
 
         // Use the $crawler to perform additional assertions e.g.
         // self::assertSame('Some text on the page', $crawler->filter('.p')->first());
@@ -97,7 +98,7 @@ final class CursoControllerTest extends WebTestCase
         $this->client->request('GET', sprintf('%s%s', $this->path, $fixture->getId()));
 
         self::assertResponseStatusCodeSame(200);
-        self::assertPageTitleContains('SIRHUS: Servicio de Formación');
+        self::assertPageTitleContains('Datos del Curso');
 
         // Use assertions to check that the properties are properly displayed.
     }
@@ -199,7 +200,7 @@ final class CursoControllerTest extends WebTestCase
     public function testAddEdiciones(): void
     {
         $curso = new Curso();
-        $edicion = new \App\Entity\Forpas\Edicion();
+        $edicion = new Edicion();
 
         $curso->addEdiciones($edicion);
 
@@ -210,7 +211,7 @@ final class CursoControllerTest extends WebTestCase
     public function testRemoveEdiciones(): void
     {
         $curso = new Curso();
-        $edicion = new \App\Entity\Forpas\Edicion();
+        $edicion = new Edicion();
 
         $curso->addEdiciones($edicion);
         $curso->removeEdiciones($edicion);

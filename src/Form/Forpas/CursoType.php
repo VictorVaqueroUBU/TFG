@@ -19,12 +19,12 @@ class CursoType extends AbstractType
             ->add('codigo_curso', TextType::class, [
                 'label' => 'Código *',
                 'required' => true,
-                'attr' => ['maxlength' => 5]
+                'attr' => ['maxlength' => 5],
             ])
             ->add('nombre_curso', TextType::class, [
                 'label' => 'Nombre *',
                 'required' => true,
-                'attr' => ['maxlength' => 255]
+                'attr' => ['maxlength' => 255],
             ])
             ->add('horas', IntegerType::class, [
                 'label' => 'Horas totales*',
@@ -83,11 +83,11 @@ class CursoType extends AbstractType
             ->add('justificacion', null, ['label' => 'Justificación',])
             ->add('plazo_solicitud',TextType::class, [
                 'required' => false,
-                'attr' => ['maxlength' => 255]
+                'attr' => ['maxlength' => 255],
             ])
             ->add('coordinador',TextType::class, [
                 'required' => false,
-                'attr' => ['maxlength' => 255]
+                'attr' => ['maxlength' => 255],
             ])
             ->add('observaciones')
         ;

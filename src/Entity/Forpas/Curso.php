@@ -2,6 +2,7 @@
 
 namespace App\Entity\Forpas;
 
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use App\Repository\Forpas\CursoRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -10,6 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
+#[UniqueEntity(fields: ['codigo_curso'], message: 'El código del curso ya existe.')]
 #[ORM\Entity(repositoryClass: CursoRepository::class)]
 class Curso
 {
@@ -18,7 +20,7 @@ class Curso
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 10)]
+    #[ORM\Column(length: 10, unique: true)]
     private ?string $codigo_curso = null;
 
     #[ORM\Column(length: 255)]

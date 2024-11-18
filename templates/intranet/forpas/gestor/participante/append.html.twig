@@ -1,0 +1,105 @@
+{% extends 'intranet/forpas/gestor/index.html.twig' %}
+
+{% block title %}{{ titulo }}{% endblock %}
+
+{% block content %}
+    <div class="pagina-titulo">Portal del Gestor
+        <a href="#" onclick="window.location.href='{{ path('intranet_forpas_gestor') }}';">
+            <span class="mx-3 fa-solid fa-reply" title="Volver"></span>
+        </a>
+    </div>
+
+    <div class="pagina-seccion">
+        {{ edicion ? titulo ~ ': ' ~ edicion.codigoEdicion ~ ' - ' ~ edicion.curso.nombreCurso :
+        'Participantes Seleccionables' }}
+    </div>
+    <table class="tabla-condensada" id="datosParticipantesSeleccionables">
+        <thead class="cabecera-condensada">
+        <tr>
+            <th>Nif</th>
+            <th>Apellidos</th>
+            <th>Nombre</th>
+            <th>Grupo</th>
+            <th>Puesto Trabajo</th>
+            <th>Unidad</th>
+            <th>Subunidad</th>
+            <th>Teléfono Trabajo</th>
+            <th>Correo Aux</th>
+            <th>Organización</th>
+            <th>Acciones</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for participante in participantes_posibles %}
+            <tr>
+                <td>{{ participante.nif }}</td>
+                <td>{{ participante.apellidos }}</td>
+                <td>{{ participante.nombre }}</td>
+                <td class="text-center">{{ participante.grupo }}</td>
+                <td>{{ participante.puestoTrabajo }}</td>
+                <td>{{ participante.unidad }}</td>
+                <td>{{ participante.subunidad }}</td>
+                <td>{{ participante.telefonoTrabajo }}</td>
+                <td>{{ participante.correoAux }}</td>
+                <td>{{ participante.organizacion }}</td>
+                <td>
+                    <a href="{{ path('intranet_forpas_gestor_participante_edicion_new', {'id': participante.id, 'edicionId': edicion.id}) }}" title="Inscribir">
+                        <span class="mx-1 fas fa-plus"></span>
+                    </a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td>No existen Participantes disponibles</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
+
+{% block botones %}
+    <li class="nav-item me-2">
+        <a class="btn btn-primary" href="#"
+           onclick="window.location.href='{{ path('intranet_forpas_gestor_participante_edicion_index', {'edicionId': edicion.id}) }}';">
+            <span class="fas fa-reply"></span> Volver
+        </a>
+    </li>
+{% endblock %}
+
+{% block js %}
+    {{ parent() }}
+    <script type="module">
+        $(function () {
+            $('#datosParticipantesSeleccionables').dataTable({
+                buttons: [
+                    {
+                        extend: 'copy',
+                        text: '<i class="fas fa-copy"></i>',
+                        titleAttr: 'Copiar',
+                    },
+                    {
+                        extend: 'print',
+                        text: '<i class="fas fa-print"></i>',
+                        titleAttr: 'Imprimir',
+                    },
+                    {
+                        extend: 'csv',
+                        text: '<i class="fas fa-file-csv"></i>',
+                        titleAttr: 'Generar fichero CSV',
+                    },
+                    {
+                        extend: 'excelHtml5',
+                        text: '<i class="fas fa-file-excel"></i>',
+                        titleAttr: 'Generar fichero Excel',
+                    },
+                ],
+                dom: '<"row"<"col-sm-12 col-md-4"B><"col-sm-12 col-md-4"l><"col-sm-12 col-md-4"f>>' +
+                    '<"row"<"col-sm-12"<"table-responsive"tr>>>' +
+                    '<"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
+                language: {
+                    url: '{{ asset("includes/datatable.es.json") }}'
+                },
+            });
+        });
+    </script>
+{% endblock %}

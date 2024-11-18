@@ -19,22 +19,31 @@ use Symfony\Component\Routing\Attribute\Route;
 final class CursoController extends AbstractController
 {
     #[Route(path: '/', name: 'index', defaults: ['titulo' => 'Listado de Cursos'], methods: ['GET'])]
-    public function index(CursoRepository $cursoRepository): Response
+    public function index(Request $request, CursoRepository $cursoRepository): Response
     {
+        $year = $request->query->get('year', date('Y')); // Obtiene el año actual si no se selecciona ninguno
+        $cursos = $cursoRepository->findByYear($year);
+
         return $this->render('intranet/forpas/gestor/curso/index.html.twig', [
-            'cursos' => $cursoRepository->findAll(),
+            'cursos' => $cursos,
+            'year' => $year,
         ]);
     }
     #[Route(path: '/new', name: 'new', defaults: ['titulo' => 'Crear Nuevo Curso'], methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    public function new(Request $request, EntityManagerInterface $entityManager, CursoRepository $cursoRepository): Response
     {
         $curso = new Curso();
+        $year = (int) date('Y');
+        $primerCodigoLibre = $cursoRepository->findPrimerCodigoCursoLibre($year);
+        $curso->setCodigoCurso($primerCodigoLibre);
+
         $form = $this->createForm(CursoType::class, $curso);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->persist($curso);
             $entityManager->flush();
+            $this->addFlash('success', 'La creación del curso se ha realizada satisfactoriamente.');
             return $this->redirectToRoute('intranet_forpas_gestor_curso_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -58,7 +67,7 @@ final class CursoController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
-
+            $this->addFlash('success', 'Los datos del curso se han modificado satisfactoriamente.');
             return $this->redirectToRoute('intranet_forpas_gestor_curso_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -73,7 +82,7 @@ final class CursoController extends AbstractController
         // Verificamos si el curso tiene ediciones asociadas
         if (!$curso->getEdiciones()->isEmpty()) {
             // Si tiene ediciones, redirige con un mensaje de error
-            $this->addFlash('danger', 'No se puede eliminar el curso porque tiene ediciones asociadas.');
+            $this->addFlash('warning', 'No se puede eliminar el curso porque tiene ediciones creadas.');
             return $this->redirectToRoute('intranet_forpas_gestor_curso_index');
         }
 

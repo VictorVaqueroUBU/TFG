@@ -17,7 +17,9 @@ class EdicionRepository extends ServiceEntityRepository
     }
     /**
      * Método para obtener todas las ediciones de un curso específico
-     * @return Edicion[]
+     *
+     * @param int $cursoId El ID del curso para el cual se buscan las ediciones.
+     * @return Edicion[] Un array de objetos `Edicion` que cumplen con el criterio de búsqueda.
      */
     public function findByCurso(int $cursoId): array
     {
@@ -30,30 +32,57 @@ class EdicionRepository extends ServiceEntityRepository
             ->getResult();
     }
     /**
-     * Método para obtener todas las ediciones con sus cursos asociados
-     * @return Edicion[]
+     * Método para encontrar todas las ediciones asociadas a cursos de un año específico.
+     *
+     * @param int $year El año para el cual se buscan las ediciones (e.g., 2024).
+     * @return Edicion[] Un array de objetos `Edicion` que cumplen con el criterio de búsqueda.
      */
-    public function findAllWithCursos(): array
+    public function findByYear(int $year): array
     {
+        $yearCode = substr((string)$year, -2); // Obtiene los últimos 2 dígitos del año
+
         return $this->createQueryBuilder('e')
             ->leftJoin('e.curso', 'c')
-            ->addSelect('c')
+            ->andWhere('c.codigo_curso LIKE :yearCode')
+            ->andWhere('LENGTH(c.codigo_curso) = 5')
+            ->setParameter('yearCode', $yearCode . '%')
             ->getQuery()
             ->getResult();
     }
-    public function findUltimaEdicionPorCurso(string $codigoCurso): ?string
+    /**
+     * Método para obtener el primer código de edición libre.
+     *
+     * @param string $codigoCurso Código del curso
+     * @return string|null Retorna el primer código de edición libre en el formato "codigoCurso/XX"
+     */
+    public function findPrimerCodigoEdicionLibre(string $codigoCurso): ?string
     {
+        // Obtenemos todas las ediciones para el curso en orden ascendente
         $result = $this->createQueryBuilder('e')
             ->select('e.codigo_edicion')
             ->join('e.curso', 'c')
             ->where('c.codigo_curso = :codigoCurso')
             ->setParameter('codigoCurso', $codigoCurso)
-            ->orderBy('e.codigo_edicion', 'DESC')
-            ->setMaxResults(1)
+            ->orderBy('e.codigo_edicion', 'ASC')
             ->getQuery()
-            ->getOneOrNullResult();
+            ->getResult();
 
-        return $result ? $result['codigo_edicion'] : null;
+        // Extraemos los números de edición en forma de enteros
+        $edicionesExistentes = array_map(function($item) use ($codigoCurso) {
+            return (int) substr($item['codigo_edicion'], strlen($codigoCurso) + 1);
+        }, $result);
+
+        // Buscamos el primer número faltante en la secuencia
+        $siguienteNumeroLibre = 0; // Comenzamos desde 0
+        foreach ($edicionesExistentes as $numero) {
+            if ($numero !== $siguienteNumeroLibre) {
+                break;
+            }
+            $siguienteNumeroLibre++;
+        }
+
+        // Devolvemos el código libre en el formato "codigoCurso/XX"
+        return sprintf('%s/%02d', $codigoCurso, $siguienteNumeroLibre);
     }
 
 //    /**

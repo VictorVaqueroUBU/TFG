@@ -2,7 +2,6 @@
 
 namespace App\Controller\Forpas;
 
-use App\Entity\Forpas\Curso;
 use App\Entity\Forpas\Edicion;
 use App\Form\Forpas\EdicionType;
 use App\Repository\Forpas\CursoRepository;
@@ -24,17 +23,20 @@ final class EdicionController extends AbstractController
     public function index(Request $request, EdicionRepository $edicionRepository, CursoRepository $cursoRepository): Response
     {
         $cursoId = $request->query->get('cursoId');
+        $year = $request->query->get('year', date('Y'));
+
         if ($cursoId) {
             $ediciones = $edicionRepository->findByCurso($cursoId);
             $curso = $cursoRepository->find($cursoId);
         } else {
-            $ediciones = $edicionRepository->findAllWithCursos();
+            $ediciones = $edicionRepository->findByYear($year);
             $curso = null;
         }
 
         return $this->render('intranet/forpas/gestor/edicion/index.html.twig', [
             'ediciones' => $ediciones,
             'curso' => $curso,
+            'year' => $year,
         ]);
     }
     #[Route(path: '/new/{cursoId}', name: 'new', defaults: ['titulo' => 'Crear Nueva Edición'], methods: ['GET', 'POST'])]
@@ -45,22 +47,17 @@ final class EdicionController extends AbstractController
         $curso = $cursoRepository->find($cursoId);
         $edicion->setCurso($curso);
 
-        if ($curso && !$curso->getEdiciones()->contains($edicion)) {
-            $curso->addEdiciones($edicion);
-        }
-
         // Establecemos valores predeterminados
         $edicion->setSesiones(0);
         $edicion->setMaxParticipantes(0);
         $edicion->setEstado(0);
 
-        // Obtenemos el último código de edición del curso actual
-        $ultimoCodigo = $edicionRepository->findUltimaEdicionPorCurso($curso->getCodigoCurso());
-        $nuevoCodigo = $ultimoCodigo ? $this->generarNuevoCodigoEdicion($curso->getCodigoCurso(), $ultimoCodigo) : $curso->getCodigoCurso() . '/00';
+        // Obtenemos el primer código de edición libre del curso actual
+        $nuevoCodigo = $edicionRepository->findPrimerCodigoEdicionLibre($curso->getCodigoCurso());
         $edicion->setCodigoEdicion($nuevoCodigo);
 
-        // Comprobamos si la edición es 00 para que bloquee todos los input
-        $disableFields = (substr($edicion->getCodigoEdicion(), -2) === '00');
+        // Comprobamos si la edición es 00 para que bloquee todos los inputs
+        $disableFields = (str_ends_with($edicion->getCodigoEdicion(), '00'));
         $form = $this->createForm(EdicionType::class, $edicion, [
             'disable_fields' => $disableFields,
         ]);
@@ -69,12 +66,19 @@ final class EdicionController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->persist($edicion);
             $entityManager->flush();
-            return $this->redirectToRoute('intranet_forpas_gestor_edicion_index', [], Response::HTTP_SEE_OTHER);
+
+            if (!$curso->getEdiciones()->contains($edicion)) {
+                $curso->addEdiciones($edicion);
+            }
+
+            $this->addFlash('success', 'La creación de la edición se ha realizada satisfactoriamente.');
+            return $this->redirectToRoute('intranet_forpas_gestor_edicion_index', ['cursoId'=> $cursoId], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('intranet/forpas/gestor/edicion/new.html.twig', [
             'edicion' => $edicion,
             'form' => $form,
+            'cursoId'=> $cursoId,
         ]);
     }
     #[Route(path: '/{id}', name: 'show', defaults: ['titulo' => 'Datos de la Edición'], methods: ['GET'])]
@@ -87,7 +91,7 @@ final class EdicionController extends AbstractController
     #[Route(path: '/{id}/edit', name: 'edit', defaults: ['titulo' => 'Editar Edición'], methods: ['GET', 'POST'])]
     public function edit(Request $request, Edicion $edicion, EntityManagerInterface $entityManager): Response
     {
-        $disableFields = (substr($edicion->getCodigoEdicion(), -2) === '00');
+        $disableFields = (str_ends_with($edicion->getCodigoEdicion(), '00'));
         $form = $this->createForm(EdicionType::class, $edicion, [
             'disable_fields' => $disableFields,
         ]);
@@ -95,30 +99,36 @@ final class EdicionController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
-
-            return $this->redirectToRoute('intranet_forpas_gestor_edicion_index', [], Response::HTTP_SEE_OTHER);
+            $this->addFlash('success', 'Los datos de la edición se han modificado satisfactoriamente.');
+            return $this->redirectToRoute('intranet_forpas_gestor_edicion_index', [
+                'cursoId'=> $edicion->getCurso()->getId()], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('intranet/forpas/gestor/edicion/edit.html.twig', [
             'edicion' => $edicion,
             'form' => $form,
+            'cursoId' => $edicion->getCurso()->getId(),
         ]);
     }
     #[Route(path: '/{id}', name: 'delete', methods: ['POST'])]
     public function delete(Request $request, Edicion $edicion, EntityManagerInterface $entityManager): Response
     {
+        // Verificamos si la edición tiene participantes asociados
+        if (!$edicion->getParticipantesEdicion()->isEmpty()) {
+            // Si tiene participantes, redirige con un mensaje de error
+            $this->addFlash('warning', 'No se puede eliminar la edición porque tiene participantes inscritos.');
+            return $this->redirectToRoute('intranet_forpas_gestor_edicion_index', [
+                'cursoId'=> $edicion->getCurso()->getId()], Response::HTTP_SEE_OTHER);
+        }
+
         if ($this->isCsrfTokenValid('delete'.$edicion->getId(), $request->getPayload()->getString('_token'))) {
             // Eliminamos la edición de la colección en Curso
             $curso = $edicion->getCurso();
             $curso?->removeEdiciones($edicion);
             $entityManager->flush();
+            $this->addFlash('success', 'Edición eliminada correctamente.');
         }
 
         return $this->redirectToRoute('intranet_forpas_gestor_edicion_index', [], Response::HTTP_SEE_OTHER);
-    }
-    private function generarNuevoCodigoEdicion(string $codigoCurso, ?string $ultimoCodigo): string
-    {
-        $ultimoNumero = (int) substr($ultimoCodigo, -2);
-        return $codigoCurso . '/' . str_pad((string) ++$ultimoNumero, 2, '0', STR_PAD_LEFT);
     }
 }

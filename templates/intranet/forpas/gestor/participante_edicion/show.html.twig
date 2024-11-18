@@ -1,0 +1,93 @@
+{% extends 'intranet/forpas/gestor/index.html.twig' %}
+
+{% block title %}{{ titulo }}{% endblock %}
+
+{% block content %}
+    <div class="pagina-titulo">Portal del Gestor
+        <a href="#" onclick="window.location.href='{{ path('intranet_forpas_gestor') }}';">
+            <span class="mx-3 fa-solid fa-reply" title="Volver"></span>
+        </a>
+    </div>
+
+    <div class="pagina-seccion">{{ titulo }}</div>
+
+    <div class="container-fluid py-4 g-4">
+        <div class="row py-2">
+            <div class="fila-campo">Nif</div>
+            <div class="fila-valor">{{ participante_edicion.participante.nif }}</div>
+        </div>
+        <div class="row py-2">
+            <div class="fila-campo">Apellidos</div>
+            <div class="fila-valor">{{ participante_edicion.participante.apellidos }}</div>
+        </div>
+        <div class="row py-2">
+            <div class="fila-campo">Nombre</div>
+            <div class="fila-valor">{{ participante_edicion.participante.nombre }}</div>
+        </div>
+        <div class="row py-2">
+            <div class="fila-campo">Código CCE</div>
+            <div class="fila-valor">{{ participante_edicion.participante.codigoCce }}</div>
+        </div>
+        <div class="row py-2">
+            <div class="fila-campo">Descripción CCE</div>
+            <div class="fila-valor">{{ participante_edicion.participante.descripcionCce }}</div>
+        </div>
+        <div class="row py-2">
+            <div class="fila-campo">Puesto de trabajo</div>
+            <div class="fila-valor">{{ participante_edicion.participante.puestoTrabajo }}</div>
+        </div>
+        <div class="row py-2">
+            <div class="fila-campo">Grupo</div>
+            <div class="fila-valor">{{ participante_edicion.participante.grupo }}</div>
+        </div>
+        <div class="row py-2">
+            <div class="fila-campo">Nivel</div>
+            <div class="fila-valor">{{ participante_edicion.participante.nivel }}</div>
+        </div>
+        <div class="row py-2">
+            <div class="fila-campo">Centro de destino</div>
+            <div class="fila-valor">{{ participante_edicion.participante.centroDestino }}</div>
+        </div>
+        <div class="row py-2">
+            <div class="fila-campo">Unidad</div>
+            <div class="fila-valor">{{ participante_edicion.participante.unidad }}</div>
+        </div>
+        <div class="row py-2">
+            <div class="fila-campo">Subunidad</div>
+            <div class="fila-valor">{{ participante_edicion.participante.subunidad }}</div>
+        </div>
+        <div class="row py-2">
+            <div class="fila-campo">Situación</div>
+            <div class="fila-valor">{{ participante_edicion.participante.situacionAdmin }}</div>
+        </div>
+        <div class="row py-2">
+            <div class="fila-campo">Régimen jurídico</div>
+            <div class="fila-valor">{{ participante_edicion.participante.tRJuridico }}</div>
+        </div>
+        <div class="row py-2">
+            <div class="fila-campo">Teléfono del trabajo</div>
+            <div class="fila-valor">{{ participante_edicion.participante.telefonoTrabajo }}</div>
+        </div>
+        <div class="row py-2">
+            <div class="fila-campo">Teléfono móvil</div>
+            <div class="fila-valor">{{ participante_edicion.participante.telefonoMovil }}</div>
+        </div>
+        <div class="row py-2">
+            <div class="fila-campo">Teléfono particular</div>
+            <div class="fila-valor">{{ participante_edicion.participante.telefonoParticular }}</div>
+        </div>
+        <div class="row py-2">
+            <div class="fila-campo">Correo</div>
+            <div class="fila-valor">{{ participante_edicion.participante.correoAux }}</div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block botones %}
+    <li class="nav-item me-2">
+        <a class="btn btn-primary" href="#"
+           onclick="window.location.href='{{ path('intranet_forpas_gestor_participante_edicion_index', {'edicionId': participante_edicion.edicion.id}) }}';">
+            <span class="fas fa-reply"></span> Volver
+        </a>
+    </li>
+{% endblock %}
