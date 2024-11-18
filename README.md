@@ -1,7 +1,7 @@
 # Gestión de Formación
 
-![PHPUnit](https://github.com/VictorVaqueroUBU/TFG/actions/workflows/symfony-tests.yml/badge.svg)
-![PHPStan](https://github.com/VictorVaqueroUBU/TFG/actions/workflows/phpstan.yml/badge.svg)
+![PHPUnit](https://github.com/VictorVaqueroUBU/TFG/actions/workflows/symfony-tests.yml/badge.svg?branch=main)
+![PHPStan](https://github.com/VictorVaqueroUBU/TFG/actions/workflows/phpstan.yml/badge.svg?branch=main)
 ![PHP](https://img.shields.io/badge/PHP-8.2-blue)
 ![Symfony](https://img.shields.io/badge/Symfony-7.1-lightgrey)
 ![Licencia](https://img.shields.io/badge/licencia-MIT-green)
@@ -15,15 +15,15 @@ Este proyecto es una aplicación web desarrollada en **Symfony** para la gestió
 - Gestión de formadores: gestión de formadores y su asignación a ediciones con datos específicos como gestión de retribuciones y evaluaciones por parte de los alumnos.
 
 <p align="left">
-   <img src="assets/images/gestor.png" alt="Portal del Gestor" width="500">
+   <img src="assets/images/gestor.png" alt="Portal del Gestor" width="800">
 </p>
 
 <p align="left">
-   <img src="assets/images/cursos.png" alt="Portal del Gestor" width="500">
+   <img src="assets/images/cursos.png" alt="Portal del Gestor" width="800">
 </p>
 
 <p align="left">
-   <img src="assets/images/ediciones.png" alt="Portal del Gestor" width="500">
+   <img src="assets/images/ediciones.png" alt="Portal del Gestor" width="800">
 </p>
 
 ---
