@@ -1,7 +1,7 @@
 # Gestión de Formación
 
-![PHPUnit](https://github.com/VictorVaqueroUBU/TFG/actions/workflows/symfony-tests.yml/badge.svg?branch=main)
-![PHPStan](https://github.com/VictorVaqueroUBU/TFG/actions/workflows/phpstan.yml/badge.svg?branch=main)
+![PHPUnit](https://github.com/VictorVaqueroUBU/TFG/actions/workflows/symfony-tests.yml/badge.svg?event=pull_request)
+![PHPStan](https://github.com/VictorVaqueroUBU/TFG/actions/workflows/phpstan.yml/badge.svg?event=pull_request)
 ![PHP](https://img.shields.io/badge/PHP-8.2-blue)
 ![Symfony](https://img.shields.io/badge/Symfony-7.1-lightgrey)
 ![Licencia](https://img.shields.io/badge/licencia-MIT-green)
