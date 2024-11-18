@@ -61,33 +61,33 @@ Este proyecto es una aplicación web desarrollada en **Symfony** para la gestió
    
 4. Instalar componentes JavaScript
 
-    ```bash
-      bin/console importmap:install
-    ```
+   ```bash
+   bin/console importmap:install
+   ```
 
 5. Instalar componentes JavaScript
 
-    ```bash
-      bin/console sass:build
-    ```
+   ```bash
+   bin/console sass:build
+   ```
 
 6. Crear base de datos
 
-    ```mysql
-    CREATE DATABASE IF NOT EXISTS formacion;
-    ```
+   ```mysql
+   CREATE DATABASE IF NOT EXISTS formacion;
+   ```
 
 7. Crear usuario
 
-    ```mysql
-    CREATE USER IF NOT EXISTS 'Usuario'@'localhost' IDENTIFIED BY 'Clave';
-    ```
+   ```mysql
+   CREATE USER IF NOT EXISTS 'Usuario'@'localhost' IDENTIFIED BY 'Clave';
+   ```
 
 8. Dar acceso
 
-    ```mysql
-    GRANT ALL PRIVILEGES ON formacion.* TO 'Usuario'@'localhost';
-    ```
+   ```mysql
+   GRANT ALL PRIVILEGES ON formacion.* TO 'Usuario'@'localhost';
+   ```
 
 9. Configura las variables de entorno en el archivo `.env`. Asegúrate de incluir la URL de tu base de datos:
 
@@ -109,7 +109,7 @@ Este proyecto es una aplicación web desarrollada en **Symfony** para la gestió
 
 12. Accede a la aplicación en tu navegador en la dirección:
 
-   ```
+   ```bash
    https://localhost:8000/intranet/forpas/gestor
    ```
 
@@ -122,15 +122,15 @@ Este proyecto utiliza:
 
 Para ejecutar las pruebas: 
 
-```bash
-php bin/phpunit
-```
+   ```bash
+   php bin/phpunit
+   ```
 
 - PHPStan para verificar posibles errores estáticos y asegurar la calidad del código.
 
-```bash
-php vendor/bin/phpstan analyse --configuration=phpstan.dist.neon > phpstan_report.txt
-```
+   ```bash
+   php vendor/bin/phpstan analyse --configuration=phpstan.dist.neon > phpstan_report.txt
+   ```
 
 ---
 
