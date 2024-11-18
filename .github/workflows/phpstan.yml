@@ -3,7 +3,7 @@ name: Run PHPStan
 on:
   push:
     branches:
-      - developer
+      - main
   pull_request:
     branches:
       - main
