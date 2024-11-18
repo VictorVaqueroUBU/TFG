@@ -43,94 +43,93 @@ Este proyecto es una aplicación web desarrollada en **Symfony** para la gestió
 
 1. Clona este repositorio en tu máquina local:
 
-   ```bash
-   git clone https://github.com/VictorVaqueroUBU/TFG.git
-   ```
+```bash
+    git clone https://github.com/VictorVaqueroUBU/TFG.git
+```
 
 2. Ve al directorio del proyecto:
 
-   ```bash
-   cd tu-repositorio
-   ```
+```bash
+    cd tu-repositorio
+```
 
 3. Instala las dependencias con Composer:
 
-   ```bash
-   composer install
-   ```
+```bash
+    composer install
+```
    
 4. Instalar componentes JavaScript
 
-   ```bash
-   bin/console importmap:install
-   ```
+```bash
+    bin/console importmap:install
+```
 
 5. Instalar componentes JavaScript
 
-   ```bash
-   bin/console sass:build
-   ```
+```bash
+    bin/console sass:build
+```
 
 6. Crear base de datos
 
-   ```mysql
-   CREATE DATABASE IF NOT EXISTS formacion;
-   ```
+```mysql
+    CREATE DATABASE IF NOT EXISTS formacion;
+```
 
 7. Crear usuario
 
-   ```mysql
-   CREATE USER IF NOT EXISTS 'Usuario'@'localhost' IDENTIFIED BY 'Clave';
-   ```
+```mysql
+    CREATE USER IF NOT EXISTS 'Usuario'@'localhost' IDENTIFIED BY 'Clave';
+```
 
 8. Dar acceso
 
-   ```mysql
-   GRANT ALL PRIVILEGES ON formacion.* TO 'Usuario'@'localhost';
-   ```
+```mysql
+    GRANT ALL PRIVILEGES ON formacion.* TO 'Usuario'@'localhost';
+```
 
 9. Configura las variables de entorno en el archivo `.env`. Asegúrate de incluir la URL de tu base de datos:
 
-   ```dotenv
-   DATABASE_URL="mysql://usuario:contraseña@127.0.0.1:3306/formacion?serverVersion=8.0"
-   ```
+```dotenv
+    DATABASE_URL="mysql://usuario:contraseña@127.0.0.1:3306/formacion?serverVersion=8.0"
+```
 
 10. Realiza las migraciones de la base de datos:
 
-   ```bash
-   php bin/console doctrine:migrations:migrate
-   ```
+```bash
+    php bin/console doctrine:migrations:migrate
+```
 
 11. Levanta el servidor de desarrollo:
 
-   ```bash
-   symfony server:start
-   ```
+```bash
+    symfony server:start
+```
 
 12. Accede a la aplicación en tu navegador en la dirección:
 
-   ```bash
-   https://localhost:8000/intranet/forpas/gestor
-   ```
+```bash
+    https://localhost:8000/intranet/forpas/gestor
+```
 
 ---
 
 ## Tests
 
 Este proyecto utiliza:
+
 - PHPUnit para las pruebas automatizadas.
 
-Para ejecutar las pruebas: 
-
-   ```bash
-   php bin/phpunit
-   ```
+```bash
+    php bin/phpunit
+```
 
 - PHPStan para verificar posibles errores estáticos y asegurar la calidad del código.
 
-   ```bash
-   php vendor/bin/phpstan analyse --configuration=phpstan.dist.neon > phpstan_report.txt
-   ```
+```bash
+    php vendor/bin/phpstan analyse --configuration=phpstan.dist.neon > phpstan_report.txt
+```
 
 ---
 
