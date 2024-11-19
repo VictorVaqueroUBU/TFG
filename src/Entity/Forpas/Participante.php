@@ -2,12 +2,12 @@
 
 namespace App\Entity\Forpas;
 
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use App\Repository\Forpas\ParticipanteRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use DateTimeInterface;
 
 #[UniqueEntity(fields: ['nif'], message: 'El NIF indicado ya está dado de alta.')]
@@ -108,6 +108,10 @@ class Participante
      */
     #[ORM\OneToMany(targetEntity: ParticipanteEdicion::class, mappedBy: 'participante', orphanRemoval: true)]
     private Collection $participanteEdiciones;
+
+    #[ORM\OneToOne(inversedBy: 'participante', cascade: ['persist', 'remove'])]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Usuario $usuario = null;
 
     public function __construct()
     {
@@ -481,6 +485,18 @@ class Participante
                 $participanteEdicion->setParticipante(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getUsuario(): ?Usuario
+    {
+        return $this->usuario;
+    }
+
+    public function setUsuario(Usuario $usuario): static
+    {
+        $this->usuario = $usuario;
 
         return $this;
     }

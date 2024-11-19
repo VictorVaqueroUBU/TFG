@@ -48,6 +48,10 @@ class Formador
     #[ORM\OneToMany(targetEntity: FormadorEdicion::class, mappedBy: 'formador', orphanRemoval: true)]
     private Collection $formadorEdiciones;
 
+    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Usuario $usuario = null;
+
     public function __construct()
     {
         $this->formadorEdiciones = new ArrayCollection();
@@ -180,6 +184,18 @@ class Formador
                 $formadorEdicion->setFormador(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getUsuario(): ?Usuario
+    {
+        return $this->usuario;
+    }
+
+    public function setUsuario(Usuario $usuario): static
+    {
+        $this->usuario = $usuario;
 
         return $this;
     }

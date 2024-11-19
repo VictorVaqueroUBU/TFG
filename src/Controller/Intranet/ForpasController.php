@@ -14,7 +14,7 @@ use Symfony\Component\Routing\Attribute\Route;
  * Controlador para gestionar el acceso a la aplicación Forpas.
  * @author Víctor M. Vaquero <vvm1002@alu.ubu.es>
  */
-#[Route(path: '/intranet/forpas', name: 'intranet_forpas_')]
+#[Route(path: '/intranet/forpas', name: 'intranet_forpas')]
 class ForpasController extends AbstractController
 {
     #[Route(path: '/', name: '', defaults: ['titulo' => 'Portal de Forpas'])]
@@ -24,11 +24,11 @@ class ForpasController extends AbstractController
     }
 
     // TODO: Aquí crearemos una función por cada Rol (Gestor, Usuario, Formador)
-    #[Route(path: '/gestor', name: 'gestor', defaults: ['titulo' => 'Gestión de Entidades'])]
+    #[Route(path: '/gestor', name: '_gestor', defaults: ['titulo' => 'Gestión de Entidades'])]
     public function forpasGestor(CursoRepository $cursoRepository, EdicionRepository $edicionRepository,
                                  ParticipanteRepository $participanteRepository, FormadorRepository $formadorRepository): Response
     {
-        //$this->denyAccessUnlessGranted('gestor');
+        //$this->denyAccessUnlessGranted('ROLE_ADMIN');
         return $this->render('intranet/forpas/gestor/index.html.twig', [
             'cursos' => $cursoRepository->findAll(),
             'ediciones' => $edicionRepository->findAll(),

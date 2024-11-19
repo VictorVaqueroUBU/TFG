@@ -3,9 +3,10 @@
 namespace App\Entity\Forpas;
 
 use App\Repository\Forpas\FormadorEdicionRepository;
+use DateTimeInterface;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-Use DateTimeInterface;
+
 #[ORM\Entity(repositoryClass: FormadorEdicionRepository::class)]
 class FormadorEdicion
 {
