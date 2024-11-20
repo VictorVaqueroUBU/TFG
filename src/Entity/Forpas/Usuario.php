@@ -44,6 +44,7 @@ class Usuario implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\OneToOne(mappedBy: 'usuario', cascade: ['persist', 'remove'])]
     private ?Formador $formador = null;
+
     public function getId(): ?int
     {
         return $this->id;

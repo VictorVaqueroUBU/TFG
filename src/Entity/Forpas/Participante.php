@@ -3,12 +3,12 @@
 namespace App\Entity\Forpas;
 
 use App\Repository\Forpas\ParticipanteRepository;
+use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
-use DateTimeInterface;
 
 #[UniqueEntity(fields: ['nif'], message: 'El NIF indicado ya está dado de alta.')]
 #[ORM\Entity(repositoryClass: ParticipanteRepository::class)]

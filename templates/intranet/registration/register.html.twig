@@ -1,0 +1,18 @@
+{% extends 'intranet/forpas/gestor/index.html.twig' %}
+
+{% block title %}{{ titulo }}{% endblock %}
+
+{% block content %}
+    <div class="pagina-seccion">{{ titulo }}</div>
+
+    {{ form_errors(registrationForm) }}
+
+    {{ form_start(registrationForm) }}
+    {{ form_widget(registrationForm) }}
+
+    <!-- Botón "Guardar" -->
+    <button class="btn btn-primary">
+        <span class="fas fa-save"></span> {{ button_label|default('Registrar') }}
+    </button>
+    {{ form_end(registrationForm) }}
+{% endblock %}

@@ -39,6 +39,13 @@
                     <span class="fas fa-sign-in-alt"></span> Iniciar Sesión
                 </button>
             </form>
+
+            <!-- Enlace a la página de registro -->
+            <div class="text-center mt-3">
+                <small>¿No tienes una cuenta?
+                    <a href="{{ path('intranet_register') }}">Regístrese aquí</a>
+                </small>
+            </div>
         </div>
     {% endif %}
 {% endblock %}
