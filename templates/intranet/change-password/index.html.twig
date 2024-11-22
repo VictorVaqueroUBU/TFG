@@ -1,0 +1,31 @@
+{% extends 'intranet/_index_aplicacion_generico.html.twig' %}
+
+{% block title %}{{ titulo }}{% endblock %}
+
+{% block content %}
+    <div class="pagina-seccion"> {{ titulo }} </div>
+
+    <form method="post" class="login-form">
+        <div class="form-group">
+            <label for="temporary_password">Contraseña Temporal</label>
+            <input type="password" name="temporary_password" id="temporary_password"
+                   class="form-control" required>
+        </div>
+
+        <div class="form-group">
+            <label for="new_password">Nueva Contraseña</label>
+            <input type="password" name="new_password" id="new_password"
+                   class="form-control" required>
+        </div>
+
+        <div class="form-group">
+            <label for="confirm_password">Confirmar Nueva Contraseña</label>
+            <input type="password" name="confirm_password" id="confirm_password"
+                   class="form-control" required>
+        </div>
+
+        <button class="btn btn-primary mt-3 w-100">
+            Cambiar Contraseña
+        </button>
+    </form>
+{% endblock %}

@@ -5,21 +5,21 @@ namespace App\Entity\Forpas;
 use App\Repository\Forpas\UsuarioRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
-use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: UsuarioRepository::class)]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_USERNAME', fields: ['username'])]
-#[UniqueEntity(fields: ['username'], message: 'There is already an account with this username')]
-class Usuario implements UserInterface, PasswordAuthenticatedUserInterface
+#[UniqueEntity(fields: ['email'], message: 'Ya existe una cuenta con este correo electrónico')]
+#[UniqueEntity(fields: ['username'], message: 'Ya existe una cuenta con ese nombre de usuario')]
+class Usuario implements UserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 180)]
-    private ?string $username = null;
+    #[ORM\Column(length: 180, unique: true, nullable: false)]
+    private string $username;
 
     /**
      * @var list<string> The user roles
@@ -30,14 +30,14 @@ class Usuario implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var string The hashed password
      */
-    #[ORM\Column]
-    private ?string $password = null;
+    #[ORM\Column(nullable: false)]
+    private string $password;
 
     #[ORM\Column(length: 50)]
-    private ?string $correo1 = null;
+    private string $email;
 
-    #[ORM\Column(length: 50, nullable: true)]
-    private ?string $correo2 = null;
+    #[ORM\Column]
+    private bool $verified;
 
     #[ORM\OneToOne(mappedBy: 'usuario', cascade: ['persist', 'remove'])]
     private ?Participante $participante = null;
@@ -45,7 +45,7 @@ class Usuario implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToOne(mappedBy: 'usuario', cascade: ['persist', 'remove'])]
     private ?Formador $formador = null;
 
-    public function getId(): ?int
+    public function getId(): int
     {
         return $this->id;
     }
@@ -69,7 +69,7 @@ class Usuario implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function getUserIdentifier(): string
     {
-        return (string) $this->username;
+        return $this->username;
     }
 
     /**
@@ -120,26 +120,25 @@ class Usuario implements UserInterface, PasswordAuthenticatedUserInterface
         // $this->plainPassword = null;
     }
 
-    public function getCorreo1(): ?string
+    public function getEmail(): ?string
     {
-        return $this->correo1;
+        return $this->email;
     }
 
-    public function setCorreo1(string $correo1): static
+    public function setEmail(string $email): static
     {
-        $this->correo1 = $correo1;
+        $this->email = $email;
 
         return $this;
     }
-
-    public function getCorreo2(): ?string
+    public function isVerified(): ?bool
     {
-        return $this->correo2;
+        return $this->verified;
     }
 
-    public function setCorreo2(?string $correo2): static
+    public function setVerified(bool $verified): static
     {
-        $this->correo2 = $correo2;
+        $this->verified = $verified;
 
         return $this;
     }

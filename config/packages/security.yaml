@@ -19,6 +19,8 @@ security:
             form_login:
                 login_path: intranet_login
                 check_path: intranet_login
+                success_handler: App\Security\LoginSuccessHandler
+                failure_path: intranet_login
             logout:
                 path: logout
                 target: /
@@ -33,9 +35,11 @@ security:
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
-        #- { path: ^/gestor, roles: ROLE_GESTOR }
+        - { path: ^/intranet/forpas/gestor, roles: ROLE_ADMIN }
+        - { path: ^/intranet/forpas/, roles: IS_AUTHENTICATED_FULLY }
+        #- { path: ^/gestor, roles: ROLE_ADMIN }
         #- { path: ^/formador, roles: ROLE_FORMADOR }
-        #- { path: ^/participante, roles: ROLE_PARTICIPANTE }
+        #- { path: ^/participante, roles: ROLE_USER }
         #- { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }  # Ruta de login accesible para todos
 
 when@test:
