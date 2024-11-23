@@ -7,7 +7,7 @@
 
     {% if app.user %}
         <div class="mb-5 mt-5 text-center">
-            Estás logado/a como {{ app.user.userIdentifier }}.
+            Estás logado/a como <b>{{ app.user.userIdentifier }}</b>.
             <a class="btn btn-secondary" href="{{ path('logout') }}">
                 <span class="fas fa-sign-out-alt"></span> Logout
             </a>
@@ -42,7 +42,7 @@
 
             <!-- Enlace a la página de registro -->
             <div class="text-center mt-3">
-                <small>¿No tienes una cuenta?
+                <small class="fs-6">¿No tienes una cuenta?
                     <a href="{{ path('intranet_register') }}">Regístrese aquí</a>
                 </small>
             </div>

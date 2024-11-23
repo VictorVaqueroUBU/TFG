@@ -6,7 +6,7 @@ security:
     providers:
         app_user_provider:
             entity:
-                class: App\Entity\Forpas\Usuario
+                class: App\Entity\Sistema\Usuario
                 property: username
 
     firewalls:
@@ -36,11 +36,8 @@ security:
     # Note: Only the *first* access control that matches will be used
     access_control:
         - { path: ^/intranet/forpas/gestor, roles: ROLE_ADMIN }
-        - { path: ^/intranet/forpas/, roles: IS_AUTHENTICATED_FULLY }
-        #- { path: ^/gestor, roles: ROLE_ADMIN }
-        #- { path: ^/formador, roles: ROLE_FORMADOR }
-        #- { path: ^/participante, roles: ROLE_USER }
-        #- { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }  # Ruta de login accesible para todos
+        - { path: ^/intranet/forpas/participante, roles: ROLE_USER }
+        - { path: ^/intranet/forpas/, roles: IS_AUTHENTICATED_FULLY }  # Ruta de login accesible para todos
 
 when@test:
     security:

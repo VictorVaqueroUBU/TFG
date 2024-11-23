@@ -1,2 +1,23 @@
 {% extends 'intranet/_index_aplicacion_generico.html.twig' %}
 {% set titulo = titulo | default('Servicio de Formación') %}
+{% block content %}
+    <div class="pagina-seccion">{{ titulo }}</div>
+    <div class="row">
+        {% for acceso in accesos %}
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <span class="{{ acceso.icono }} fa-3x mb-3"></span>
+                        <h5>{{ acceso.nombre }}</h5>
+                        <a href="{{ acceso.ruta }}" class="btn btn-primary mt-3">Acceder</a>
+                    </div>
+                </div>
+            </div>
+            <div class="w-100"></div>
+        {% endfor %}
+    </div>
+{% endblock %}
+
+{% block js %}
+    {{ parent() }}
+{% endblock %}

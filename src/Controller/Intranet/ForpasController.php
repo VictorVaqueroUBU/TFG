@@ -11,18 +11,46 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
 /**
- * Controlador para gestionar el acceso a la aplicación Forpas.
+ * Controlador para gestionar el acceso a las distintas aplicaciones de Forpas.
  * @author Víctor M. Vaquero <vvm1002@alu.ubu.es>
  */
 #[Route(path: '/intranet/forpas', name: 'intranet_forpas')]
 class ForpasController extends AbstractController
 {
-    #[Route(path: '/', name: '', defaults: ['titulo' => 'Portal de Forpas'])]
+    #[Route(path: '/', name: '', defaults: ['titulo' => 'Servicio de Formación'])]
     public function inicio(): Response
     {
-        return $this->render("intranet/forpas/index.html.twig");
-    }
+        $user = $this->getUser();
+        $accesos = [];
 
+        if ($this->isGranted('ROLE_USER')) {
+            $accesos[] = [
+                'nombre' => 'Portal del Participante',
+                'ruta' => $this->generateUrl('intranet_forpas_participante'),
+                'icono' => 'fas fa-user-graduate',
+            ];
+        }
+
+        if ($this->isGranted('ROLE_ADMIN')) {
+            $accesos[] = [
+                'nombre' => 'Portal del Gestor',
+                'ruta' => $this->generateUrl('intranet_forpas_gestor'),
+                'icono' => 'fas fa-tools',
+            ];
+        }
+
+        /*if ($this->isGranted('ROLE_TEACHER')) {
+            $accesos[] = [
+                'nombre' => 'Portal del Formador',
+                'ruta' => $this->generateUrl('intranet_forpas_formador'),
+                'icono' => 'fas fa-chalkboard-teacher',
+            ];
+        }*/
+
+        return $this->render('intranet/forpas/index.html.twig', [
+            'accesos' => $accesos,
+        ]);
+    }
     // TODO: Aquí crearemos una función por cada Rol (Gestor, Usuario, Formador)
     #[Route(path: '/gestor', name: '_gestor', defaults: ['titulo' => 'Gestión de Entidades'])]
     public function forpasGestor(CursoRepository $cursoRepository, EdicionRepository $edicionRepository,
@@ -35,5 +63,10 @@ class ForpasController extends AbstractController
             'participantes' => $participanteRepository->findAll(),
             'formadores' => $formadorRepository->findAll(),
         ]);
+    }
+    #[Route(path: '/participante', name: '_participante', defaults: ['titulo' => 'Acciones disponibles'])]
+    public function forpasParticipante(): Response
+    {
+        return $this->render('intranet/forpas/participante/index.html.twig');
     }
 }

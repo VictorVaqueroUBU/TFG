@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Form\Forpas;
+namespace App\Form\Sistema;
 
-use App\Entity\Forpas\Usuario;
+use App\Entity\Sistema\Usuario;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;

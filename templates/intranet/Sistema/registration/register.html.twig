@@ -1,4 +1,4 @@
-{% extends 'intranet/forpas/gestor/index.html.twig' %}
+{% extends 'intranet/_index_aplicacion_generico.html.twig' %}
 
 {% block title %}{{ titulo }}{% endblock %}
 
@@ -9,6 +9,11 @@
     {{ form_start(registrationForm) }}
     {{ form_widget(registrationForm) }}
 
+    <!-- Botón "Volver" -->
+    <a class="btn btn-primary" href="#"
+       onclick="window.location.href='{{ path('intranet_index') }}';">
+        <span class="fas fa-reply"></span> Volver
+    </a>
     <!-- Botón "Guardar" -->
     <button class="btn btn-primary">
         <span class="fas fa-save"></span> {{ button_label|default('Registrar') }}

@@ -1,11 +1,15 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\Intranet;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
+/**
+ * Controlador para gestionar la redirección a la aplicación Forpas.
+ * @author Víctor M. Vaquero <vvm1002@alu.ubu.es>
+ */
 class IndexController extends AbstractController
 {
     #[Route('/', name: 'index')]

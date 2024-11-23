@@ -2,6 +2,7 @@
 
 namespace App\Entity\Forpas;
 
+use App\Entity\Sistema\Usuario;
 use App\Repository\Forpas\ParticipanteRepository;
 use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;

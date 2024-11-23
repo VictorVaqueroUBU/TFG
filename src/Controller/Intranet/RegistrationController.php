@@ -1,22 +1,27 @@
 <?php
 
-namespace App\Controller\Forpas;
+namespace App\Controller\Intranet;
 
 use App\Entity\Forpas\Participante;
-use App\Entity\Forpas\Usuario;
-use App\Form\Forpas\RegistrationFormType;
+use App\Entity\Sistema\Usuario;
+use App\Form\Sistema\RegistrationFormType;
+use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Random\RandomException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 
+/**
+ * Controlador para gestionar el registro del usuario
+ * @author Víctor M. Vaquero <vvm1002@alu.ubu.es>
+ */
 class RegistrationController extends AbstractController
 {
     private ParameterBagInterface $params;
@@ -36,9 +41,9 @@ class RegistrationController extends AbstractController
         UserPasswordHasherInterface $passwordHasher
     ): Response {
 
-        // Redirigir si el usuario ya está logado
+        // Redirigir si el usuario ya ha iniciado sesión
         if ($this->getUser()) {
-            $this->addFlash('warning', 'Ya estás logado. No puedes acceder a la página de registro.');
+            $this->addFlash('warning', 'Ya has iniciado sesión. No puedes acceder a la página de registro.');
             return $this->redirectToRoute('intranet_index');
         }
 
@@ -60,7 +65,8 @@ class RegistrationController extends AbstractController
             $passwordTemporal = substr(bin2hex(random_bytes(8)), 0, 8);
             $user->setPassword($passwordHasher->hashPassword($user, $passwordTemporal));
             $user->setRoles(['ROLE_USER']);
-            $user->setVerified(False);
+            $user->setVerified(false);
+            $user->setCreatedAt(new DateTimeImmutable('now'));
 
             // Damos de alta al Participante
             $participante = new Participante();
@@ -98,7 +104,7 @@ class RegistrationController extends AbstractController
             return $this->redirectToRoute('index');
         }
 
-        return $this->render('intranet/registration/register.html.twig', [
+        return $this->render('/intranet/sistema/registration/register.html.twig', [
             'registrationForm' => $form,
         ]);
     }

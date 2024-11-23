@@ -1,7 +1,9 @@
 {% extends '/intranet/forpas/index.html.twig' %}
-
+{% block migas %}
+    <li class="breadcrumb-item"><a href="{{ path('intranet_forpas') }}"><i class="fas fa-home"></i> Servicio de Formación</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Portal del Gestor</li>
+{% endblock %}
 {% block title %}{{ titulo }}{% endblock %}
-
 {% block content %}
     <div class="pagina-titulo">Portal del Gestor</div>
 
@@ -15,5 +17,3 @@
         <li><a href="{{ path('intranet_forpas_gestor_formador_index') }}">Gestionar formadores</a></li>
     </ul>
 {% endblock %}
-
-{% block migas %}{% endblock %}

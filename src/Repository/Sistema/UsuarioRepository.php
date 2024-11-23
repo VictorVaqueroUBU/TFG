@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Repository\Forpas;
+namespace App\Repository\Sistema;
 
-use App\Entity\Forpas\Usuario;
+use App\Entity\Sistema\Usuario;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;

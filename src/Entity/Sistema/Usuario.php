@@ -1,8 +1,13 @@
 <?php
 
-namespace App\Entity\Forpas;
+namespace App\Entity\Sistema;
 
-use App\Repository\Forpas\UsuarioRepository;
+use App\Entity\Forpas\Formador;
+use App\Entity\Forpas\Participante;
+use App\Repository\Sistema\UsuarioRepository;
+use DateTimeImmutable;
+use DateTimeInterface;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -38,6 +43,12 @@ class Usuario implements UserInterface
 
     #[ORM\Column]
     private bool $verified;
+
+    #[ORM\Column(nullable: false)]
+    private DateTimeImmutable $createdAt;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?DateTimeInterface $passwordChangedAt = null;
 
     #[ORM\OneToOne(mappedBy: 'usuario', cascade: ['persist', 'remove'])]
     private ?Participante $participante = null;
@@ -143,6 +154,30 @@ class Usuario implements UserInterface
         return $this;
     }
 
+    public function getCreatedAt(): DateTimeImmutable
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(DateTimeImmutable $createdAt): static
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+    
+    public function getPasswordChangedAt(): ?DateTimeInterface
+    {
+        return $this->passwordChangedAt;
+    }
+
+    public function setPasswordChangedAt(?DateTimeInterface $passwordChangedAt): static
+    {
+        $this->passwordChangedAt = $passwordChangedAt;
+
+        return $this;
+    }
+    
     public function getParticipante(): ?Participante
     {
         return $this->participante;
