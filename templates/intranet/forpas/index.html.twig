@@ -1,4 +1,17 @@
 {% extends 'intranet/_index_aplicacion_generico.html.twig' %}
+{% block migas %}
+    <li class="breadcrumb-item"><a href="{{ path('intranet_forpas') }}"><i class="fas fa-home"></i> Servicio de Formación</a></li>
+{% endblock %}
+{% block usuario %}
+    <div class="dropdown">
+        <a class="dropdown-toggle text-light" href="#" id="userMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            {{ app.user.participante.nombre() ~ ' ' ~ app.user.participante.apellidos()|default(app.user.username) }} <i class="fas fa-user-circle"></i>
+        </a>
+        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenu">
+            <li><a class="dropdown-item" href="{{ path('logout') }}"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</a></li>
+        </ul>
+    </div>
+{% endblock %}
 {% set titulo = titulo | default('Servicio de Formación') %}
 {% block content %}
     <div class="pagina-seccion">{{ titulo }}</div>

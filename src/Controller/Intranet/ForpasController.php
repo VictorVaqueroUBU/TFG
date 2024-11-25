@@ -20,7 +20,6 @@ class ForpasController extends AbstractController
     #[Route(path: '/', name: '', defaults: ['titulo' => 'Servicio de Formación'])]
     public function inicio(): Response
     {
-        $user = $this->getUser();
         $accesos = [];
 
         if ($this->isGranted('ROLE_USER')) {

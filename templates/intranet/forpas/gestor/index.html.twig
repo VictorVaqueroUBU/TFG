@@ -1,19 +1,54 @@
 {% extends '/intranet/forpas/index.html.twig' %}
 {% block migas %}
-    <li class="breadcrumb-item"><a href="{{ path('intranet_forpas') }}"><i class="fas fa-home"></i> Servicio de Formación</a></li>
-    <li class="breadcrumb-item active" aria-current="page">Portal del Gestor</li>
+    {{ parent() }}
+    <li class="breadcrumb-item active" aria-current="page"><a href="{{ path('intranet_forpas_gestor') }}">Portal del Gestor</a></li>
 {% endblock %}
 {% block title %}{{ titulo }}{% endblock %}
 {% block content %}
     <div class="pagina-titulo">Portal del Gestor</div>
 
     <div class="pagina-seccion">{{ titulo }}</div>
-    <ul>
-        <li><a href="{{ path('intranet_forpas_gestor_curso_index') }}">Gestionar cursos</a></li>
-        {% if ediciones %}
-            <li><a href="{{ path('intranet_forpas_gestor_edicion_index') }}">Gestionar ediciones</a></li>
-        {% endif %}
-        <li><a href="{{ path('intranet_forpas_gestor_participante_index') }}">Gestionar participantes</a></li>
-        <li><a href="{{ path('intranet_forpas_gestor_formador_index') }}">Gestionar formadores</a></li>
-    </ul>
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <ul class="list-unstyled">
+                    <li class="d-flex align-items-center mb-2">
+                        <a href="{{ path('intranet_forpas_gestor_curso_index') }}" class="text-decoration-none d-flex align-items-center">
+                        <span class="me-3 d-flex justify-content-center" style="width: 30px;">
+                            <i class="fas fa-book"></i>
+                        </span>
+                            Gestionar cursos
+                        </a>
+                    </li>
+                    {% if ediciones %}
+                        <li class="d-flex align-items-center mb-2">
+                            <a href="{{ path('intranet_forpas_gestor_edicion_index') }}" class="text-decoration-none d-flex align-items-center">
+                            <span class="me-3 d-flex justify-content-center" style="width: 30px;">
+                                <i class="fas fa-list"></i>
+                            </span>
+                                Gestionar ediciones
+                            </a>
+                        </li>
+                    {% endif %}
+                    <li class="d-flex align-items-center mb-2">
+                        <a href="{{ path('intranet_forpas_gestor_participante_index') }}" class="text-decoration-none d-flex align-items-center">
+                        <span class="me-3 d-flex justify-content-center" style="width: 30px;">
+                            <i class="fas fa-user-graduate"></i>
+                        </span>
+                            Gestionar participantes
+                        </a>
+                    </li>
+                    <li class="d-flex align-items-center mb-2">
+                        <a href="{{ path('intranet_forpas_gestor_formador_index') }}" class="text-decoration-none d-flex align-items-center">
+                        <span class="me-3 d-flex justify-content-center" style="width: 30px;">
+                            <i class="fas fa-chalkboard-teacher"></i>
+                        </span>
+                            Gestionar formadores
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="w-100"></div>
 {% endblock %}

@@ -1,14 +1,37 @@
-{% extends '/intranet/forpas/index.html.twig' %}
+{% extends 'intranet/forpas/index.html.twig' %}
 {% block migas %}
-    <li class="breadcrumb-item"><a href="{{ path('intranet_forpas') }}"><i class="fas fa-home"></i> Servicio de Formación</a></li>
-    <li class="breadcrumb-item active" aria-current="page">Portal del Participante</li>
+    {{ parent() }}
+    <li class="breadcrumb-item active" aria-current="page"><a href="{{ path('intranet_forpas_participante') }}">Portal del Participante</a></li>
 {% endblock %}
 {% block title %}{{ titulo }}{% endblock %}
 {% block content %}
     <div class="pagina-titulo">Portal del Participante</div>
 
     <div class="pagina-seccion">{{ titulo }}</div>
-    <ul>
-        <li><a href="{{ path('intranet_forpas_participante_mis_datos', {'id': app.user.participante.id}) }}">Mis datos de contacto</a></li>
-    </ul>
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <ul class="list-unstyled">
+                    <li class="d-flex align-items-center mb-2">
+                        <a href="{{ path('intranet_forpas_participante_mis_datos') }}"
+                           class="text-decoration-none d-flex align-items-center">
+                        <span class="me-3 d-flex justify-content-center" style="width: 30px;">
+                            <i class="fas fas fa-address-book"></i>
+                        </span>
+                            Mis datos de contacto
+                        </a>
+                    </li>
+                    <li class="d-flex align-items-center mb-2">
+                        <a href="{{ path('intranet_forpas_participante_ficha_formativa') }}"
+                           class="text-decoration-none d-flex align-items-center">
+                        <span class="me-3 d-flex justify-content-center" style="width: 30px;">
+                            <i class="fas fa-user-graduate"></i>
+                        </span>
+                            Ficha formativa personal
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
 {% endblock %}
