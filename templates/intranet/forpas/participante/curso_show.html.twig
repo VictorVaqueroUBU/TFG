@@ -1,4 +1,4 @@
-{% extends 'intranet/forpas/gestor/index.html.twig' %}
+{% extends 'intranet/forpas/participante/index.html.twig' %}
 {% block migas %}
     {{ parent() }}
     <li class="breadcrumb-item active" aria-current="page">{{ titulo }}</li>
@@ -6,7 +6,7 @@
 {% block title %}{{ titulo }}{% endblock %}
 
 {% block content %}
-    <div class="pagina-titulo">Portal del Gestor</div>
+    <div class="pagina-titulo">Portal del Participante</div>
 
     <div class="pagina-seccion">{{ titulo }}</div>
 
@@ -99,19 +99,8 @@
 {% block botones %}
     <li class="nav-item me-2">
         <a class="btn btn-primary" href="#"
-           onclick="window.location.href='{{ path('intranet_forpas_gestor_curso_index') }}';">
+           onclick="window.location.href='{{ path('intranet_forpas_participante_cursos') }}';">
             <span class="fas fa-reply"></span> Volver
         </a>
-    </li>
-
-    <li class="nav-item me-2">
-        <a class="btn btn-primary"
-           href="{{ path('intranet_forpas_gestor_curso_edit', {'id': curso.id}) }}">
-            <span class="fas fa-edit"></span> Editar
-        </a>
-    </li>
-
-    <li class="nav-item ms-5 me-2">
-        {{ include('intranet/forpas/gestor/curso/_delete_form.html.twig', { 'id': curso.id, 'buttonType': 'primary' }) }}
     </li>
 {% endblock %}

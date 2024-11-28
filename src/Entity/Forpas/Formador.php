@@ -171,7 +171,6 @@ class Formador
     {
         if (!$this->formadorEdiciones->contains($formadorEdicion)) {
             $this->formadorEdiciones->add($formadorEdicion);
-            $formadorEdicion->setFormador($this);
         }
 
         return $this;

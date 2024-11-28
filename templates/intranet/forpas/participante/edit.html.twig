@@ -1,5 +1,8 @@
 {% extends 'intranet/forpas/participante/index.html.twig' %}
-
+{% block migas %}
+    {{ parent() }}
+    <li class="breadcrumb-item active" aria-current="page">Mis Datos</li>
+{% endblock %}
 {% block title %}{{ titulo }}{% endblock %}
 
 {% block content %}

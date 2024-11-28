@@ -2,6 +2,7 @@
 
 namespace App\Repository\Forpas;
 
+use App\Entity\Forpas\Curso;
 use App\Entity\Forpas\Edicion;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -83,6 +84,23 @@ class EdicionRepository extends ServiceEntityRepository
 
         // Devolvemos el código libre en el formato "codigoCurso/XX"
         return sprintf('%s/%02d', $codigoCurso, $siguienteNumeroLibre);
+    }
+
+    /**
+     * Método para obtener las ediciones de un curso, excluyendo la edición que termina en "/00".
+     *
+     * @param Curso $curso La entidad del curso para el que se desean obtener las ediciones.
+     * @return Edicion[] Retorna un array de objetos de la entidad Edicion que cumplen con el criterio de búsqueda.
+     */
+    public function findEdicionesSinCeroCero(Curso $curso): array
+    {
+        return $this->createQueryBuilder('e')
+            ->where('e.curso = :curso')
+            ->andWhere('e.codigo_edicion NOT LIKE :codigo')
+            ->setParameter('curso', $curso)
+            ->setParameter('codigo', '%/00')
+            ->getQuery()
+            ->getResult();
     }
 
 //    /**

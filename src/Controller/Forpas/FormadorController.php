@@ -45,7 +45,7 @@ final class FormadorController extends AbstractController
             'form' => $form,
         ]);
     }
-    #[Route(path: '/append/{id}', name: 'append', defaults: ['titulo' => 'Seleccionar Formador'], methods: ['GET'])]
+    #[Route(path: '/append/{id}', name: 'append', defaults: ['titulo' => 'Añadir Formador'], methods: ['GET'])]
     public function append(int $id, EdicionRepository $edicionRepository, FormadorRepository $formadorRepository): Response
     {
         // Obtenemos la edición actual

@@ -1,4 +1,4 @@
-{% extends 'intranet/forpas/gestor/index.html.twig' %}
+{% extends 'intranet/forpas/participante/index.html.twig' %}
 {% block migas %}
     {{ parent() }}
     <li class="breadcrumb-item active" aria-current="page">{{ titulo }}</li>
@@ -6,39 +6,20 @@
 {% block title %}{{ titulo }}{% endblock %}
 
 {% block content %}
-    <div class="pagina-titulo">Portal del Gestor</div>
+    <div class="pagina-titulo">Portal del Participante</div>
 
     <div class="pagina-seccion">{{ titulo }}</div>
 
-    <div class="mb-4">
-        <form id="filterForm" method="get" action="{{ path('intranet_forpas_gestor_curso_index') }}">
-            <div class="form-group row">
-                <label for="yearSelect" class="col-sm-2 ps-0 text-sm-end fw-bold">Seleccionar año a consultar:</label>
-                <div class="col-sm-9 py-3 bg-secondary bg-opacity-25 border-start border-4 border-secondary">
-                    <select id="yearSelect" name="year" class="form-select" onchange="document.getElementById('filterForm').submit();">
-                        {% set current_year = "now"|date("Y") %}
-                        {% for i in range(current_year + 1, current_year - 4) %}
-                            <option value="{{ i }}" {% if i == year %}selected{% endif %}>{{ i }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-            </div>
-        </form>
-    </div>
-
     <table class="tabla-condensada" id="datosCursos">
         <thead class="cabecera-condensada">
-            <tr>
-                <th>Codigo</th>
-                <th>Nombre</th>
-                <th class="text-center">Horas totales</th>
-                <th class="text-center">Horas virtuales</th>
-                <th>Evaluable</th>
-                <th class="text-center">Ediciones estimadas</th>
-                <th class="text-center">Participantes por edicion</th>
-                <th class="text-center">Visible web</th>
-                <th>Acciones</th>
-            </tr>
+        <tr>
+            <th>Codigo</th>
+            <th>Nombre</th>
+            <th class="text-center">Horas totales</th>
+            <th class="text-center">Horas virtuales</th>
+            <th>Evaluable</th>
+            <th>Acciones</th>
+        </tr>
         </thead>
         <tbody>
         {% for curso in cursos %}
@@ -60,33 +41,20 @@
                         <sup class="text-danger fas fa-times"></sup>
                     {% endif %}
                 </td>
-                <td class="text-center">{{ curso.edicionesEstimadas }}</td>
-                <td class="text-center">{{ curso.participantesEdicion }}</td>
-                <td class="text-center">
-                    {% if curso.visibleWeb %}
-                        <sup class="text-success fas fa-check"></sup>
-                    {% else %}
-                        <sup class="text-danger fas fa-times"></sup>
-                    {% endif %}
-                </td>
                 <td class="text-center">
                     <div class="d-flex justify-content-center align-items-center gap-2">
-                        <a href="{{ path('intranet_forpas_gestor_curso_show', {'id': curso.id}) }}" title="Ver">
+                        <a href="{{ path('intranet_forpas_participante_curso_show', {'id': curso.id}) }}" title="Ver">
                             <span class="fas fa-eye"></span>
                         </a>
-                        <a href="{{ path('intranet_forpas_gestor_curso_edit', {'id': curso.id}) }}" title="Editar">
-                            <span class="fas fa-edit"></span>
-                        </a>
-                        {{ include('intranet/forpas/gestor/curso/_delete_form.html.twig', { 'id': curso.id, 'buttonType': 'inline' }) }}
-                        <a href="{{ path('intranet_forpas_gestor_edicion_index', {'cursoId': curso.id}) }}" title="Ver Ediciones">
-                            <span class="fas fa-list"></span>
+                        <a href="{{ path('intranet_forpas_participante_curso_ediciones', {'id': curso.id}) }}" title="Editar">
+                            <span class="fas fa-arrow-right"></span>
                         </a>
                     </div>
                 </td>
             </tr>
         {% else %}
             <tr>
-                <td>No existen cursos</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+                <td>No existen cursos</td><td></td><td></td><td></td><td></td><td></td>
             </tr>
         {% endfor %}
         </tbody>
@@ -94,9 +62,10 @@
 {% endblock %}
 
 {% block botones %}
-    <li class="boton-inferior nav-item me-2">
-        <a class="btn btn-primary" href="{{ path('intranet_forpas_gestor_curso_new') }}">
-            <span class="fas fa-plus"></span> Crear curso
+    <li class="nav-item me-2">
+        <a class="btn btn-primary" href="#"
+           onclick="window.location.href='{{ path('intranet_forpas_participante') }}';">
+            <span class="fas fa-reply"></span> Volver
         </a>
     </li>
 {% endblock %}

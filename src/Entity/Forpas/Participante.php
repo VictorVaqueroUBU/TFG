@@ -472,7 +472,6 @@ class Participante
     {
         if (!$this->participanteEdiciones->contains($participanteEdicion)) {
             $this->participanteEdiciones->add($participanteEdicion);
-            $participanteEdicion->setParticipante($this);
         }
 
         return $this;
@@ -481,7 +480,6 @@ class Participante
     public function removeParticipanteEdiciones(ParticipanteEdicion $participanteEdicion): static
     {
         if ($this->participanteEdiciones->removeElement($participanteEdicion)) {
-            // set the owning side to null (unless already changed)
             if ($participanteEdicion->getParticipante() === $this) {
                 $participanteEdicion->setParticipante(null);
             }

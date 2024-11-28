@@ -40,21 +40,19 @@ final class ParticipanteEdicionController extends AbstractController
         $participante = $participanteRepository->find($id);
         $edicion = $edicionRepository->find($edicionId);
 
+        // Creamos la relación ParticipanteEdicion
         $participanteEdicion = new ParticipanteEdicion();
         $participanteEdicion->setParticipante($participante);
         $participanteEdicion->setEdicion($edicion);
         $participanteEdicion->setFechaSolicitud(new DateTime());
+
+        // Añadimos la inscripción a las colecciones
+        $participante->addParticipanteEdiciones($participanteEdicion);
+        $edicion->addParticipantesEdicion($participanteEdicion);
+
+        // Persistimos la inscripción
         $entityManager->persist($participanteEdicion);
         $entityManager->flush();
-
-        // Añadimos la inscripción a las colecciones de Participante y Edición si no está ya presente
-        if (!$participante->getParticipanteEdiciones()->contains($participanteEdicion)) {
-            $participante->addParticipanteEdiciones($participanteEdicion);
-        }
-
-        if (!$edicion->getParticipantesEdicion()->contains($participanteEdicion)) {
-            $edicion->addParticipantesEdicion($participanteEdicion);
-        }
 
         $this->addFlash('success', 'Inscripción realizada satisfactoriamente.');
         return $this->redirectToRoute('intranet_forpas_gestor_participante_edicion_index', ['edicionId' => $edicionId], Response::HTTP_SEE_OTHER);

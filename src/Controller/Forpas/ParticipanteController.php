@@ -45,7 +45,7 @@ final class ParticipanteController extends AbstractController
             'form' => $form,
         ]);
     }
-    #[Route(path: '/append/{id}', name: 'append', defaults: ['titulo' => 'Seleccionar Participante'], methods: ['GET'])]
+    #[Route(path: '/append/{id}', name: 'append', defaults: ['titulo' => 'Añadir Participante'], methods: ['GET'])]
     public function append(int $id, EdicionRepository $edicionRepository, ParticipanteRepository $participanteRepository): Response
     {
         // Obtenemos la edición actual
