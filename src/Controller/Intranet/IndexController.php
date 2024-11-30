@@ -13,7 +13,7 @@ use Symfony\Component\Routing\Attribute\Route;
 class IndexController extends AbstractController
 {
     #[Route('/', name: 'index')]
-    #[Route('/intranet', name: 'intranet_index')]
+    #[Route('/intranet', name: 'intranet')]
     public function index(): Response
     {
         if ($this->getUser()) {

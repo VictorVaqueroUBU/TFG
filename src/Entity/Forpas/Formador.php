@@ -32,7 +32,7 @@ class Formador
     private ?string $organizacion = null;
 
     #[ORM\Column(length: 50, nullable: true)]
-    private ?string $correo = null;
+    private ?string $correo_aux = null;
 
     #[ORM\Column(length: 30, nullable: true)]
     private ?string $telefono = null;
@@ -111,14 +111,14 @@ class Formador
         return $this;
     }
 
-    public function getCorreo(): ?string
+    public function getCorreoAux(): ?string
     {
-        return $this->correo;
+        return $this->correo_aux;
     }
 
-    public function setCorreo(?string $correo): static
+    public function setCorreo(?string $correo_aux): static
     {
-        $this->correo = $correo;
+        $this->correo_aux = $correo_aux;
 
         return $this;
     }

@@ -80,8 +80,7 @@
 
 {% block botones %}
     <li class="nav-item me-2">
-        <a class="btn btn-primary" href="#"
-           onclick="window.location.href='{{ path('intranet_forpas_gestor_edicion_index', {'cursoId': edicion.curso.id}) }}';">
+        <a class="btn btn-primary" href="{{ path('intranet_forpas_gestor_edicion_index', {'cursoId': edicion.curso.id}) }}">
             <span class="fas fa-reply"></span> Volver
         </a>
     </li>

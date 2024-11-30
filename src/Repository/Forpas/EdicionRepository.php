@@ -6,6 +6,7 @@ use App\Entity\Forpas\Curso;
 use App\Entity\Forpas\Edicion;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+Use DateTime;
 
 /**
  * @extends ServiceEntityRepository<Edicion>
@@ -103,6 +104,20 @@ class EdicionRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    /**
+     * Método para obtener las ediciones con fecha de inicio mayor que hoy.
+     *
+     * @return Edicion[] Retorna un array de objetos de la entidad Edicion que cumplen con el criterio de búsqueda.
+     */
+    public function findProximasEdiciones(): array
+    {
+        $hoy = (new DateTime())->setTime(0, 0);
+        return $this->createQueryBuilder('e')
+            ->where('e.fecha_inicio >= :hoy')
+            ->setParameter('hoy', $hoy)
+            ->getQuery()
+            ->getResult();
+    }
 //    /**
 //     * @return Edicion[] Returns an array of Edicion objects
 //     */

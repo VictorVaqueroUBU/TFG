@@ -16,11 +16,11 @@
             <td>{{ pe.edicion.codigoEdicion }}</td>
             <td>{{ pe.edicion.curso.nombreCurso }}</td>
             <td class="text-center">{{ pe.edicion.curso.horas }}</td>
-            <td>{{ pe.edicion.fechaInicio|date('d-m-Y') }}</td>
-            <td>{{ pe.edicion.fechaFin|date('d-m-Y') }}</td>
+            <td class="text-center">{{ pe.edicion.fechaInicio|date('Y-m-d') }}</td>
+            <td class="text-center">{{ pe.edicion.fechaFin|date('Y-m-d') }}</td>
             <td>{{ pe.edicion.horario }}
                 {% if pe.bajaJustificada %}
-                    <br><b>Baja justificada:</b> {{ pe.bajaJustificada|date('d-m-Y H:i:s') }}
+                    <br><b>Baja justificada:</b> {{ pe.bajaJustificada|date('Y-m-d H:i:s') }}
                 {% elseif pe.edicion.estado == 0 and pe.edicion.fechaInicio|date('Y-m-d') < 'now'|date('Y-m-d') %}
                     <br><b>Asistencia:</b> Pendiente datos del formador.
                 {% elseif pe.edicion.estado == 1 %}

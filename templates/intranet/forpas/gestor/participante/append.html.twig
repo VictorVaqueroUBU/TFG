@@ -23,7 +23,7 @@
             <th>Unidad</th>
             <th>Subunidad</th>
             <th>Teléfono Trabajo</th>
-            <th>Correo Aux</th>
+            <th>Correo Principal</th>
             <th>Organización</th>
             <th>Acciones</th>
         </tr>
@@ -39,7 +39,7 @@
                 <td>{{ participante.unidad }}</td>
                 <td>{{ participante.subunidad }}</td>
                 <td>{{ participante.telefonoTrabajo }}</td>
-                <td>{{ participante.correoAux }}</td>
+                <td>{{ participante.usuario.email }}</td>
                 <td>{{ participante.organizacion }}</td>
                 <td>
                     <a href="{{ path('intranet_forpas_gestor_participante_edicion_new', {'id': participante.id, 'edicionId': edicion.id}) }}" title="Inscribir">
@@ -58,8 +58,7 @@
 
 {% block botones %}
     <li class="nav-item me-2">
-        <a class="btn btn-primary" href="#"
-           onclick="window.location.href='{{ path('intranet_forpas_gestor_participante_edicion_index', {'edicionId': edicion.id}) }}';">
+        <a class="btn btn-primary" href="{{ path('intranet_forpas_gestor_participante_edicion_index', {'edicionId': edicion.id}) }}">
             <span class="fas fa-reply"></span> Volver
         </a>
     </li>

@@ -206,7 +206,7 @@ class Edicion
         if ($edicionInscrita && $edicionInscrita->getEdicion() === $this && $this->getFechaInicio() >= $hoy) {
             // Construimos el enlace para cancelar inscripción
             $url = $urlGenerator->generate('intranet_forpas_participante_inscripcion_cancelar', ['id' => $this->getId()]);
-            return sprintf('<a href="%s" onclick="return confirm(\'¿Estás seguro de que deseas cancelar tu inscripción?\');">Cancelar inscripción</a>', $url);
+            return sprintf('<b>Inscrito/a en esta edición</b><br><a href="%s" onclick="return confirm(\'¿Estás seguro de que deseas cancelar tu inscripción?\');">Cancelar inscripción</a>', $url);
         }
 
         // Caso 3: Cambiar inscripción
@@ -227,7 +227,12 @@ class Edicion
             return sprintf('<a href="%s" onclick="return confirm(\'¿Estás seguro de que deseas inscribirte en esta edición?\');">Solicitar inscripción</a>', $url);
         }
 
-        // Caso 5: Inscripción cerrada
+        // Caso 5: información de inscripción
+        if ($edicionInscrita && $edicionInscrita->getEdicion() === $this && $this->getFechaInicio() < $hoy) {
+            return '<b>Inscrito/a en esta edición</b>';
+        }
+
+        // Caso 6: Inscripción cerrada
         return 'Inscripción cerrada';
     }
 

@@ -41,10 +41,6 @@ class ParticipanteContactoType extends AbstractType
                 'label' => 'Centro de Destino',
                 'disabled' => true,
             ])
-            ->add('uvus', TextType::class, [
-                'label' => 'UVUS',
-                'disabled' => true,
-            ])
             ->add('email', TextType::class, [
                 'label' => 'Correo Electrónico',
                 'mapped' => false,

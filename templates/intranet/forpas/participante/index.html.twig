@@ -39,8 +39,20 @@
                             Actividades formativas
                         </a>
                     </li>
+                    <li class="d-flex align-items-center mb-2">
+                        <a href="{{ path('intranet_forpas_participante_proximas_ediciones') }}"
+                           class="text-decoration-none d-flex align-items-center">
+                        <span class="me-3 d-flex justify-content-center" style="width: 30px;">
+                            <i class="fas fa-clock-rotate-left"></i>
+                        </span>
+                            Próximas Ediciones
+                        </a>
+                    </li>
                 </ul>
             </div>
         </div>
     </div>
+{% endblock %}
+{% block js %}
+    {{ parent() }}
 {% endblock %}

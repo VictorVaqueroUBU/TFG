@@ -20,7 +20,7 @@
                 <th>Nombre</th>
                 <th>Puesto</th>
                 <th>Unidad</th>
-                <th>Correo</th>
+                <th>Correo Principal</th>
                 <th>Teléfono</th>
                 <th>Fecha Solicitud</th>
                 <th>Baja_justificada</th>
@@ -35,7 +35,7 @@
                 <td>{{ pe.participante.nombre }}</td>
                 <td>{{ pe.participante.puestoTrabajo }}</td>
                 <td>{{ pe.participante.unidad }}</td>
-                <td>{{ pe.participante.correoAux }}</td>
+                <td>{{ pe.participante.usuario.email }}</td>
                 <td>{{ pe.participante.telefonoTrabajo }}</td>
                 <td>{{ pe.fechaSolicitud ? pe.fechaSolicitud|date('Y-m-d H:i:s') : '' }}</td>
                 <td>{{ pe.bajaJustificada ? pe.bajaJustificada|date('Y-m-d H:i:s') : '' }}</td>
@@ -56,8 +56,7 @@
 
 {% block botones %}
     <li class="nav-item me-2">
-        <a class="btn btn-primary" href="#"
-           onclick="window.location.href='{{ path('intranet_forpas_gestor_edicion_index', {'cursoId': edicion.curso.id}) }}';">
+        <a class="btn btn-primary" href="{{ path('intranet_forpas_gestor_edicion_index', {'cursoId': edicion.curso.id}) }}">
             <span class="fas fa-reply"></span> Volver
         </a>
     </li>

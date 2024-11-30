@@ -129,7 +129,7 @@ class ParticipantePortalController extends AbstractController
             $this->addFlash('warning', 'No estás inscrito en esta edición.');
         }
 
-        return $this->redirectToRoute('intranet_forpas_participante_curso_ediciones', ['id' => $edicion->getCurso()->getId()], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('intranet_forpas_participante');
     }
 
     #[Route('/inscripcion/cambiar/{id}', name: 'inscripcion_cambiar')]
@@ -168,7 +168,7 @@ class ParticipantePortalController extends AbstractController
         $entityManager->flush();
 
         $this->addFlash('success', 'Tu inscripción ha sido cambiada correctamente.');
-        return $this->redirectToRoute('intranet_forpas_participante_curso_ediciones', ['id' => $edicion->getCurso()->getId()], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('intranet_forpas_participante');
     }
 
     #[Route('/inscripcion/realizar/{id}', name: 'inscripcion_realizar')]
@@ -192,6 +192,27 @@ class ParticipantePortalController extends AbstractController
         $entityManager->flush();
 
         $this->addFlash('success', 'Tu inscripción ha sido realizada correctamente.');
-        return $this->redirectToRoute('intranet_forpas_participante_curso_ediciones', ['id' => $edicion->getCurso()->getId()], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('intranet_forpas_participante');
+    }
+    #[Route(path: '/proximas-ediciones', name: 'proximas_ediciones', defaults: ['titulo' => 'Próximas Ediciones'], methods: ['GET'])]
+    public function listarProximasEdiciones(EntityManagerInterface $entityManager, UrlGeneratorInterface $urlGenerator): Response
+    {
+        $user = $this->getUser();
+
+        // Verificamos si el usuario tiene un participante asociado
+        if (!$user || !$user->getParticipante()) {
+            throw $this->createAccessDeniedException('No tienes acceso a esta sección.');
+        }
+
+        $participante = $user->getParticipante();
+
+        // Obtenemos las ediciones futuras
+        $proximasEdiciones = $entityManager->getRepository(Edicion::class)->findProximasEdiciones();
+
+        return $this->render('intranet/forpas/participante/proximas_ediciones.html.twig', [
+            'proximasEdiciones' => $proximasEdiciones,
+            'participante' => $participante,
+            'urlGenerator' => $urlGenerator,
+        ]);
     }
 }

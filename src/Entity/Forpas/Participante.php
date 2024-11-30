@@ -98,9 +98,6 @@ class Participante
     #[ORM\Column(length: 8, nullable: true)]
     private ?string $dni_sin_letra = null;
 
-    #[ORM\Column(length: 25, nullable: true)]
-    private ?string $uvus = null;
-
     #[ORM\Column(length: 1, nullable: true)]
     private ?string $sexo = null;
 
@@ -432,18 +429,6 @@ class Participante
     public function setDniSinLetra(?string $dni_sin_letra): static
     {
         $this->dni_sin_letra = $dni_sin_letra;
-
-        return $this;
-    }
-
-    public function getUvus(): ?string
-    {
-        return $this->uvus;
-    }
-
-    public function setUvus(?string $uvus): static
-    {
-        $this->uvus = $uvus;
 
         return $this;
     }

@@ -68,7 +68,7 @@ class LoginController extends AbstractController
         }
         // Verificar si el usuario ya está validado
         if ($user->isVerified()) {
-            return $this->redirectToRoute('intranet_index');
+            return $this->redirectToRoute('intranet');
         }
         // Realizamos el cambio de contraseña
         if ($request->isMethod('POST')) {

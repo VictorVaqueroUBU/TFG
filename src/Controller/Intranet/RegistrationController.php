@@ -2,6 +2,7 @@
 
 namespace App\Controller\Intranet;
 
+use App\Entity\Forpas\Formador;
 use App\Entity\Forpas\Participante;
 use App\Entity\Sistema\Usuario;
 use App\Form\Sistema\RegistrationFormType;
@@ -44,7 +45,7 @@ class RegistrationController extends AbstractController
         // Redirigir si el usuario ya ha iniciado sesión
         if ($this->getUser()) {
             $this->addFlash('warning', 'Ya has iniciado sesión. No puedes acceder a la página de registro.');
-            return $this->redirectToRoute('intranet_index');
+            return $this->redirectToRoute('intranet');
         }
 
         $user = new Usuario();
@@ -53,50 +54,51 @@ class RegistrationController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $nif = $form->get('nif')->getData();
+            $role = $form->get('role')->getData();
 
-            // Verificamos si el NIF ya está registrado
-            $existingParticipante = $entityManager->getRepository(Participante::class)->findOneBy(['nif' => $nif]);
-            if ($existingParticipante) {
-                $this->addFlash('warning', 'El NIF introducido ya está dado de alta.');
+            // Verificamos si el NIF ya está registrado en la tabla correspondiente
+            $repository = $role === 'ROLE_USER' ? Participante::class : Formador::class;
+            $existingEntity = $entityManager->getRepository($repository)->findOneBy(['nif' => $nif]);
+            if ($existingEntity) {
+                $this->addFlash('warning', 'El NIF introducido ya está registrado.');
                 return $this->redirectToRoute('intranet_register');
             }
 
             // Damos de alta al Usuario
             $passwordTemporal = substr(bin2hex(random_bytes(8)), 0, 8);
             $user->setPassword($passwordHasher->hashPassword($user, $passwordTemporal));
-            $user->setRoles(['ROLE_USER']);
+            $user->setRoles([$role]);
             $user->setVerified(false);
             $user->setCreatedAt(new DateTimeImmutable('now'));
 
-            // Damos de alta al Participante
-            $participante = new Participante();
-            $participante->setNif($nif);
-            $participante->setNombre($form->get('nombre')->getData());
-            $participante->setApellidos($form->get('apellidos')->getData());
-            $participante->setUnidad('Nota: !Unidad == cesado. No permite inscripción');
+            // Creamos la entidad correspondiente
+            if ($role === 'ROLE_USER') {
+                $entity = new Participante();
+                $entity->setUnidad('Nota: !Unidad == cesado. No permite inscripción');
+            } else {
+                $entity = new Formador();
+            }
 
-            // Sincronizamos bidireccionalmente
-            $user->setParticipante($participante);
-            $participante->setUsuario($user);
+            $entity->setNif($nif);
+            $entity->setNombre($form->get('nombre')->getData());
+            $entity->setApellidos($form->get('apellidos')->getData());
+            $entity->setOrganizacion($form->get('organizacion')->getData());
 
-            // Persistimos en la Base de Datos
+            // Sincronización bidireccional
+            if ($role === 'ROLE_USER') {
+                $user->setParticipante($entity);
+            }else {
+                $user->setFormador($entity);
+            }
+            $entity->setUsuario($user);
+
+            // Persistimos en la base de datos
             $entityManager->persist($user);
-            $entityManager->persist($participante);
+            $entityManager->persist($entity);
             $entityManager->flush();
 
-            // Crear el correo
-            $email = (new Email())
-                ->from($this->params->get('mailer_sender'))
-                ->to($user->getEmail())
-                ->subject('Correo de registro en la aplicación Gestión Formación')
-                ->html(sprintf(
-                    '<p>Hola, %s %s. Su cuenta ha sido generada.'
-                            . '<br><br>Para activarla debe entrar con la contraseña temporal <b>%s</b> e introducir una nueva.'
-                            . ' <br><br>Por favor, inicie sesión y cámbiela.</p>',
-                            $participante->getNombre(), $participante->getApellidos(), $passwordTemporal
-                ));
-
-            $mailer->send($email);
+            // Enviar correo
+            $this->sendRegistrationEmail($mailer, $user, $passwordTemporal);
 
             // Redirigimos e informamos al usuario
             $this->addFlash('success', 'Alta realizada correctamente. Revise su correo electrónico');
@@ -107,5 +109,24 @@ class RegistrationController extends AbstractController
         return $this->render('/intranet/sistema/registration/register.html.twig', [
             'registrationForm' => $form,
         ]);
+    }
+
+    /**
+     * @throws TransportExceptionInterface
+     */
+    private function sendRegistrationEmail(MailerInterface $mailer, Usuario $user, string $passwordTemporal): void
+    {
+        // Creamos el correo
+        $email = (new Email())
+            ->from($this->params->get('mailer_sender'))
+            ->to($user->getEmail())
+            ->subject('Registro en la aplicación Gestión Formación')
+            ->html(sprintf(
+                '<p>Bienvenido, %s. Su cuenta ha sido creada.<br><br>'.
+                    'Inicie sesión con la contraseña temporal <b>%s</b> para activar su cuenta y poder cambiar la contraseña.</p>',
+                $user->getUsername(),
+                $passwordTemporal
+            ));
+        $mailer->send($email);
     }
 }

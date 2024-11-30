@@ -130,7 +130,4 @@ return [
     'chart.js' => [
         'version' => '4.4.4',
     ],
-    '@hotwired/turbo' => [
-        'version' => '7.3.0',
-    ],
 ];

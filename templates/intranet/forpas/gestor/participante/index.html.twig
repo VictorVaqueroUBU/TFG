@@ -16,12 +16,11 @@
                 <th>Nif</th>
                 <th>Apellidos</th>
                 <th>Nombre</th>
-                <th>Grupo</th>
                 <th>Puesto Trabajo</th>
                 <th>Unidad</th>
                 <th>Subunidad</th>
                 <th>Teléfono Trabajo</th>
-                <th>Correo Aux</th>
+                <th>Correo Principal</th>
                 <th>Organización</th>
                 <th>Acciones</th>
             </tr>
@@ -32,12 +31,11 @@
                 <td>{{ participante.nif }}</td>
                 <td>{{ participante.apellidos }}</td>
                 <td>{{ participante.nombre }}</td>
-                <td class="text-center">{{ participante.grupo }}</td>
                 <td>{{ participante.puestoTrabajo }}</td>
                 <td>{{ participante.unidad }}</td>
                 <td>{{ participante.subunidad }}</td>
                 <td>{{ participante.telefonoTrabajo }}</td>
-                <td>{{ participante.correoAux }}</td>
+                <td>{{ participante.usuario.email }}</td>
                 <td>{{ participante.organizacion }}</td>
                 <td>
                     <a href="{{ path('intranet_forpas_gestor_participante_show', {'id': participante.id}) }}" title="Ver"><span class="mx-1 fas fa-eye"></span></a>
@@ -47,7 +45,7 @@
             </tr>
         {% else %}
             <tr>
-                <td>No existen Participantes</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+                <td>No existen Participantes</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
             </tr>
         {% endfor %}
         </tbody>
@@ -56,7 +54,7 @@
 
 {% block botones %}
     <li class="boton-inferior nav-item me-2">
-        <a class="btn btn-primary" href="{{ path('intranet_forpas_gestor_participante_new') }}">
+        <a class="btn btn-primary" href="{{ path('intranet_forpas_gestor_formador_find') }}">
             <span class="fas fa-plus"></span> Crear Participante
         </a>
     </li>

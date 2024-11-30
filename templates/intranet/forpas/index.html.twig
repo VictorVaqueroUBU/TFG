@@ -5,7 +5,14 @@
 {% block usuario %}
     <div class="dropdown">
         <a class="dropdown-toggle text-light" href="#" id="userMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            {{ app.user.participante.nombre() ~ ' ' ~ app.user.participante.apellidos()|default(app.user.username) }} <i class="fas fa-user-circle"></i>
+            {% if app.user.participante %}
+                {{ app.user.participante.nombre ~ ' ' ~ app.user.participante.apellidos }}
+            {% elseif app.user.formador %}
+                {{ app.user.formador.nombre ~ ' ' ~ app.user.formador.apellidos }}
+            {% else %}
+                {{ app.user.username }}
+            {% endif %}
+            <i class="fas fa-user-circle"></i>
         </a>
         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenu">
             <li><a class="dropdown-item" href="{{ path('logout') }}"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</a></li>

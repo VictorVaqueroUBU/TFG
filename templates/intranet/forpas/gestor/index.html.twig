@@ -13,7 +13,8 @@
             <div class="card-body">
                 <ul class="list-unstyled">
                     <li class="d-flex align-items-center mb-2">
-                        <a href="{{ path('intranet_forpas_gestor_curso_index') }}" class="text-decoration-none d-flex align-items-center">
+                        <a href="{{ path('intranet_forpas_gestor_curso_index') }}"
+                           class="text-decoration-none d-flex align-items-center">
                         <span class="me-3 d-flex justify-content-center" style="width: 30px;">
                             <i class="fas fa-book"></i>
                         </span>
@@ -22,7 +23,8 @@
                     </li>
                     {% if ediciones %}
                         <li class="d-flex align-items-center mb-2">
-                            <a href="{{ path('intranet_forpas_gestor_edicion_index') }}" class="text-decoration-none d-flex align-items-center">
+                            <a href="{{ path('intranet_forpas_gestor_edicion_index') }}"
+                               class="text-decoration-none d-flex align-items-center">
                             <span class="me-3 d-flex justify-content-center" style="width: 30px;">
                                 <i class="fas fa-list"></i>
                             </span>
@@ -31,7 +33,8 @@
                         </li>
                     {% endif %}
                     <li class="d-flex align-items-center mb-2">
-                        <a href="{{ path('intranet_forpas_gestor_participante_index') }}" class="text-decoration-none d-flex align-items-center">
+                        <a href="{{ path('intranet_forpas_gestor_participante_index') }}"
+                           class="text-decoration-none d-flex align-items-center">
                         <span class="me-3 d-flex justify-content-center" style="width: 30px;">
                             <i class="fas fa-user-graduate"></i>
                         </span>
@@ -39,7 +42,8 @@
                         </a>
                     </li>
                     <li class="d-flex align-items-center mb-2">
-                        <a href="{{ path('intranet_forpas_gestor_formador_index') }}" class="text-decoration-none d-flex align-items-center">
+                        <a href="{{ path('intranet_forpas_gestor_formador_index') }}"
+                           class="text-decoration-none d-flex align-items-center">
                         <span class="me-3 d-flex justify-content-center" style="width: 30px;">
                             <i class="fas fa-chalkboard-teacher"></i>
                         </span>
@@ -51,4 +55,7 @@
         </div>
     </div>
     <div class="w-100"></div>
+{% endblock %}
+{% block js %}
+    {{ parent() }}
 {% endblock %}
