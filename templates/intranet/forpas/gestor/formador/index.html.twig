@@ -1,13 +1,12 @@
 {% extends 'intranet/forpas/gestor/index.html.twig' %}
-
+{% block migas %}
+    {{ parent() }}
+    <li class="breadcrumb-item active" aria-current="page">{{ titulo }}</li>
+{% endblock %}
 {% block title %}{{ titulo }}{% endblock %}
 
 {% block content %}
-    <div class="pagina-titulo">Portal del Gestor
-        <a href="#" onclick="window.location.href='{{ path('intranet_forpas_gestor') }}';">
-            <span class="mx-3 fa-solid fa-reply" title="Volver"></span>
-        </a>
-    </div>
+    <div class="pagina-titulo">Portal del Gestor</div>
 
     <div class="pagina-seccion">{{ titulo }}</div>
     <table class="tabla-condensada" id="datosFormadores">
@@ -17,7 +16,7 @@
             <th>Apellidos</th>
             <th>Nombre</th>
             <th>Organización</th>
-            <th>Correo</th>
+            <th>Correo Principal</th>
             <th>Teléfono</th>
             <th>Régimen Jurídico</th>
             <th>Observaciones</th>
@@ -31,7 +30,7 @@
                 <td>{{ formador.apellidos }}</td>
                 <td>{{ formador.nombre }}</td>
                 <td>{{ formador.organizacion }}</td>
-                <td>{{ formador.correo }}</td>
+                <td>{{ formador.usuario.email }}</td>
                 <td class="text-center">{{ formador.telefono }}</td>
                 <td>{{ formador.formadorRJ | formadorRJTexto }}</td>
                 <td>{{ formador.observaciones }}</td>
@@ -52,7 +51,7 @@
 
 {% block botones %}
     <li class="boton-inferior nav-item me-2">
-        <a class="btn btn-primary" href="{{ path('intranet_forpas_gestor_formador_new') }}">
+        <a class="btn btn-primary" href="{{ path('intranet_forpas_gestor_participante_find') }}">
             <span class="fas fa-plus"></span> Crear Formador
         </a>
     </li>

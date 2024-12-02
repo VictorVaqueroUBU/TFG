@@ -3,9 +3,9 @@
 namespace App\Entity\Forpas;
 
 use App\Repository\Forpas\ParticipanteEdicionRepository;
+use DateTimeInterface;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use DateTimeInterface;
 
 #[ORM\Entity(repositoryClass: ParticipanteEdicionRepository::class)]
 class ParticipanteEdicion

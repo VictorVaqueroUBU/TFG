@@ -1,0 +1,21 @@
+{% extends 'intranet/_index_aplicacion_generico.html.twig' %}
+
+{% block title %}{{ titulo }}{% endblock %}
+
+{% block content %}
+    <div class="pagina-seccion">{{ titulo }}</div>
+
+    {{ form_errors(registrationForm) }}
+    {{ form_start(registrationForm) }}
+    {{ form_widget(registrationForm) }}
+
+    <!-- Botón "Volver" -->
+    <a class="btn btn-primary" href="{{ path('intranet') }}">
+        <span class="fas fa-reply"></span> Volver
+    </a>
+    <!-- Botón "Guardar" -->
+    <button class="btn btn-primary">
+        <span class="fas fa-save"></span> {{ button_label|default('Registrar') }}
+    </button>
+    {{ form_end(registrationForm) }}
+{% endblock %}

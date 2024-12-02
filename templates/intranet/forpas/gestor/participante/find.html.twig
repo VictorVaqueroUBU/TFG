@@ -1,0 +1,94 @@
+{% extends 'intranet/forpas/gestor/index.html.twig' %}
+{% block migas %}
+    {{ parent() }}
+    <li class="breadcrumb-item active" aria-current="page">{{ titulo }}</li>
+{% endblock %}
+{% block title %}{{ titulo }}{% endblock %}
+
+{% block content %}
+    <div class="pagina-titulo">Portal del Gestor</div>
+
+    <div class="pagina-seccion">{{ titulo }}</div>
+    <table class="tabla-condensada" id="datosListadoParticipantes">
+        <thead class="cabecera-condensada">
+        <tr>
+            <th>Nif</th>
+            <th>Apellidos</th>
+            <th>Nombre</th>
+            <th>Nombre de la Empresa</th>
+            <th>Correo Principal</th>
+            <th>Correo Auxiliar</th>
+            <th>Teléfono</th>
+            <th>Acciones</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for participante in participantes %}
+            <tr>
+                <td>{{ participante.nif }}</td>
+                <td>{{ participante.apellidos }}</td>
+                <td>{{ participante.nombre }}</td>
+                <td>{{ participante.organizacion }}</td>
+                <td>{{ participante.usuario.email }}</td>
+                <td>{{ participante.correoAux }}</td>
+                <td class="text-center">{{ participante.telefonoMovil }}</td>
+                <td>
+                    <a href="{{ path('intranet_forpas_gestor_formador_new', {'id': participante.id}) }}" title="Crear Formador">
+                        <span class="mx-1 fas fa-plus"></span>
+                    </a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td>No existen Formadores</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
+
+{% block botones %}
+    <li class="nav-item me-2">
+        <a class="btn btn-primary" href="{{ path('intranet_forpas_gestor_formador_index') }}">
+            <span class="fas fa-reply"></span> Volver
+        </a>
+    </li>
+{% endblock %}
+
+{% block js %}
+    {{ parent() }}
+    <script type="module">
+        $(function () {
+            $('#datosListadoParticipantes').dataTable({
+                buttons: [
+                    {
+                        extend: 'copy',
+                        text: '<i class="fas fa-copy"></i>',
+                        titleAttr: 'Copiar',
+                    },
+                    {
+                        extend: 'print',
+                        text: '<i class="fas fa-print"></i>',
+                        titleAttr: 'Imprimir',
+                    },
+                    {
+                        extend: 'csv',
+                        text: '<i class="fas fa-file-csv"></i>',
+                        titleAttr: 'Generar fichero CSV',
+                    },
+                    {
+                        extend: 'excelHtml5',
+                        text: '<i class="fas fa-file-excel"></i>',
+                        titleAttr: 'Generar fichero Excel',
+                    },
+                ],
+                dom: '<"row"<"col-sm-12 col-md-4"B><"col-sm-12 col-md-4"l><"col-sm-12 col-md-4"f>>' +
+                    '<"row"<"col-sm-12"<"table-responsive"tr>>>' +
+                    '<"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
+                language: {
+                    url: '{{ asset("includes/datatable.es.json") }}'
+                },
+            });
+        });
+    </script>
+{% endblock %}

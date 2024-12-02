@@ -1,0 +1,105 @@
+{% extends 'intranet/forpas/participante/index.html.twig' %}
+{% block migas %}
+    {{ parent() }}
+    <li class="breadcrumb-item active" aria-current="page">{{ titulo }}</li>
+{% endblock %}
+{% block title %}{{ titulo }}{% endblock %}
+
+{% block content %}
+    <div class="pagina-titulo">Portal del Participante</div>
+
+    <div class="pagina-seccion">{{ titulo }}</div>
+
+    <div class="container-fluid py-4 g-4">
+        <div class="row py-2">
+            <div class="fila-campo">Código</div>
+            <div class="fila-valor">{{ curso.codigoCurso }}</div>
+        </div>
+        <div class="row py-2">
+            <div class="fila-campo">Nombre</div>
+            <div class="fila-valor">{{ curso.nombreCurso }}</div>
+        </div>
+        <div class="row py-2">
+            <div class="fila-campo">Horas totales</div>
+            <div class="fila-valor">{{ curso.horas }}</div>
+        </div>
+        <div class="row py-2">
+            <div class="fila-campo">Horas virtuales</div>
+            <div class="fila-valor">
+                {% if curso.horasVirtuales %}
+                    {{ curso.horasVirtuales }}
+                {% else %}
+                    <sup class="text-danger fas fa-times"></sup>
+                {% endif %}
+            </div>
+        </div>
+        <div class="row py-2">
+            <div class="fila-campo">Evaluable</div>
+            <div class="fila-valor">
+                {% if curso.calificable %}
+                    <sup class="text-success fas fa-check"></sup>
+                {% else %}
+                    <sup class="text-danger fas fa-times"></sup>
+                {% endif %}
+            </div>
+        </div>
+        <div class="row py-2">
+            <div class="fila-campo">Ediciones estimadas</div>
+            <div class="fila-valor">{{ curso.edicionesEstimadas }}</div>
+        </div>
+        <div class="row py-2">
+            <div class="fila-campo">Participantes edición</div>
+            <div class="fila-valor">{{ curso.participantesEdicion }}</div>
+        </div>
+        <div class="row py-2">
+            <div class="fila-campo">Visible web</div>
+            <div class="fila-valor">
+                {% if curso.visibleWeb %}
+                    <sup class="text-success fas fa-check"></sup>
+                {% else %}
+                    <sup class="text-danger fas fa-times"></sup>
+                {% endif %}
+            </div>
+        </div>
+        <div class="row py-2">
+            <div class="fila-campo">Contenidos</div>
+            <div class="fila-valor">{{ curso.contenidos|nl2br }}</div>
+        </div>
+        <div class="row py-2">
+            <div class="fila-campo">Destinatarios</div>
+            <div class="fila-valor">{{ curso.destinatarios|nl2br }}</div>
+        </div>
+        <div class="row py-2">
+            <div class="fila-campo">Requisitos</div>
+            <div class="fila-valor">{{ curso.requisitos|nl2br }}</div>
+        </div>
+        <div class="row py-2">
+            <div class="fila-campo">Objetivos</div>
+            <div class="fila-valor">{{ curso.objetivos|nl2br }}</div>
+        </div>
+        <div class="row py-2">
+            <div class="fila-campo">Justificación</div>
+            <div class="fila-valor">{{ curso.justificacion|nl2br }}</div>
+        </div>
+        <div class="row py-2">
+            <div class="fila-campo">Plazo solicitud</div>
+            <div class="fila-valor">{{ curso.plazoSolicitud|nl2br }}</div>
+        </div>
+        <div class="row py-2">
+            <div class="fila-campo">Coordinador</div>
+            <div class="fila-valor">{{ curso.coordinador|nl2br }}</div>
+        </div>
+        <div class="row py-2">
+            <div class="fila-campo">Observaciones</div>
+            <div class="fila-valor">{{ curso.observaciones|nl2br }}</div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block botones %}
+    <li class="nav-item me-2">
+        <a class="btn btn-primary" href="{{ path('intranet_forpas_participante_cursos') }}">
+            <span class="fas fa-reply"></span> Volver
+        </a>
+    </li>
+{% endblock %}

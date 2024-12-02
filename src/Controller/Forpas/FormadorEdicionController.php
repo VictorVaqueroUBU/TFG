@@ -39,20 +39,18 @@ final class FormadorEdicionController extends AbstractController
         $formador = $formadorRepository->find($id);
         $edicion = $edicionRepository->find($edicionId);
 
+        // Crear la relación FormadorEdicion
         $formadorEdicion = new FormadorEdicion();
         $formadorEdicion->setFormador($formador);
         $formadorEdicion->setEdicion($edicion);
 
-        // Añadimos las asignaciones a las colecciones de Formador y Edición si no está ya presente
-        if (!$formador->getFormadorEdiciones()->contains($formadorEdicion)) {
-            $formador->addFormadorEdiciones($formadorEdicion);
-            $entityManager->persist($formadorEdicion);
-            $entityManager->flush();
-        }
+        // Añadimos la asignación a las colecciones
+        $formador->addFormadorEdiciones($formadorEdicion);
+        $edicion->addFormadoresEdicion($formadorEdicion);
 
-        if (!$edicion->getFormadoresEdicion()->contains($formadorEdicion)) {
-            $edicion->addFormadoresEdicion($formadorEdicion);
-        }
+        // Persistimos la asignación
+        $entityManager->persist($formadorEdicion);
+        $entityManager->flush();
 
         $this->addFlash('success', 'Asignación de formador realizada satisfactoriamente.');
         return $this->redirectToRoute('intranet_forpas_gestor_formador_edicion_index', ['edicionId' => $edicionId], Response::HTTP_SEE_OTHER);

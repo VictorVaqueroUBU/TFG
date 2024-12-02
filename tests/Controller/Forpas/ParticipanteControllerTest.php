@@ -2,35 +2,32 @@
 
 namespace App\Tests\Controller\Forpas;
 
-Use DateTime;
 use App\Entity\Forpas\Curso;
 use App\Entity\Forpas\Edicion;
+use App\Entity\Forpas\Formador;
 use App\Entity\Forpas\Participante;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Entity\Sistema\Usuario;
+use DateTime;
 use Doctrine\ORM\EntityRepository;
-use Symfony\Bundle\FrameworkBundle\KernelBrowser;
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
-final class ParticipanteControllerTest extends WebTestCase
+final class ParticipanteControllerTest extends BaseControllerTest
 {
-    private KernelBrowser $client;
-    private EntityManagerInterface $manager;
     /**
      * @var EntityRepository<Participante>
      */
     private EntityRepository $repository;
     private string $path = '/intranet/forpas/gestor/participante/';
-
     protected function setUp(): void
     {
-        $this->client = static::createClient();
-        $this->manager = static::getContainer()->get('doctrine')->getManager();
+        parent::setUp(); // Llama al setUp de la clase base
 
-        // Limpiar datos de ParticipanteEdicion, Edicion, Curso y Participante
+        // Limpiamos datos de ParticipanteEdicion, Edicion, Curso y Participante
         $repositories = [
-            Participante::class,
             Edicion::class,
             Curso::class,
+            Participante::class,
+            Formador::class,
+            Usuario::class,
         ];
 
         foreach ($repositories as $repositoryClass) {
@@ -42,7 +39,9 @@ final class ParticipanteControllerTest extends WebTestCase
 
         $this->manager->flush();
 
-        // Asigna el repositorio de Participante para los tests
+        // Creamos y autenticamos un usuario por defecto
+        $this->client->loginUser($this->createUserWithRole('ROLE_ADMIN'));
+        // Asignamos el repositorio de Participante para los tests
         $this->repository = $this->manager->getRepository(Participante::class);
     }
     public function testIndex(): void
@@ -52,54 +51,39 @@ final class ParticipanteControllerTest extends WebTestCase
 
         self::assertResponseStatusCodeSame(200);
         self::assertPageTitleContains('Listado de Participantes');
-
-        // Use the $crawler to perform additional assertions e.g.
-        // self::assertSame('Some text on the page', $crawler->filter('.p')->first());
     }
-
     public function testNew(): void
     {
-        $this->client->request('GET', sprintf('%snew', $this->path));
+        // Caso 1: Creamos un Participante desde un Formador válido
+        $usuario = $this->createUserWithRole('ROLE_USER');
+        $formador = new Formador();
+        $formador->setNif('12345678A');
+        $formador->setNombre('Juan');
+        $formador->setApellidos('Pérez');
+        $formador->setUsuario($usuario);
+        $formador->setOrganizacion('Organización de prueba');
 
-        self::assertResponseStatusCodeSame(200);
+        $this->manager->persist($formador);
+        $this->manager->flush();
 
-        $this->client->submitForm('Guardar', [
-            'participante[nif]' => 'Testing',
-            'participante[apellidos]' => 'Testing',
-            'participante[nombre]' => 'Testing',
-            'participante[descripcion_cce]' => 'Testing',
-            'participante[codigo_cce]' => 'Test',
-            'participante[grupo]' => 'A1',
-            'participante[nivel]' => 27,
-            'participante[puesto_trabajo]' => 'Testing',
-            'participante[subunidad]' => 'Testing',
-            'participante[unidad]' => 'Testing',
-            'participante[centro_destino]' => 'Testing',
-            'participante[t_r_juridico]' => 'FC',
-            'participante[situacion_admin]' => 'Testing',
-            'participante[codigo_plaza]' => 'Testing',
-            'participante[telefono_trabajo]' => 'Testing',
-            'participante[correo_aux]' => 'Testing',
-            'participante[codigo_rpt]' => 'Testing',
-            'participante[organizacion]' => 'Testing',
-            'participante[turno]' => 'Testing',
-            'participante[telefono_particular]' => 'Testing',
-            'participante[telefono_movil]' => 'Testing',
-            'participante[fecha_nacimiento]' => '2024-01-01',
-            'participante[titulacion_nivel]' => 1,
-            'participante[titulacion_fecha]' => '2024-01-01',
-            'participante[titulacion]' => 'Testing',
-            'participante[dni_sin_letra]' => 'Testing',
-            'participante[uvus]' => 'Testing',
-            'participante[sexo]' => 'V',
-        ]);
+        $this->client->request('GET', $this->path . 'new/' . $formador->getId());
+        $participante = $this->repository->findOneBy(['usuario' => $usuario]);
+        $this->assertNotNull($participante, 'El Participante debería haber sido creado.');
+        $this->assertSame('12345678A', $participante->getNif(), 'El NIF debería coincidir.');
+        $this->assertResponseRedirects('/intranet/forpas/gestor/participante/', 303);
 
-        self::assertResponseRedirects($this->path);
+        // Caso 2: Intentamos crear un Participante cuando ya existe uno asociado al Usuario
+        $this->client->request('GET', $this->path . 'new/' . $formador->getId());
 
-        self::assertSame(1, $this->repository->count([]));
+        // Verificamos que no se crea un duplicado
+        $participantes = $this->repository->findBy(['usuario' => $usuario]);
+        $this->assertCount(1, $participantes, 'No debería haber duplicados de Participante para el mismo Usuario.');
     }
     public function testShow(): void
     {
+        // Creamos un usuario para asociar al formador
+        $usuario = $this->createUserWithRole('ROLE_USER');
+
         $fixture = new Participante();
         $fixture->setNif('My Title');
         $fixture->setApellidos('My Title');
@@ -127,8 +111,8 @@ final class ParticipanteControllerTest extends WebTestCase
         $fixture->setTitulacionFecha(new DateTime('2024-01-01'));
         $fixture->setTitulacion('My Title');
         $fixture->setDniSinLetra('My Title');
-        $fixture->setUvus('My Title');
         $fixture->setSexo('V');
+        $fixture->setUsuario($usuario);
 
         $this->manager->persist($fixture);
         $this->manager->flush();
@@ -137,12 +121,11 @@ final class ParticipanteControllerTest extends WebTestCase
 
         self::assertResponseStatusCodeSame(200);
         self::assertPageTitleContains('Datos del Participante');
-
-        // Use assertions to check that the properties are properly displayed.
     }
-
     public function testEdit(): void
     {
+        $usuario = $this->createUserWithRole('ROLE_USER');
+
         $fixture = new Participante();
         $fixture->setNif('Value');
         $fixture->setApellidos('Value');
@@ -170,8 +153,8 @@ final class ParticipanteControllerTest extends WebTestCase
         $fixture->setTitulacionFecha(new DateTime('2024-01-01'));
         $fixture->setTitulacion('Value');
         $fixture->setDniSinLetra('Value');
-        $fixture->setUvus('Value');
         $fixture->setSexo('V');
+        $fixture->setUsuario($usuario);
 
         $this->manager->persist($fixture);
         $this->manager->flush();
@@ -205,7 +188,6 @@ final class ParticipanteControllerTest extends WebTestCase
             'participante[titulacion_fecha]' => '2024-01-01',
             'participante[titulacion]' => 'Something New',
             'participante[dni_sin_letra]' => 'Some',
-            'participante[uvus]' => 'Something New',
             'participante[sexo]' => 'V',
         ]);
 
@@ -239,12 +221,12 @@ final class ParticipanteControllerTest extends WebTestCase
         self::assertEquals(new DateTime('2024-01-01'), $fixture[0]->getTitulacionFecha());
         self::assertSame('Something New', $fixture[0]->getTitulacion());
         self::assertSame('Some', $fixture[0]->getDniSinLetra());
-        self::assertSame('Something New', $fixture[0]->getUvus());
         self::assertSame('V', $fixture[0]->getSexo());
     }
-
     public function testRemove(): void
     {
+        $usuario = $this->createUserWithRole('ROLE_USER');
+
         $fixture = new Participante();
         $fixture->setNif('Value');
         $fixture->setApellidos('Value');
@@ -272,8 +254,8 @@ final class ParticipanteControllerTest extends WebTestCase
         $fixture->setTitulacionFecha(new DateTime('2024-01-01'));
         $fixture->setTitulacion('Value');
         $fixture->setDniSinLetra('Value');
-        $fixture->setUvus('Value');
         $fixture->setSexo('V');
+        $fixture->setUsuario($usuario);
 
         $this->manager->persist($fixture);
         $this->manager->flush();
@@ -286,7 +268,9 @@ final class ParticipanteControllerTest extends WebTestCase
     }
     public function testAppend(): void
     {
-        // Crear una entidad Curso
+        $usuario = $this->createUserWithRole('ROLE_USER');
+
+        // Creamos una entidad Curso
         $curso = new Curso();
         $curso->setNombreCurso('Curso de Prueba');
         $curso->setCodigoCurso('24101');
@@ -298,7 +282,7 @@ final class ParticipanteControllerTest extends WebTestCase
         $curso->setCalificable(true);
         $this->manager->persist($curso);
 
-        // Crear una entidad Edicion asociada al Curso
+        // Creamos una entidad Edicion asociada al Curso
         $edicion = new Edicion();
         $edicion->setCodigoEdicion('24101/01');
         $edicion->setEstado(0);
@@ -308,30 +292,31 @@ final class ParticipanteControllerTest extends WebTestCase
         $curso->addEdiciones($edicion);
         $this->manager->persist($edicion);
 
-        // Crear una entidad Participante
+        // Creamos una entidad Participante
         $participante = new Participante();
         $participante->setNif('12345678A');
         $participante->setNombre('John');
         $participante->setApellidos('Doe');
         $participante->setUnidad('Unidad');
+        $participante->setUsuario($usuario);
         $this->manager->persist($participante);
 
-        // Persistir todos los datos en la base de datos
+        // Persistimos todos los datos en la base de datos
         $this->manager->flush();
 
-        // Obtener el ID generado automáticamente para la Edicion
+        // Obtenemos el ID generado automáticamente para la Edicion
         $id = $edicion->getId();
 
-        // Realizar la solicitud al controlador
+        // Realizamos la solicitud al controlador
         $this->client->request('GET', "/intranet/forpas/gestor/participante/append/$id");
 
-        // Verificar el código de respuesta HTTP
+        // Verificamos el código de respuesta HTTP
         self::assertResponseStatusCodeSame(200);
 
-        // Verificar que la vista contiene los datos de los participantes disponibles
+        // Verificamos que la vista contiene los datos de los participantes disponibles
         self::assertSelectorTextContains(
             '#datosParticipantesSeleccionables tbody tr:first-child td:nth-child(1)',
-            '12345678A' // Cambia esto por el NIF esperado.
+            '12345678A'
         );
     }
 }

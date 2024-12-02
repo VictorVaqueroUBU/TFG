@@ -1,20 +1,19 @@
 {% extends 'intranet/forpas/gestor/index.html.twig' %}
-
+{% block migas %}
+    {{ parent() }}
+    <li class="breadcrumb-item active" aria-current="page">{{ titulo }}</li>
+{% endblock %}
 {% block title %}{{ curso ? 'Ediciones del Curso ' ~ curso.codigoCurso : titulo }}{% endblock %}
 
 {% block content %}
-    <div class="pagina-titulo">Portal del Gestor
-        <a href="#" onclick="window.location.href='{{ path('intranet_forpas_gestor') }}';">
-            <span class="mx-3 fa-solid fa-reply" title="Volver"></span>
-        </a>
-    </div>
+    <div class="pagina-titulo">Portal del Gestor</div>
 
     <div class="pagina-seccion">
         {{ curso ? titulo  ~ ' ' ~ curso.codigoCurso : 'Listado de Ediciones' }}
     </div>
 
     {% if curso is null %}
-        <div class="mb-4">
+        <div class="mb-3">
             <form id="filterForm" method="get" action="{{ path('intranet_forpas_gestor_edicion_index') }}">
                 <div class="form-group row">
                     <label for="yearSelect" class="col-sm-2 ps-0 text-sm-end fw-bold">Seleccionar año a consultar:</label>
@@ -36,11 +35,11 @@
         <tr>
             <th>Código</th>
             <th>Nombre curso</th>
-            <th>Fecha inicio</th>
-            <th>Fecha fin</th>
+            <th class="text-center">Fecha inicio</th>
+            <th class="text-center">Fecha fin</th>
             <th>Lugar</th>
             <th>Horas</th>
-            <th>Max. participantes</th>
+            <th class="text-center">Max. Partic</th>
             <th>Estado</th>
             <th>Acciones</th>
         </tr>
@@ -50,21 +49,21 @@
             <tr>
                 <td>{{ edicion.codigoEdicion }}</td>
                 <td>{{ edicion.curso.nombreCurso }}</td>
-                <td class="text-center">{{ edicion.fechaInicio ? edicion.fechaInicio|date('Y-m-d') : '' }}</td>
-                <td class="text-center">{{ edicion.fechaFin ? edicion.fechaFin|date('Y-m-d') : '' }}</td>
+                <td class="col-1 text-center">{{ edicion.fechaInicio ? edicion.fechaInicio|date('Y-m-d') : '' }}</td>
+                <td class="col-1 text-center">{{ edicion.fechaFin ? edicion.fechaFin|date('Y-m-d') : '' }}</td>
                 <td>{{ edicion.lugar }}</td>
                 <td class="text-center">{{ edicion.curso.horas }}</td>
                 <td class="text-center">{{ edicion.maxParticipantes }}</td>
                 <td>{{ edicion.estado | edicionEstadoTexto }}</td>
-                <td>
+                <td class="col-1">
                     <a href="{{ path('intranet_forpas_gestor_edicion_show', {'id': edicion.id}) }}"><span class="mx-1 fas fa-eye" title="Ver"></span></a>
                     <a href="{{ path('intranet_forpas_gestor_edicion_edit', {'id': edicion.id}) }}"><span class="mx-1 fas fa-edit" title="Editar"></span></a>
                     {{ include('intranet/forpas/gestor/edicion/_delete_form.html.twig', { 'id': edicion.id, 'buttonType': 'inline' }) }}
                     <a href="{{ path('intranet_forpas_gestor_participante_edicion_index', {'edicionId': edicion.id}) }}">
-                        <span class="mx-1 fas fa-users-between-lines" title="Participantes"></span></a>
+                        <span class="mx-1 fas fa-user-graduate" title="Participantes"></span></a>
                     {% if edicion.codigoEdicion ends with '/00' == false %}
                         <a href="{{ path('intranet_forpas_gestor_formador_edicion_index', {'edicionId': edicion.id}) }}">
-                            <span class="mx-1 fas fa-user" title="Formadores"></span></a>
+                            <span class="mx-1 fas fa-chalkboard-teacher" title="Formadores"></span></a>
                     {% endif %}
                 </td>
             </tr>
@@ -80,8 +79,7 @@
 {% block botones %}
     {% if curso %}
         <li class="nav-item me-2">
-            <a class="btn btn-primary" href="#"
-               onclick="window.location.href='{{ path('intranet_forpas_gestor_curso_index') }}';">
+            <a class="btn btn-primary" href="{{ path('intranet_forpas_gestor_curso_index') }}">
                 <span class="fas fa-reply"></span> Volver
             </a>
         </li>

@@ -1,13 +1,12 @@
 {% extends 'intranet/forpas/gestor/index.html.twig' %}
-
+{% block migas %}
+    {{ parent() }}
+    <li class="breadcrumb-item active" aria-current="page">{{ titulo }}</li>
+{% endblock %}
 {% block title %}{{ titulo }}{% endblock %}
 
 {% block content %}
-    <div class="pagina-titulo">Portal del Gestor
-        <a href="{{ path('intranet_forpas_gestor') }}">
-            <span class="mx-3 fa-solid fa-reply" title="Volver"></span>
-        </a>
-    </div>
+    <div class="pagina-titulo">Portal del Gestor</div>
 
     <div class="pagina-seccion">{{ titulo }}</div>
 
@@ -32,12 +31,12 @@
             <tr>
                 <th>Codigo</th>
                 <th>Nombre</th>
-                <th>Horas totales</th>
-                <th>Horas virtuales</th>
+                <th class="text-center">Horas totales</th>
+                <th class="text-center">Horas virtuales</th>
                 <th>Evaluable</th>
-                <th>Ediciones estimadas</th>
-                <th>Participantes por edicion</th>
-                <th>Visible web</th>
+                <th class="text-center">Ediciones estimadas</th>
+                <th class="text-center">Participantes por edicion</th>
+                <th class="text-center">Visible web</th>
                 <th>Acciones</th>
             </tr>
         </thead>
@@ -70,11 +69,19 @@
                         <sup class="text-danger fas fa-times"></sup>
                     {% endif %}
                 </td>
-                <td>
-                    <a href="{{ path('intranet_forpas_gestor_curso_show', {'id': curso.id}) }}" title="Ver"><span class="mx-1 fas fa-eye"></span></a>
-                    <a href="{{ path('intranet_forpas_gestor_curso_edit', {'id': curso.id}) }}" title="Editar"><span class="mx-1 fas fa-edit"></span></a>
-                    {{ include('intranet/forpas/gestor/curso/_delete_form.html.twig', { 'id': curso.id, 'buttonType': 'inline' }) }}
-                    <a href="{{ path('intranet_forpas_gestor_edicion_index', {'cursoId': curso.id}) }}" title="Ver Ediciones"><span class="mx-1 fas fa-list"></span></a>
+                <td class="text-center">
+                    <div class="d-flex justify-content-center align-items-center gap-2">
+                        <a href="{{ path('intranet_forpas_gestor_curso_show', {'id': curso.id}) }}" title="Ver">
+                            <span class="fas fa-eye"></span>
+                        </a>
+                        <a href="{{ path('intranet_forpas_gestor_curso_edit', {'id': curso.id}) }}" title="Editar">
+                            <span class="fas fa-edit"></span>
+                        </a>
+                        {{ include('intranet/forpas/gestor/curso/_delete_form.html.twig', { 'id': curso.id, 'buttonType': 'inline' }) }}
+                        <a href="{{ path('intranet_forpas_gestor_edicion_index', {'cursoId': curso.id}) }}" title="Ver Ediciones">
+                            <span class="fas fa-list"></span>
+                        </a>
+                    </div>
                 </td>
             </tr>
         {% else %}

@@ -2,13 +2,14 @@
 
 namespace App\Entity\Forpas;
 
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use App\Entity\Sistema\Usuario;
 use App\Repository\Forpas\ParticipanteRepository;
+use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use DateTimeInterface;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[UniqueEntity(fields: ['nif'], message: 'El NIF indicado ya está dado de alta.')]
 #[ORM\Entity(repositoryClass: ParticipanteRepository::class)]
@@ -97,9 +98,6 @@ class Participante
     #[ORM\Column(length: 8, nullable: true)]
     private ?string $dni_sin_letra = null;
 
-    #[ORM\Column(length: 25, nullable: true)]
-    private ?string $uvus = null;
-
     #[ORM\Column(length: 1, nullable: true)]
     private ?string $sexo = null;
 
@@ -108,6 +106,10 @@ class Participante
      */
     #[ORM\OneToMany(targetEntity: ParticipanteEdicion::class, mappedBy: 'participante', orphanRemoval: true)]
     private Collection $participanteEdiciones;
+
+    #[ORM\OneToOne(targetEntity: Usuario::class, inversedBy: 'participante', cascade: ['persist', 'remove'])]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Usuario $usuario = null;
 
     public function __construct()
     {
@@ -431,18 +433,6 @@ class Participante
         return $this;
     }
 
-    public function getUvus(): ?string
-    {
-        return $this->uvus;
-    }
-
-    public function setUvus(?string $uvus): static
-    {
-        $this->uvus = $uvus;
-
-        return $this;
-    }
-
     public function getSexo(): ?string
     {
         return $this->sexo;
@@ -467,7 +457,6 @@ class Participante
     {
         if (!$this->participanteEdiciones->contains($participanteEdicion)) {
             $this->participanteEdiciones->add($participanteEdicion);
-            $participanteEdicion->setParticipante($this);
         }
 
         return $this;
@@ -476,11 +465,22 @@ class Participante
     public function removeParticipanteEdiciones(ParticipanteEdicion $participanteEdicion): static
     {
         if ($this->participanteEdiciones->removeElement($participanteEdicion)) {
-            // set the owning side to null (unless already changed)
             if ($participanteEdicion->getParticipante() === $this) {
                 $participanteEdicion->setParticipante(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getUsuario(): ?Usuario
+    {
+        return $this->usuario;
+    }
+
+    public function setUsuario(Usuario $usuario): static
+    {
+        $this->usuario = $usuario;
 
         return $this;
     }

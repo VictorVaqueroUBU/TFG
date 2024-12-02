@@ -6,8 +6,8 @@ security:
     providers:
         app_user_provider:
             entity:
-                class: App\Entity\User
-                property: email
+                class: App\Entity\Sistema\Usuario
+                property: username
 
     firewalls:
         dev:
@@ -17,8 +17,10 @@ security:
             lazy: true
             provider: app_user_provider
             form_login:
-                login_path: login
-                check_path: login
+                login_path: intranet_login
+                check_path: intranet_login
+                success_handler: App\Security\LoginSuccessHandler
+                failure_path: intranet_login
             logout:
                 path: logout
                 target: /
@@ -28,16 +30,13 @@ security:
             # https://symfony.com/doc/current/security/impersonating_user.html
             # switch_user: true
     role_hierarchy:
-        ROLE_GESTOR: ROLE_USER
-        ROLE_FORMADOR: ROLE_USER
-        ROLE_PARTICIPANTE: ROLE_USER
+
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
-        #- { path: ^/gestor, roles: ROLE_GESTOR }
-        #- { path: ^/formador, roles: ROLE_FORMADOR }
-        #- { path: ^/participante, roles: ROLE_PARTICIPANTE }
-        #- { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }  # Ruta de login accesible para todos
+        - { path: ^/intranet/forpas/gestor, roles: ROLE_ADMIN }
+        - { path: ^/intranet/forpas/participante, roles: ROLE_USER }
+        - { path: ^/intranet/forpas/, roles: IS_AUTHENTICATED_FULLY }  # Ruta de login accesible para todos
 
 when@test:
     security:

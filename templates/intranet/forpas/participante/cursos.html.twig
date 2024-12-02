@@ -1,0 +1,109 @@
+{% extends 'intranet/forpas/participante/index.html.twig' %}
+{% block migas %}
+    {{ parent() }}
+    <li class="breadcrumb-item active" aria-current="page">{{ titulo }}</li>
+{% endblock %}
+{% block title %}{{ titulo }}{% endblock %}
+
+{% block content %}
+    <div class="pagina-titulo">Portal del Participante</div>
+
+    <div class="pagina-seccion">{{ titulo }}</div>
+
+    <table class="tabla-condensada" id="datosCursos">
+        <thead class="cabecera-condensada">
+        <tr>
+            <th>Codigo</th>
+            <th>Nombre</th>
+            <th class="text-center">Horas totales</th>
+            <th class="text-center">Horas virtuales</th>
+            <th>Evaluable</th>
+            <th>Acciones</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for curso in cursos %}
+            <tr>
+                <td class="text-center">{{ curso.codigoCurso }}</td>
+                <td>{{ curso.nombreCurso }}</td>
+                <td class="text-center">{{ curso.horas }}</td>
+                <td class="text-center">
+                    {% if curso.horasVirtuales %}
+                        {{ curso.horasVirtuales }}
+                    {% else %}
+                        <sup class="text-danger fas fa-times"></sup>
+                    {% endif %}
+                </td>
+                <td class="text-center">
+                    {% if curso.calificable %}
+                        <sup class="text-success fas fa-check"></sup>
+                    {% else %}
+                        <sup class="text-danger fas fa-times"></sup>
+                    {% endif %}
+                </td>
+                <td class="text-center">
+                    <div class="d-flex justify-content-center align-items-center gap-2">
+                        <a href="{{ path('intranet_forpas_participante_curso_show', {'id': curso.id}) }}" title="Ver">
+                            <span class="fas fa-eye"></span>
+                        </a>
+                        <a href="{{ path('intranet_forpas_participante_curso_ediciones', {'id': curso.id}) }}" title="Editar">
+                            <span class="fas fa-arrow-right"></span>
+                        </a>
+                    </div>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td>No existen cursos</td><td></td><td></td><td></td><td></td><td></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
+
+{% block botones %}
+    <li class="nav-item me-2">
+        <a class="btn btn-primary" href="{{ path('intranet_forpas_participante') }}">
+            <span class="fas fa-reply"></span> Volver
+        </a>
+    </li>
+{% endblock %}
+
+{% block js %}
+    {{ parent() }}
+    <script type="module">
+        $(function () {
+            $('#datosCursos').dataTable({
+                buttons: [
+                    {
+                        extend: 'copy',
+                        text: '<i class="fas fa-copy"></i>',
+                        titleAttr: 'Copiar',
+                    },
+                    {
+                        extend: 'print',
+                        text: '<i class="fas fa-print"></i>',
+                        titleAttr: 'Imprimir',
+                    },
+                    {
+                        extend: 'csv',
+                        text: '<i class="fas fa-file-csv"></i>',
+                        titleAttr: 'Generar fichero CSV',
+                    },
+                    {
+                        extend: 'excelHtml5',
+                        text: '<i class="fas fa-file-excel"></i>',
+                        titleAttr: 'Generar fichero Excel',
+                    },
+                ],
+                dom: '<"row"<"col-sm-12 col-md-4"B><"col-sm-12 col-md-4"l><"col-sm-12 col-md-4"f>>' +
+                    '<"row"<"col-sm-12"<"table-responsive"tr>>>' +
+                    '<"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
+                language: {
+                    url: '{{ asset("includes/datatable.es.json") }}'
+                },
+            });
+        });
+    </script>
+{% endblock %}
+

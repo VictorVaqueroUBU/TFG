@@ -1,0 +1,58 @@
+{% extends 'intranet/forpas/index.html.twig' %}
+{% block migas %}
+    {{ parent() }}
+    <li class="breadcrumb-item active" aria-current="page"><a href="{{ path('intranet_forpas_participante') }}">Portal del Participante</a></li>
+{% endblock %}
+{% block title %}{{ titulo }}{% endblock %}
+{% block content %}
+    <div class="pagina-titulo">Portal del Participante</div>
+
+    <div class="pagina-seccion">{{ titulo }}</div>
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <ul class="list-unstyled">
+                    <li class="d-flex align-items-center mb-2">
+                        <a href="{{ path('intranet_forpas_participante_mis_datos') }}"
+                           class="text-decoration-none d-flex align-items-center">
+                        <span class="me-3 d-flex justify-content-center" style="width: 30px;">
+                            <i class="fas fas fa-address-book"></i>
+                        </span>
+                            Mis datos de contacto
+                        </a>
+                    </li>
+                    <li class="d-flex align-items-center mb-2">
+                        <a href="{{ path('intranet_forpas_participante_ficha_formativa') }}"
+                           class="text-decoration-none d-flex align-items-center">
+                        <span class="me-3 d-flex justify-content-center" style="width: 30px;">
+                            <i class="fas fa-user-graduate"></i>
+                        </span>
+                            Ficha formativa personal
+                        </a>
+                    </li>
+                    <li class="d-flex align-items-center mb-2">
+                        <a href="{{ path('intranet_forpas_participante_cursos') }}"
+                           class="text-decoration-none d-flex align-items-center">
+                        <span class="me-3 d-flex justify-content-center" style="width: 30px;">
+                            <i class="fas fa-list"></i>
+                        </span>
+                            Actividades formativas
+                        </a>
+                    </li>
+                    <li class="d-flex align-items-center mb-2">
+                        <a href="{{ path('intranet_forpas_participante_proximas_ediciones') }}"
+                           class="text-decoration-none d-flex align-items-center">
+                        <span class="me-3 d-flex justify-content-center" style="width: 30px;">
+                            <i class="fas fa-clock-rotate-left"></i>
+                        </span>
+                            Próximas Ediciones
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block js %}
+    {{ parent() }}
+{% endblock %}

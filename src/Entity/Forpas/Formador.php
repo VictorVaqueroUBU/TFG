@@ -2,6 +2,7 @@
 
 namespace App\Entity\Forpas;
 
+use App\Entity\Sistema\Usuario;
 use App\Repository\Forpas\FormadorRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -31,7 +32,7 @@ class Formador
     private ?string $organizacion = null;
 
     #[ORM\Column(length: 50, nullable: true)]
-    private ?string $correo = null;
+    private ?string $correo_aux = null;
 
     #[ORM\Column(length: 30, nullable: true)]
     private ?string $telefono = null;
@@ -47,6 +48,10 @@ class Formador
      */
     #[ORM\OneToMany(targetEntity: FormadorEdicion::class, mappedBy: 'formador', orphanRemoval: true)]
     private Collection $formadorEdiciones;
+
+    #[ORM\OneToOne(targetEntity: Usuario::class, inversedBy: 'formador', cascade: ['persist', 'remove'])]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Usuario $usuario = null;
 
     public function __construct()
     {
@@ -106,14 +111,14 @@ class Formador
         return $this;
     }
 
-    public function getCorreo(): ?string
+    public function getCorreoAux(): ?string
     {
-        return $this->correo;
+        return $this->correo_aux;
     }
 
-    public function setCorreo(?string $correo): static
+    public function setCorreoAux(?string $correo_aux): static
     {
-        $this->correo = $correo;
+        $this->correo_aux = $correo_aux;
 
         return $this;
     }
@@ -166,7 +171,6 @@ class Formador
     {
         if (!$this->formadorEdiciones->contains($formadorEdicion)) {
             $this->formadorEdiciones->add($formadorEdicion);
-            $formadorEdicion->setFormador($this);
         }
 
         return $this;
@@ -180,6 +184,18 @@ class Formador
                 $formadorEdicion->setFormador(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getUsuario(): ?Usuario
+    {
+        return $this->usuario;
+    }
+
+    public function setUsuario(Usuario $usuario): static
+    {
+        $this->usuario = $usuario;
 
         return $this;
     }

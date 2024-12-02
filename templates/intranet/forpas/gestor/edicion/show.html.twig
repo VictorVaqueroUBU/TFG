@@ -1,13 +1,12 @@
 {% extends 'intranet/forpas/gestor/index.html.twig' %}
-
+{% block migas %}
+    {{ parent() }}
+    <li class="breadcrumb-item active" aria-current="page">{{ titulo }}</li>
+{% endblock %}
 {% block title %}{{ titulo }}{% endblock %}
 
 {% block content %}
-    <div class="pagina-titulo">Portal del Gestor
-        <a href="#" onclick="window.location.href='{{ path('intranet_forpas_gestor') }}';">
-            <span class="mx-3 fa-solid fa-reply" title="Volver"></span>
-        </a>
-    </div>
+    <div class="pagina-titulo">Portal del Gestor</div>
 
     <div class="pagina-seccion">{{ titulo }}</div>
 
@@ -81,8 +80,7 @@
 
 {% block botones %}
     <li class="nav-item me-2">
-        <a class="btn btn-primary" href="#"
-           onclick="window.location.href='{{ path('intranet_forpas_gestor_edicion_index', {'cursoId': edicion.curso.id}) }}';">
+        <a class="btn btn-primary" href="{{ path('intranet_forpas_gestor_edicion_index', {'cursoId': edicion.curso.id}) }}">
             <span class="fas fa-reply"></span> Volver
         </a>
     </li>

@@ -4,34 +4,41 @@ namespace App\Tests\Controller\Forpas;
 
 use App\Entity\Forpas\Curso;
 use App\Entity\Forpas\Edicion;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Entity\Sistema\Usuario;
 use Doctrine\ORM\EntityRepository;
-use Symfony\Bundle\FrameworkBundle\KernelBrowser;
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
-final class CursoControllerTest extends WebTestCase
+final class CursoControllerTest extends BaseControllerTest
 {
-    private KernelBrowser $client;
-    private EntityManagerInterface $manager;
     /**
      * @var EntityRepository<Curso>
      */
     private EntityRepository $repository;
     private string $path = '/intranet/forpas/gestor/curso/';
-
     protected function setUp(): void
     {
-        $this->client = static::createClient();
-        $this->manager = static::getContainer()->get('doctrine')->getManager();
-        $this->repository = $this->manager->getRepository(Curso::class);
+        parent::setUp(); // Llama al setUp de la clase base
 
-        foreach ($this->repository->findAll() as $object) {
-            $this->manager->remove($object);
+        // Limpiamos datos de Edición, Curso y Usuario.
+        $repositories = [
+            Edicion::class,
+            Curso::class,
+            Usuario::class,
+        ];
+
+        foreach ($repositories as $repositoryClass) {
+            $repository = $this->manager->getRepository($repositoryClass);
+            foreach ($repository->findAll() as $object) {
+                $this->manager->remove($object);
+            }
         }
 
         $this->manager->flush();
-    }
 
+        // Creamos y autenticamos un usuario por defecto
+        $this->client->loginUser($this->createUserWithRole('ROLE_ADMIN'));
+        // Asignamos el repositorio de Curso para los tests
+        $this->repository = $this->manager->getRepository(Curso::class);
+    }
     public function testIndex(): void
     {
         $this->client->followRedirects();
@@ -39,11 +46,7 @@ final class CursoControllerTest extends WebTestCase
 
         self::assertResponseStatusCodeSame(200);
         self::assertPageTitleContains('Listado de Cursos');
-
-        // Use the $crawler to perform additional assertions e.g.
-        // self::assertSame('Some text on the page', $crawler->filter('.p')->first());
     }
-
     public function testNew(): void
     {
         $this->client->request('GET', sprintf('%snew', $this->path));
@@ -71,7 +74,6 @@ final class CursoControllerTest extends WebTestCase
         self::assertResponseRedirects($this->path);
         self::assertSame(1, $this->repository->count([]));
     }
-
     public function testShow(): void
     {
         $fixture = new Curso();
@@ -99,10 +101,7 @@ final class CursoControllerTest extends WebTestCase
 
         self::assertResponseStatusCodeSame(200);
         self::assertPageTitleContains('Datos del Curso');
-
-        // Use assertions to check that the properties are properly displayed.
     }
-
     public function testEdit(): void
     {
         $fixture = new Curso();
@@ -207,7 +206,6 @@ final class CursoControllerTest extends WebTestCase
         $this->assertTrue($curso->getEdiciones()->contains($edicion));
         $this->assertSame($curso, $edicion->getCurso());
     }
-
     public function testRemoveEdiciones(): void
     {
         $curso = new Curso();

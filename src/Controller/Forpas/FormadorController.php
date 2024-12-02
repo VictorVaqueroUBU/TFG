@@ -3,9 +3,11 @@
 namespace App\Controller\Forpas;
 
 use App\Entity\Forpas\Formador;
+use App\Entity\Forpas\Participante;
 use App\Form\Forpas\FormadorType;
 use App\Repository\Forpas\EdicionRepository;
 use App\Repository\Forpas\FormadorRepository;
+use App\Repository\Forpas\ParticipanteRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -26,26 +28,56 @@ final class FormadorController extends AbstractController
             'formadores' => $formadorRepository->findAll(),
         ]);
     }
-    #[Route(path: '/new', name: 'new', defaults: ['titulo' => 'Crear Nuevo Formador'], methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    #[Route(path: '/find', name: 'find', defaults: ['titulo' => 'Listado de Formadores'], methods: ['GET'])]
+    public function find(FormadorRepository $formadorRepository): Response
     {
-        $formador = new Formador();
-        $form = $this->createForm(FormadorType::class, $formador);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($formador);
-            $entityManager->flush();
-            $this->addFlash('success', 'El alta del Formador se ha realizado satisfactoriamente.');
-            return $this->redirectToRoute('intranet_forpas_gestor_formador_index', [], Response::HTTP_SEE_OTHER);
-        }
-
-        return $this->render('intranet/forpas/gestor/formador/new.html.twig', [
-            'formador' => $formador,
-            'form' => $form,
+        return $this->render('intranet/forpas/gestor/formador/find.html.twig', [
+            'formadores' => $formadorRepository->findAll(),
         ]);
     }
-    #[Route(path: '/append/{id}', name: 'append', defaults: ['titulo' => 'Seleccionar Formador'], methods: ['GET'])]
+    #[Route(path: '/new/{id}', name: 'new', defaults: ['titulo' => 'Crear Formador'], methods: ['GET', 'POST'])]
+    public function new(
+        int $id,
+        FormadorRepository $formadorRepository,
+        ParticipanteRepository $participanteRepository,
+        EntityManagerInterface $entityManager
+    ): Response {
+        // Cargamos el participante por ID
+        $participante = $participanteRepository->find($id);
+
+        // Verificamos si ya existe un formador asociado a este usuario
+        $usuario = $participante->getUsuario();
+        if ($formadorRepository->findOneBy(['usuario' => $usuario])) {
+            $this->addFlash('warning', 'Este usuario ya tiene un perfil de formador.');
+            return $this->redirectToRoute('intranet_forpas_gestor_participante_find');
+        }
+
+        // Creamos el nuevo formador con los datos del participante
+        $formador = new Formador();
+        $formador->setNif($participante->getNif());
+        $formador->setNombre($participante->getNombre());
+        $formador->setApellidos($participante->getApellidos());
+        $formador->setOrganizacion($participante->getOrganizacion());
+        $formador->setUsuario($usuario);
+
+        // Actualizamos los roles del usuario para incluir ROLE_TEACHER
+        $roles = $usuario->getRoles();
+        if (!in_array('ROLE_TEACHER', $roles)) {
+            $roles[] = 'ROLE_TEACHER';
+        }
+        $usuario->setRoles($roles);
+
+        // Relación bidireccional
+        $usuario->setFormador($formador);
+
+        // Persistimos el nuevo formador y los cambios del usuario
+        $entityManager->persist($formador);
+        $entityManager->flush();
+
+        $this->addFlash('success', 'El alta del formador se ha realizado satisfactoriamente.');
+        return $this->redirectToRoute('intranet_forpas_gestor_formador_index', [], Response::HTTP_SEE_OTHER);
+    }
+    #[Route(path: '/append/{id}', name: 'append', defaults: ['titulo' => 'Añadir Formador'], methods: ['GET'])]
     public function append(int $id, EdicionRepository $edicionRepository, FormadorRepository $formadorRepository): Response
     {
         // Obtenemos la edición actual
@@ -89,12 +121,23 @@ final class FormadorController extends AbstractController
         // Verificamos si el formador tiene ediciones asociadas
         if (!$formador->getFormadorEdiciones()->isEmpty()) {
             // Si tiene ediciones, redirige con un mensaje de error
-            $this->addFlash('danger', 'No se puede eliminar al formador porque tiene ediciones asociadas.');
+            $this->addFlash('warning', 'No se puede eliminar al formador porque tiene ediciones asociadas.');
             return $this->redirectToRoute('intranet_forpas_gestor_formador_index');
         }
 
         if ($this->isCsrfTokenValid('delete'.$formador->getId(), $request->getPayload()->getString('_token'))) {
+            $usuario = $formador->getUsuario();
+            $participante = $entityManager->getRepository(Participante::class)->findOneBy(['usuario' => $usuario]);
             $entityManager->remove($formador);
+
+            if ($participante) {
+                $roles = $usuario->getRoles();
+                $roles = array_filter($roles, fn($role) => $role !== 'ROLE_TEACHER');
+                $usuario->setRoles($roles);
+            } else {
+                $entityManager->remove($usuario);
+            }
+
             $entityManager->flush();
             $this->addFlash('success', 'Formador eliminado correctamente.');
         }

@@ -1,0 +1,97 @@
+{% extends 'intranet/forpas/participante/index.html.twig' %}
+{% block migas %}
+    {{ parent() }}
+    <li class="breadcrumb-item active" aria-current="page">{{ titulo }}</li>
+{% endblock %}
+{% block title %}{{ curso ? 'Ediciones del Curso ' ~ curso.codigoCurso : titulo }}{% endblock %}
+
+{% block content %}
+    <div class="pagina-titulo">Portal del Participante</div>
+
+    <div class="pagina-seccion">
+        {{ curso ? titulo  ~ ' ' ~ curso.codigoCurso : 'Listado de Ediciones' }}
+    </div>
+
+    <table class="tabla-condensada" id="datosEdiciones">
+        <thead class="cabecera-condensada">
+        <tr>
+            <th>Código</th>
+            <th>Fecha inicio</th>
+            <th>Calendario</th>
+            <th>Horario</th>
+            <th>Lugar</th>
+            <th>Formador</th>
+            <th>Plazas libres/total</th>
+            <th>Acciones</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for edicion in ediciones %}
+            <tr>
+                <td>{{ edicion.codigoEdicion }}</td>
+                <td class="col-1 text-center">{{ edicion.fechaInicio ? edicion.fechaInicio|date('Y-m-d') : '' }}</td>
+                <td>{{ edicion.calendario }}</td>
+                <td class="text-center">{{ edicion.horario }}</td>
+                <td>{{ edicion.lugar }}</td>
+                <td class="text-center">
+                    {% for formadorEdicion in edicion.formadoresEdicion %}
+                        {{ formadorEdicion.formador.nombre ~ ' ' ~ formadorEdicion.formador.apellidos}}
+                    {% endfor %}
+                </td>
+                <td class="text-center">{{ edicion.plazasLibres ~ '/' ~ edicion.maxParticipantes }}</td>
+                <td>{{ edicion.getAccion(participante, urlGenerator)|raw }}</td>
+            </tr>
+        {% else %}
+            <tr>
+                <td>No existen ediciones para el curso seleccionado</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
+
+{% block botones %}
+    <li class="nav-item me-2">
+        <a class="btn btn-primary" href="{{ path('intranet_forpas_participante_cursos') }}">
+            <span class="fas fa-reply"></span> Volver
+        </a>
+    </li>
+{% endblock %}
+
+{% block js %}
+    {{ parent() }}
+    <script type="module">
+        $(function () {
+            $('#datosEdiciones').dataTable({
+                buttons: [
+                    {
+                        extend: 'copy',
+                        text: '<i class="fas fa-copy"></i>',
+                        titleAttr: 'Copiar',
+                    },
+                    {
+                        extend: 'print',
+                        text: '<i class="fas fa-print"></i>',
+                        titleAttr: 'Imprimir',
+                    },
+                    {
+                        extend: 'csv',
+                        text: '<i class="fas fa-file-csv"></i>',
+                        titleAttr: 'Generar fichero CSV',
+                    },
+                    {
+                        extend: 'excelHtml5',
+                        text: '<i class="fas fa-file-excel"></i>',
+                        titleAttr: 'Generar fichero Excel',
+                    },
+                ],
+                dom: '<"row"<"col-sm-12 col-md-4"B><"col-sm-12 col-md-4"l><"col-sm-12 col-md-4"f>>' +
+                    '<"row"<"col-sm-12"<"table-responsive"tr>>>' +
+                    '<"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
+                language: {
+                    url: '{{ asset("includes/datatable.es.json") }}'
+                },
+            });
+        });
+    </script>
+{% endblock %}

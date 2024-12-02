@@ -174,11 +174,6 @@ class ParticipanteType extends AbstractType
                 'required' => false,
                 'attr' => ['maxlength' => 8],
             ])
-            ->add('uvus', TextType::class, [
-                'label' => 'UVUS',
-                'required' => false,
-                'attr' => ['maxlength' => 25],
-            ])
             ->add('sexo', ChoiceType::class, [
                 'label' => 'Sexo',
                 'required' => false,

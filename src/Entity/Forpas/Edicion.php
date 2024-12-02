@@ -9,6 +9,8 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use DateTimeInterface;
+use DateTime;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 #[UniqueEntity(fields: ['codigo_edicion'], message: 'El código de la edición ya existe.')]
 #[ORM\Entity(repositoryClass: EdicionRepository::class)]
@@ -181,6 +183,60 @@ class Edicion
         return $this;
     }
 
+    public function getPlazasLibres(): int
+    {
+        return $this->getMaxParticipantes() - count($this->getParticipantesEdicion());
+    }
+
+    public function getAccion(Participante $participante, UrlGeneratorInterface $urlGenerator): string
+    {
+        $hoy = (new DateTime())->setTime(0, 0);
+
+        // Caso 1: Usuario no activo
+        if ($participante->getUnidad() === null || $participante->getUnidad() === '') {
+            return 'Usuario no activo';
+        }
+
+        // Obtenemos el registro de participanteEdición en la que está inscrito el participante de ese curso actual
+        $edicionInscrita = $participante->getParticipanteEdiciones()->filter(function ($participanteEdicion) {
+            return $participanteEdicion->getEdicion()->getCurso() === $this->getCurso();
+        })->first();
+
+        // Caso 2: Cancelar inscripción
+        if ($edicionInscrita && $edicionInscrita->getEdicion() === $this && $this->getFechaInicio() >= $hoy) {
+            // Construimos el enlace para cancelar inscripción
+            $url = $urlGenerator->generate('intranet_forpas_participante_inscripcion_cancelar', ['id' => $this->getId()]);
+            return sprintf('<b>Inscrito/a en esta edición</b><br><a href="%s" onclick="return confirm(\'¿Estás seguro de que deseas cancelar tu inscripción?\');">Cancelar inscripción</a>', $url);
+        }
+
+        // Caso 3: Cambiar inscripción
+        if ($edicionInscrita && $edicionInscrita->getEdicion() !== $this &&
+            $edicionInscrita->getEdicion()->getFechaInicio() >= $hoy &&
+            $this->getFechaInicio() >= $hoy &&
+            $this->getPlazasLibres() > 0
+        ) {
+            // Construimos el enlace para cambiar inscripción
+            $url = $urlGenerator->generate('intranet_forpas_participante_inscripcion_cambiar', ['id' => $this->getId()]);
+            return sprintf('<a href="%s" onclick="return confirm(\'¿Estás seguro de que deseas cambiar tu inscripción a esta edición?\');">Cambiar a esta edición</a>', $url);
+        }
+
+        // Caso 4: Realizar inscripción
+        if (!$edicionInscrita && $this->getFechaInicio() >= $hoy && $this->getPlazasLibres() > 0) {
+            // Construimos el enlace para realizar inscripción
+            $url = $urlGenerator->generate('intranet_forpas_participante_inscripcion_realizar', ['id' => $this->getId()]);
+            return sprintf('<a href="%s" onclick="return confirm(\'¿Estás seguro de que deseas inscribirte en esta edición?\');">Solicitar inscripción</a>', $url);
+        }
+
+        // Caso 5: información de inscripción
+        if ($edicionInscrita && $edicionInscrita->getEdicion() === $this && $this->getFechaInicio() < $hoy) {
+            return '<b>Inscrito/a en esta edición</b>';
+        }
+
+        // Caso 6: Inscripción cerrada
+        return 'Inscripción cerrada';
+    }
+
+
     public function getCurso(): ?Curso
     {
         return $this->curso;
@@ -205,7 +261,6 @@ class Edicion
     {
         if (!$this->participantesEdicion->contains($participanteEdicion)) {
             $this->participantesEdicion->add($participanteEdicion);
-            $participanteEdicion->setEdicion($this);
         }
 
         return $this;
@@ -214,7 +269,6 @@ class Edicion
     public function removeParticipantesEdicion(ParticipanteEdicion $participanteEdicion): static
     {
         if ($this->participantesEdicion->removeElement($participanteEdicion)) {
-            // set the owning side to null (unless already changed)
             if ($participanteEdicion->getEdicion() === $this) {
                 $participanteEdicion->setEdicion(null);
             }
@@ -235,7 +289,6 @@ class Edicion
     {
         if (!$this->formadoresEdicion->contains($formadorEdicion)) {
             $this->formadoresEdicion->add($formadorEdicion);
-            $formadorEdicion->setEdicion($this);
         }
 
         return $this;
@@ -244,7 +297,6 @@ class Edicion
     public function removeFormadoresEdicion(FormadorEdicion $formadorEdicion): static
     {
         if ($this->formadoresEdicion->removeElement($formadorEdicion)) {
-            // set the owning side to null (unless already changed)
             if ($formadorEdicion->getEdicion() === $this) {
                 $formadorEdicion->setEdicion(null);
             }

@@ -1,2 +1,10 @@
 {% extends '/layout/base.html.twig' %}
 {% set titulo = titulo | default('Servicio de Formación') %}
+
+{% block migas %}
+    {{ parent() }}
+{% endblock %}
+
+{% block js %}
+    {{ parent() }}
+{% endblock %}
