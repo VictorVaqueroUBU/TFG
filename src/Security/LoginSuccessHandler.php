@@ -1,10 +1,10 @@
 <?php
 namespace App\Security;
 
+use App\Entity\Sistema\Usuario;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Security\Http\Authentication\AuthenticationSuccessHandlerInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
@@ -19,6 +19,7 @@ class LoginSuccessHandler implements AuthenticationSuccessHandlerInterface
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token): RedirectResponse
     {
+        /** @var Usuario|null $user */
         $user = $token->getUser();
 
         if (!$user->isVerified()) {

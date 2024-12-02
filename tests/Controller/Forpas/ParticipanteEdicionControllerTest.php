@@ -2,53 +2,49 @@
 
 namespace App\Tests\Controller\Forpas;
 
-Use DateTime;
 use App\Entity\Forpas\Curso;
 use App\Entity\Forpas\Edicion;
 use App\Entity\Forpas\Participante;
 use App\Entity\Forpas\ParticipanteEdicion;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Entity\Sistema\Usuario;
+use DateTime;
 use Doctrine\ORM\EntityRepository;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\BrowserKit\Cookie;
-use Symfony\Bundle\FrameworkBundle\KernelBrowser;
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\HttpFoundation\Request;
 
-final class ParticipanteEdicionControllerTest extends WebTestCase
+final class ParticipanteEdicionControllerTest extends BaseControllerTest
 {
-    private KernelBrowser $client;
-    private EntityManagerInterface $manager;
     /**
      * @var EntityRepository<ParticipanteEdicion>
      */
     private EntityRepository $repository;
     private string $path = '/intranet/forpas/gestor/participante_edicion/';
-
     protected function setUp(): void
     {
-        $this->client = static::createClient();
+        parent::setUp(); // Llama al setUp de la clase base
 
-        // Crear una sesión activa
+        // Creamos una sesión activa
         $session = static::getContainer()->get('session.factory')->createSession();
         $session->start();
 
-        // Crear una solicitud simulada con la sesión activa
+        // Creamos una solicitud simulada con la sesión activa
         $request = new Request();
         $request->setSession($session);
         static::getContainer()->get('request_stack')->push($request);
 
-        // Añadir la cookie de sesión al cliente
+        // Añadimos la cookie de sesión al cliente
         $cookieJar = $this->client->getCookieJar();
         $cookieJar->set(new Cookie($session->getName(), $session->getId()));
 
         $this->manager = static::getContainer()->get('doctrine')->getManager();
 
-        // Limpiar datos de ParticipanteEdicion, Edicion, Curso y Participante
+        // Limpiamos datos de ParticipanteEdicion, Edicion, Curso y Participante
         $repositories = [
             ParticipanteEdicion::class,
+            Participante::class,
             Edicion::class,
             Curso::class,
-            Participante::class, // Asegúrate de incluir Participante
+            Usuario::class,
         ];
 
         foreach ($repositories as $repositoryClass) {
@@ -57,13 +53,17 @@ final class ParticipanteEdicionControllerTest extends WebTestCase
                 $this->manager->remove($object);
             }
         }
+
         $this->manager->flush();
+        // Creamos y autenticamos un usuario por defecto
+        $this->client->loginUser($this->createUserWithRole('ROLE_ADMIN'));
+        // Asignamos el repositorio de ParticipanteEdicion para los tests
         $this->repository = $this->manager->getRepository(ParticipanteEdicion::class);
     }
-
     public function testIndex(): void
     {
-        // Crear una entidad Curso
+        $usuario = $this->createUserWithRole('ROLE_USER');
+        // Creamos una entidad Curso
         $curso = new Curso();
         $curso->setNombreCurso('Curso de Prueba');
         $curso->setCodigoCurso('24001');
@@ -75,7 +75,7 @@ final class ParticipanteEdicionControllerTest extends WebTestCase
         $curso->setCalificable(true);
         $this->manager->persist($curso);
 
-        // Crear una entidad Edicion asociada al Curso
+        // Creamos una entidad Edicion asociada al Curso
         $edicion = new Edicion();
         $edicion->setCodigoEdicion('24001/01');
         $edicion->setEstado(0);
@@ -84,42 +84,42 @@ final class ParticipanteEdicionControllerTest extends WebTestCase
         $edicion->setCurso($curso);
         $this->manager->persist($edicion);
 
-        // Crear una entidad Participante
+        // Creamos una entidad Participante
         $participante = new Participante();
         $participante->setNif('11111111A');
         $participante->setNombre('John');
         $participante->setApellidos('Doe');
+        $participante->setUsuario($usuario);
         $this->manager->persist($participante);
 
-        // Crear una entidad ParticipanteEdicion asociada a la Edicion y al Participante
+        // Creamos una entidad ParticipanteEdicion asociada a la Edicion y al Participante
         $participanteEdicion = new ParticipanteEdicion();
         $participanteEdicion->setEdicion($edicion); // Asociar Edicion
         $participanteEdicion->setParticipante($participante); // Asociar Participante
         $participanteEdicion->setFechaSolicitud(new DateTime('2024-01-01'));
         $this->manager->persist($participanteEdicion);
 
-        // Persistir todos los datos en la base de datos
+        // Persistimos todos los datos en la base de datos
         $this->manager->flush();
 
-        // Obtener el ID generado automáticamente para la Edicion
+        // Obtenemos el ID generado automáticamente para la Edicion
         $edicionId = $edicion->getId();
 
-        // Realizar la solicitud al controlador
+        // Realizamos la solicitud al controlador
         $this->client->request('GET', "/intranet/forpas/gestor/participante_edicion/edicion/$edicionId");
 
-        // Verificar el código de respuesta HTTP
+        // Verificamos el código de respuesta HTTP
         self::assertResponseStatusCodeSame(200);
 
-        // Verificar que la tabla contiene los datos esperados en columnas específicas
+        // Verificamos que la tabla contiene los datos esperados en columnas específicas
         self::assertSelectorTextContains('#datosParticipantesEdicion tbody tr:first-child td:nth-child(1)', '11111111A'); // NIF
         self::assertSelectorTextContains('#datosParticipantesEdicion tbody tr:first-child td:nth-child(2)', 'Doe');       // Apellidos
         self::assertSelectorTextContains('#datosParticipantesEdicion tbody tr:first-child td:nth-child(3)', 'John');      // Nombre
-
     }
-
     public function testNew(): void
     {
-        // Crear una entidad Curso
+        $usuario = $this->createUserWithRole('ROLE_USER');
+        // Creamos una entidad Curso
         $curso = new Curso();
         $curso->setNombreCurso('Curso de Prueba');
         $curso->setCodigoCurso('24002');
@@ -131,7 +131,7 @@ final class ParticipanteEdicionControllerTest extends WebTestCase
         $curso->setCalificable(true);
         $this->manager->persist($curso);
 
-        // Crear una entidad Edicion asociada al Curso
+        // Creamos una entidad Edicion asociada al Curso
         $edicion = new Edicion();
         $edicion->setCodigoEdicion('24002/01');
         $edicion->setEstado(0);
@@ -141,30 +141,31 @@ final class ParticipanteEdicionControllerTest extends WebTestCase
         $curso->addEdiciones($edicion);
         $this->manager->persist($edicion);
 
-        // Crear una entidad Participante
+        // Creamos una entidad Participante
         $participante = new Participante();
         $participante->setNif('22222222B');
         $participante->setNombre('Jane');
         $participante->setApellidos('Smith');
+        $participante->setUsuario($usuario);
         $this->manager->persist($participante);
 
-        // Persistir las entidades previas
+        // Persistimos las entidades previas
         $this->manager->flush();
 
-        // Validar persistencia
+        // Validamos persistencia
         $participantePersistido = $this->manager->find(Participante::class, $participante->getId());
         $edicionPersistida = $this->manager->find(Edicion::class, $edicion->getId());
 
         self::assertNotNull($participantePersistido, 'Participante no encontrado en la base de datos.');
         self::assertNotNull($edicionPersistida, 'Edición no encontrada en la base de datos.');
 
-        // Simular la llamada al método new con los ID de Participante y Edición
+        // Simulamos la llamada al método new con los ID de Participante y Edición
         $this->client->request('GET', "/intranet/forpas/gestor/participante_edicion/new/{$participante->getId()}/{$edicion->getId()}");
 
-        // Validar que redirige correctamente
+        // Validamos que redirige correctamente
         self::assertResponseRedirects("/intranet/forpas/gestor/participante_edicion/edicion/{$edicion->getId()}");
 
-        // Verificar que la inscripción se ha creado en la base de datos
+        // Verificamos que la inscripción se ha creado en la base de datos
         $participanteEdiciones = $this->repository->findAll();
         self::assertCount(1, $participanteEdiciones);
 
@@ -174,10 +175,10 @@ final class ParticipanteEdicionControllerTest extends WebTestCase
         self::assertSame($edicion->getId(), $nuevaInscripcion->getEdicion()->getId());
         self::assertNotNull($nuevaInscripcion->getFechaSolicitud());
     }
-
     public function testShow(): void
     {
-        // Crear una entidad Curso
+        $usuario = $this->createUserWithRole('ROLE_USER');
+        // Creamos una entidad Curso
         $curso = new Curso();
         $curso->setNombreCurso('Curso de Prueba');
         $curso->setCodigoCurso('24003');
@@ -189,7 +190,7 @@ final class ParticipanteEdicionControllerTest extends WebTestCase
         $curso->setCalificable(true);
         $this->manager->persist($curso);
 
-        // Crear una entidad Edicion asociada al Curso
+        // Creamos una entidad Edicion asociada al Curso
         $edicion = new Edicion();
         $edicion->setCodigoEdicion('24003/01');
         $edicion->setEstado(0);
@@ -199,14 +200,15 @@ final class ParticipanteEdicionControllerTest extends WebTestCase
         $curso->addEdiciones($edicion);
         $this->manager->persist($edicion);
 
-        // Crear una entidad Participante
+        // Creamos una entidad Participante
         $participante = new Participante();
         $participante->setNif('33333333C');
         $participante->setNombre('Jane');
         $participante->setApellidos('Doe');
+        $participante->setUsuario($usuario);
         $this->manager->persist($participante);
 
-        // Crear una entidad ParticipanteEdicion
+        // Creamos una entidad ParticipanteEdicion
         $participanteEdicion = new ParticipanteEdicion();
         $participanteEdicion->setFechaSolicitud(new DateTime('2024-01-01'));
         $participanteEdicion->setBajaJustificada(null);
@@ -221,24 +223,24 @@ final class ParticipanteEdicionControllerTest extends WebTestCase
         $participanteEdicion->setEdicion($edicion);
         $this->manager->persist($participanteEdicion);
 
-        // Persistir todo en la base de datos
+        // Persistimos en la base de datos
         $this->manager->flush();
 
-        // Hacer una solicitud GET al método show
+        // Hacemos una solicitud GET al método show
         $this->client->request('GET', sprintf('%s%s', $this->path, $participanteEdicion->getId()));
 
-        // Verificar que la respuesta es 200
+        // Verificamos que la respuesta es 200
         self::assertResponseStatusCodeSame(200);
 
-        // Verificar que los datos se muestran correctamente en los campos
+        // Verificamos que los datos se muestran correctamente en los campos
         self::assertSelectorTextContains('div:contains("Nif") + .fila-valor', '33333333C'); // NIF
         self::assertSelectorTextContains('div:contains("Apellidos") + .fila-valor', 'Doe'); // Apellidos
         self::assertSelectorTextContains('div:contains("Nombre") + .fila-valor', 'Jane'); // Nombre
     }
-
     public function testEdit(): void
     {
-        // Crear una entidad Curso
+        $usuario = $this->createUserWithRole('ROLE_USER');
+        // Creamos una entidad Curso
         $curso = new Curso();
         $curso->setNombreCurso('Curso de Prueba');
         $curso->setCodigoCurso('24004');
@@ -250,7 +252,7 @@ final class ParticipanteEdicionControllerTest extends WebTestCase
         $curso->setCalificable(true);
         $this->manager->persist($curso);
 
-        // Crear una entidad Edicion asociada al Curso
+        // Creamos una entidad Edicion asociada al Curso
         $edicion = new Edicion();
         $edicion->setCodigoEdicion('24004/01');
         $edicion->setEstado(0);
@@ -260,40 +262,41 @@ final class ParticipanteEdicionControllerTest extends WebTestCase
         $curso->addEdiciones($edicion);
         $this->manager->persist($edicion);
 
-        // Crear una entidad Participante
+        // Creamos una entidad Participante
         $participante = new Participante();
         $participante->setNif('44444444D');
         $participante->setNombre('Jane');
         $participante->setApellidos('Doe');
+        $participante->setUsuario($usuario);
         $this->manager->persist($participante);
 
-        // Crear una entidad ParticipanteEdicion
+        // Creamos una entidad ParticipanteEdicion
         $participanteEdicion = new ParticipanteEdicion();
         $participanteEdicion->setFechaSolicitud(new DateTime('2024-01-01'));
         $participanteEdicion->setParticipante($participante);
         $participanteEdicion->setEdicion($edicion);
         $this->manager->persist($participanteEdicion);
 
-        // Persistir todo en la base de datos
+        // Persistimos todo en la base de datos
         $this->manager->flush();
 
-        // Hacer una solicitud GET para cargar el formulario de edición
+        // Hacemos una solicitud GET para cargar el formulario de edición
         $this->client->request('GET', sprintf('%s%s/edit', $this->path, $participanteEdicion->getId()));
 
-        // Verificar que la respuesta es 200
+        // Verificamos que la respuesta es 200
         self::assertResponseStatusCodeSame(200);
 
-        // Simular el envío del formulario con nuevos datos
+        // Simulamos el envío del formulario con nuevos datos
         $this->client->submitForm('Actualizar', [
             'participante_edicion[observaciones]' => 'Nueva observación',
             'participante_edicion[prueba_final]' => '10.00',
             'participante_edicion[certificado]' => 'N',
         ]);
 
-        // Verificar que redirige correctamente
+        // Verificamos que redirige correctamente
         self::assertResponseRedirects(sprintf('/intranet/forpas/gestor/participante_edicion/edicion/%s', $edicion->getId()));
 
-        // Verificar que los cambios se guardaron en la base de datos
+        // Verificamos que los cambios se guardaron en la base de datos
         /** @var ParticipanteEdicion $actualizado */
         $actualizado = $this->repository->find($participanteEdicion->getId());
         self::assertSame('Nueva observación', $actualizado->getObservaciones());
@@ -302,7 +305,8 @@ final class ParticipanteEdicionControllerTest extends WebTestCase
     }
     public function testRemoveSuccess(): void
     {
-        // Crear la entidad Curso
+        $usuario = $this->createUserWithRole('ROLE_USER');
+        // Creamos la entidad Curso
         $curso = new Curso();
         $curso->setNombreCurso('Curso de Prueba');
         $curso->setCodigoCurso('24005');
@@ -314,7 +318,7 @@ final class ParticipanteEdicionControllerTest extends WebTestCase
         $curso->setCalificable(true);
         $this->manager->persist($curso);
 
-        // Crear la entidad Edicion
+        // Creamos la entidad Edicion
         $edicion = new Edicion();
         $edicion->setCodigoEdicion('24005/01');
         $edicion->setEstado(0);
@@ -325,14 +329,15 @@ final class ParticipanteEdicionControllerTest extends WebTestCase
         $curso->addEdiciones($edicion);
         $this->manager->persist($edicion);
 
-        // Crear la entidad Participante
+        // Creamos la entidad Participante
         $participante = new Participante();
         $participante->setNif('55555555E');
         $participante->setNombre('Víctor');
         $participante->setApellidos('Vaquero');
+        $participante->setUsuario($usuario);
         $this->manager->persist($participante);
 
-        // Crear la entidad ParticipanteEdicion
+        // Creamos la entidad ParticipanteEdicion
         $participanteEdicion = new ParticipanteEdicion();
         $participanteEdicion->setFechaSolicitud(new DateTime('2024-01-01'));
         $participanteEdicion->setParticipante($participante);
@@ -343,16 +348,16 @@ final class ParticipanteEdicionControllerTest extends WebTestCase
 
         $this->manager->flush();
 
-        // Generar el token CSRF
+        // Generamos el token CSRF
         $csrfTokenManager = static::getContainer()->get('security.csrf.token_manager');
         $token = $csrfTokenManager->getToken('delete' . $participanteEdicion->getId());
 
-        // Realizar la solicitud POST
+        // Realizamos la solicitud POST
         $this->client->request('POST', sprintf('%s%s', $this->path, $participanteEdicion->getId()), [
             '_token' => $token->getValue(),
         ]);
 
-        // Verificar la redirección
+        // Verificamos la redirección
         self::assertResponseRedirects(sprintf('/intranet/forpas/gestor/participante_edicion/edicion/%s', $edicion->getId()));
     }
 }

@@ -38,7 +38,6 @@ final class FormadorController extends AbstractController
     #[Route(path: '/new/{id}', name: 'new', defaults: ['titulo' => 'Crear Formador'], methods: ['GET', 'POST'])]
     public function new(
         int $id,
-        Request $request,
         FormadorRepository $formadorRepository,
         ParticipanteRepository $participanteRepository,
         EntityManagerInterface $entityManager
@@ -58,7 +57,7 @@ final class FormadorController extends AbstractController
         $formador->setNif($participante->getNif());
         $formador->setNombre($participante->getNombre());
         $formador->setApellidos($participante->getApellidos());
-        $formador->setOrganizacion($participante->getOrganizacion() ?? 'Organización predeterminada');
+        $formador->setOrganizacion($participante->getOrganizacion());
         $formador->setUsuario($usuario);
 
         // Actualizamos los roles del usuario para incluir ROLE_TEACHER

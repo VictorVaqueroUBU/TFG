@@ -50,10 +50,10 @@ class Usuario implements UserInterface
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?DateTimeInterface $passwordChangedAt = null;
 
-    #[ORM\OneToOne(mappedBy: 'usuario', cascade: ['persist', 'remove'])]
+    #[ORM\OneToOne(targetEntity: Participante::class, mappedBy: 'usuario', cascade: ['persist', 'remove'])]
     private ?Participante $participante = null;
 
-    #[ORM\OneToOne(mappedBy: 'usuario', cascade: ['persist', 'remove'])]
+    #[ORM\OneToOne(targetEntity: Formador::class, mappedBy: 'usuario', cascade: ['persist', 'remove'])]
     private ?Formador $formador = null;
 
     public function getId(): int

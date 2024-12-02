@@ -2,18 +2,14 @@
 
 namespace App\Tests\Controller\Forpas;
 
+use App\Entity\Sistema\Usuario;
 use DateTime;
 use App\Entity\Forpas\Curso;
 use App\Entity\Forpas\Edicion;
-use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
-use Symfony\Bundle\FrameworkBundle\KernelBrowser;
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
-final class EdicionControllerTest extends WebTestCase
+final class EdicionControllerTest extends BaseControllerTest
 {
-    private KernelBrowser $client;
-    private EntityManagerInterface $manager;
     /**
      * @var EntityRepository<Edicion>
      */
@@ -21,26 +17,28 @@ final class EdicionControllerTest extends WebTestCase
     private string $path = '/intranet/forpas/gestor/edicion/';
     protected function setUp(): void
     {
-        $this->client = static::createClient();
-        $this->manager = static::getContainer()->get('doctrine')->getManager();
+        parent::setUp();
 
-        // Limpiar datos de ediciones y cursos
-        $edicionRepository = $this->manager->getRepository(Edicion::class);
-        foreach ($edicionRepository->findAll() as $object) {
-            $this->manager->remove($object);
-        }
+        // Limpiamos los datos de ediciones y cursos
+        $repositories = [
+            Edicion::class,
+            Curso::class,
+            Usuario::class,
+        ];
 
-        $cursoRepository = $this->manager->getRepository(Curso::class);
-        foreach ($cursoRepository->findAll() as $object) {
-            $this->manager->remove($object);
+        foreach ($repositories as $repositoryClass) {
+            $repository = $this->manager->getRepository($repositoryClass);
+            foreach ($repository->findAll() as $object) {
+                $this->manager->remove($object);
+            }
         }
 
         $this->manager->flush();
 
+        // Creamos y autenticamos un usuario por defecto
+        $this->client->loginUser($this->createUserWithRole('ROLE_ADMIN'));
         $this->repository = $this->manager->getRepository(Edicion::class);
     }
-
-
     public function testIndex(): void
     {
         $this->client->followRedirects();
@@ -50,7 +48,7 @@ final class EdicionControllerTest extends WebTestCase
         self::assertPageTitleContains('Listado de ediciones');
 
         // Caso 2: Con cursoId (debería ejecutarse el bloque `if ($cursoId)`)
-        $cursoId = 1; // Cambia este valor según un curso existente en tu base de datos de prueba
+        $cursoId = 1;
         $this->client->request('GET', $this->path, ['cursoId' => $cursoId]);
         self::assertResponseStatusCodeSame(200);
     }
@@ -70,7 +68,6 @@ final class EdicionControllerTest extends WebTestCase
         $this->manager->flush();
 
         $this->client->request('GET', sprintf('%snew/%d', $this->path, $curso->getId()));
-
         self::assertResponseStatusCodeSame(200);
 
         $this->client->submitForm('Guardar', [
@@ -118,11 +115,8 @@ final class EdicionControllerTest extends WebTestCase
         $this->manager->flush();
 
         $this->client->request('GET', sprintf('%s%s', $this->path, $fixture->getId()));
-
         self::assertResponseStatusCodeSame(200);
         self::assertPageTitleContains('Datos de la Edición');
-
-        // Use assertions to check that the properties are properly displayed.
     }
     public function testEdit(): void
     {
@@ -169,9 +163,7 @@ final class EdicionControllerTest extends WebTestCase
         ]);
 
         self::assertResponseRedirects($this->path . '?cursoId=' . $curso->getId());
-
         $updatedFixture = $this->repository->find($fixture->getId());
-
         self::assertEquals(new DateTime('2024-01-01'), $updatedFixture->getFechaInicio());
         self::assertEquals(new DateTime('2024-01-02'), $updatedFixture->getFechaFin());
         self::assertSame('Something New', $updatedFixture->getCalendario());

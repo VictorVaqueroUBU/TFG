@@ -107,7 +107,7 @@ class Participante
     #[ORM\OneToMany(targetEntity: ParticipanteEdicion::class, mappedBy: 'participante', orphanRemoval: true)]
     private Collection $participanteEdiciones;
 
-    #[ORM\OneToOne(inversedBy: 'participante', cascade: ['persist', 'remove'])]
+    #[ORM\OneToOne(targetEntity: Usuario::class, inversedBy: 'participante', cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false)]
     private ?Usuario $usuario = null;
 

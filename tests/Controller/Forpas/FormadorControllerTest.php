@@ -5,31 +5,28 @@ namespace App\Tests\Controller\Forpas;
 use App\Entity\Forpas\Curso;
 use App\Entity\Forpas\Edicion;
 use App\Entity\Forpas\Formador;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Entity\Forpas\Participante;
+use App\Entity\Sistema\Usuario;
 use Doctrine\ORM\EntityRepository;
-use Symfony\Bundle\FrameworkBundle\KernelBrowser;
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
-final class FormadorControllerTest extends WebTestCase
+final class FormadorControllerTest extends BaseControllerTest
 {
-    private KernelBrowser $client;
-    private EntityManagerInterface $manager;
     /**
      * @var EntityRepository<Formador>
      */
     private EntityRepository $repository;
     private string $path = '/intranet/forpas/gestor/formador/';
-
     protected function setUp(): void
     {
-        $this->client = static::createClient();
-        $this->manager = static::getContainer()->get('doctrine')->getManager();
+        parent::setUp(); // Llama al setUp de la clase base
 
-        // Limpiar datos de ParticipanteEdicion, Edicion, Curso y Participante
+        // Limpiamos datos de Edición, Curso y Formador
         $repositories = [
+            Participante::class,
             Formador::class,
             Edicion::class,
             Curso::class,
+            Usuario::class,
         ];
 
         foreach ($repositories as $repositoryClass) {
@@ -41,11 +38,11 @@ final class FormadorControllerTest extends WebTestCase
 
         $this->manager->flush();
 
-        // Asigna el repositorio de Participante para los tests
+        // Creamos y autenticamos un usuario por defecto
+        $this->client->loginUser($this->createUserWithRole('ROLE_ADMIN'));
+        // Asignamos el repositorio de Formador para los tests
         $this->repository = $this->manager->getRepository(Formador::class);
     }
-
-
     public function testIndex(): void
     {
         $this->client->followRedirects();
@@ -53,66 +50,71 @@ final class FormadorControllerTest extends WebTestCase
 
         self::assertResponseStatusCodeSame(200);
         self::assertPageTitleContains('Listado de Formadores');
-
-        // Use the $crawler to perform additional assertions e.g.
-        // self::assertSame('Some text on the page', $crawler->filter('.p')->first());
     }
     public function testNew(): void
     {
-        $this->client->request('GET', sprintf('%snew', $this->path));
+        // Caso 1: Creamos un Formador desde un Participante válido
+        $usuario = $this->createUserWithRole('ROLE_USER');
+        $participante = new Participante();
+        $participante->setNif('12345678A');
+        $participante->setNombre('Juan');
+        $participante->setApellidos('Pérez');
+        $participante->setUsuario($usuario);
+        $participante->setOrganizacion('Organización de prueba');
 
-        self::assertResponseStatusCodeSame(200);
+        $this->manager->persist($participante);
+        $this->manager->flush();
 
-        $this->client->submitForm('Guardar', [
-            'formador[nif]' => 'Testing',
-            'formador[apellidos]' => 'Testing',
-            'formador[nombre]' => 'Testing',
-            'formador[organizacion]' => 'Testing',
-            'formador[correo]' => 'Testing',
-            'formador[telefono]' => 'Testing',
-            'formador[observaciones]' => 'Testing',
-            'formador[formadorRJ]' => 1,
-        ]);
+        $this->client->request('GET', $this->path . 'new/' . $participante->getId());
+        $formador = $this->repository->findOneBy(['usuario' => $usuario]);
+        $this->assertNotNull($formador, 'El Formador debería haber sido creado.');
+        $this->assertSame('12345678A', $formador->getNif(), 'El NIF debería coincidir.');
+        $this->assertResponseRedirects('/intranet/forpas/gestor/formador/', 303);
 
-        self::assertResponseRedirects($this->path);
+        // Caso 2: Intentamos crear un Formador cuando ya existe uno asociado al Usuario
+        $this->client->request('GET', $this->path . 'new/' . $participante->getId());
 
-        self::assertSame(1, $this->repository->count([]));
+        // Verificamos que no se crea un duplicado
+        $formadores = $this->repository->findBy(['usuario' => $usuario]);
+        $this->assertCount(1, $formadores, 'No debería haber duplicados de Formador para el mismo Usuario.');
     }
-
     public function testShow(): void
     {
+        // Creamos un usuario para asociar al formador
+        $usuario = $this->createUserWithRole('ROLE_USER');
+
         $fixture = new Formador();
         $fixture->setNif('My Title');
         $fixture->setApellidos('My Title');
         $fixture->setNombre('My Title');
         $fixture->setOrganizacion('My Title');
-        $fixture->setCorreo('My Title');
+        $fixture->setCorreoAux('My Title');
         $fixture->setTelefono('My Title');
         $fixture->setObservaciones('My Title');
         $fixture->setFormadorRJ(1);
+        $fixture->setUsuario($usuario);
 
         $this->manager->persist($fixture);
         $this->manager->flush();
 
         $this->client->request('GET', sprintf('%s%s', $this->path, $fixture->getId()));
-
         self::assertResponseStatusCodeSame(200);
         self::assertPageTitleContains('Datos del Formador');
-
-        // Use assertions to check that the properties are properly displayed.
     }
-
     public function testEdit(): void
     {
+        $usuario = $this->createUserWithRole('ROLE_USER');
+
         $fixture = new Formador();
         $fixture->setNif('Value');
         $fixture->setApellidos('Value');
         $fixture->setNombre('Value');
         $fixture->setOrganizacion('Value');
-        $fixture->setCorreo('Value');
+        $fixture->setCorreoAux('Value');
         $fixture->setTelefono('Value');
         $fixture->setObservaciones('Value');
         $fixture->setFormadorRJ(1);
+        $fixture->setUsuario($usuario);
 
         $this->manager->persist($fixture);
         $this->manager->flush();
@@ -124,37 +126,38 @@ final class FormadorControllerTest extends WebTestCase
             'formador[apellidos]' => 'Something New',
             'formador[nombre]' => 'Something New',
             'formador[organizacion]' => 'Something New',
-            'formador[correo]' => 'Something New',
+            'formador[correoAux]' => 'Something New',
             'formador[telefono]' => 'Something New',
             'formador[observaciones]' => 'Something New',
             'formador[formadorRJ]' => 1,
         ]);
 
         self::assertResponseRedirects($this->path);
-
         $fixture = $this->repository->findAll();
 
         self::assertSame('Something', $fixture[0]->getNif());
         self::assertSame('Something New', $fixture[0]->getApellidos());
         self::assertSame('Something New', $fixture[0]->getNombre());
         self::assertSame('Something New', $fixture[0]->getOrganizacion());
-        self::assertSame('Something New', $fixture[0]->getCorreo());
+        self::assertSame('Something New', $fixture[0]->getCorreoAux());
         self::assertSame('Something New', $fixture[0]->getTelefono());
         self::assertSame('Something New', $fixture[0]->getObservaciones());
         self::assertSame(1, $fixture[0]->getFormadorRJ());
     }
-
     public function testRemove(): void
     {
+        $usuario = $this->createUserWithRole('ROLE_USER');
+
         $fixture = new Formador();
         $fixture->setNif('Value2');
         $fixture->setApellidos('Value2');
         $fixture->setNombre('Value2');
         $fixture->setOrganizacion('Value2');
-        $fixture->setCorreo('Value2');
+        $fixture->setCorreoAux('Value2');
         $fixture->setTelefono('Value2');
         $fixture->setObservaciones('Value2');
         $fixture->setFormadorRJ(2);
+        $fixture->setUsuario($usuario);
 
         $this->manager->persist($fixture);
         $this->manager->flush();
@@ -167,7 +170,9 @@ final class FormadorControllerTest extends WebTestCase
     }
     public function testAppend(): void
     {
-        // Crear una entidad Curso
+        $usuario = $this->createUserWithRole('ROLE_USER');
+
+        // Creamos una entidad Curso
         $curso = new Curso();
         $curso->setNombreCurso('Curso de Prueba');
         $curso->setCodigoCurso('24201');
@@ -179,7 +184,7 @@ final class FormadorControllerTest extends WebTestCase
         $curso->setCalificable(true);
         $this->manager->persist($curso);
 
-        // Crear una entidad Edicion asociada al Curso
+        // Crearmos una entidad Edicion asociada al Curso
         $edicion = new Edicion();
         $edicion->setCodigoEdicion('24201/01');
         $edicion->setEstado(0);
@@ -189,34 +194,35 @@ final class FormadorControllerTest extends WebTestCase
         $curso->addEdiciones($edicion);
         $this->manager->persist($edicion);
 
-        // Crear una entidad Formador
+        // Creamos una entidad Formador
         $fixture = new Formador();
         $fixture->setNif('Value3');
         $fixture->setApellidos('Value3');
         $fixture->setNombre('Value3');
         $fixture->setOrganizacion('Value3');
-        $fixture->setCorreo('Value3');
+        $fixture->setCorreoAux('Value3');
         $fixture->setTelefono('Value3');
         $fixture->setObservaciones('Value3');
         $fixture->setFormadorRJ(2);
+        $fixture->setUsuario($usuario);
         $this->manager->persist($fixture);
 
-        // Persistir todos los datos en la base de datos
+        // Persistimos todos los datos en la base de datos
         $this->manager->flush();
 
-        // Obtener el ID generado automáticamente para la Edicion
+        // Obtenemos el ID generado automáticamente para la Edicion
         $id = $edicion->getId();
 
-        // Realizar la solicitud al controlador
+        // Realizamos la solicitud al controlador
         $this->client->request('GET', "/intranet/forpas/gestor/formador/append/$id");
 
-        // Verificar el código de respuesta HTTP
+        // Verificamos el código de respuesta HTTP
         self::assertResponseStatusCodeSame(200);
 
-        // Verificar que la vista contiene los datos de los participantes disponibles
+        // Verificamos que la vista contiene los datos de los participantes disponibles
         self::assertSelectorTextContains(
             '#datosFormadoresAsignables tbody tr:first-child td:nth-child(1)',
-            'Value3' // Cambia esto por el NIF esperado.
+            'Value3'
         );
     }
 }

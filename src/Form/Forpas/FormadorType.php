@@ -35,7 +35,7 @@ class FormadorType extends AbstractType
                 'required' => true,
                 'attr' => ['maxlength' => 50],
             ])
-            ->add('correo', TextType::class, [
+            ->add('correoAux', TextType::class, [
                 'label' => 'Correo Auxiliar',
                 'required' => false,
                 'attr' => ['maxlength' => 50],

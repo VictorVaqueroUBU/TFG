@@ -2,11 +2,13 @@
 
 namespace App\Controller\Forpas;
 
+use App\Entity\Sistema\Usuario;
 use App\Entity\Forpas\Curso;
 use App\Entity\Forpas\Edicion;
 use App\Entity\Forpas\ParticipanteEdicion;
 use App\Form\Forpas\ParticipanteContactoType;
 use App\Repository\Forpas\CursoRepository;
+use App\Repository\Forpas\ParticipanteEdicionRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -25,6 +27,7 @@ class ParticipantePortalController extends AbstractController
     #[Route(path: '/mis-datos', name: 'mis_datos', defaults: ['titulo' => 'Mis datos de contacto'], methods: ['GET', 'POST'])]
     public function misDatos(Request $request, EntityManagerInterface $entityManager): Response
     {
+        /** @var Usuario|null $user */
         $user = $this->getUser();
         // Verificamos que el usuario tiene un participante asociado
         if (!$user || !$user->getParticipante()) {
@@ -50,6 +53,7 @@ class ParticipantePortalController extends AbstractController
     #[Route(path: '/ficha-formativa', name: 'ficha_formativa', defaults: ['titulo' => 'Ficha Formativa Personal'], methods: ['GET'])]
     public function fichaFormativa(EntityManagerInterface $entityManager): Response
     {
+        /** @var Usuario|null $user */
         $user = $this->getUser();
 
         // Verificamos si el usuario tiene un participante asociado
@@ -59,9 +63,11 @@ class ParticipantePortalController extends AbstractController
 
         $participante = $user->getParticipante();
         // Consultamos las ediciones por categoría
-        $proximasEdiciones = $entityManager->getRepository(ParticipanteEdicion::class)->findProximasEdiciones($participante);
-        $edicionesCertificadas = $entityManager->getRepository(ParticipanteEdicion::class)->findEdicionesCertificadas($participante);
-        $otrasEdiciones = $entityManager->getRepository(ParticipanteEdicion::class)->findOtrasEdiciones($participante);
+        /** @var ParticipanteEdicionRepository $repository */
+        $repository = $entityManager->getRepository(ParticipanteEdicion::class);
+        $proximasEdiciones = $repository->findProximasEdiciones($participante);
+        $edicionesCertificadas = $repository->findEdicionesCertificadas($participante);
+        $otrasEdiciones = $repository->findOtrasEdiciones($participante);
 
         return $this->render('intranet/forpas/participante/ficha_formativa.html.twig', [
             'proximasEdiciones' => $proximasEdiciones,
@@ -73,7 +79,7 @@ class ParticipantePortalController extends AbstractController
     #[Route(path: '/cursos', name: 'cursos', defaults: ['titulo' => 'Listado de cursos'], methods: ['GET'])]
     public function listarCursos(CursoRepository $cursoRepository): Response
     {
-        $year = date('Y'); // Obtiene el año actual
+        $year = (int) date('Y'); // Obtiene el año actual
         $cursos = $cursoRepository->findByYear($year);
         return $this->render('intranet/forpas/participante/cursos.html.twig', [
             'cursos' => $cursos,
@@ -92,7 +98,9 @@ class ParticipantePortalController extends AbstractController
     public function listarEdiciones(Curso $curso, EntityManagerInterface $entityManager, UrlGeneratorInterface $urlGenerator): Response
     {
         $ediciones = $entityManager->getRepository(Edicion::class)->findEdicionesSinCeroCero($curso);
-        $participante = $this->getUser()->getParticipante();
+        /** @var Usuario $user */
+        $user = $this->getUser();
+        $participante = $user->getParticipante();
 
         return $this->render('intranet/forpas/participante/ediciones.html.twig', [
             'curso' => $curso,
@@ -107,7 +115,9 @@ class ParticipantePortalController extends AbstractController
     {
         // Obtenemos el participante y la edición
         $edicion = $entityManager->getRepository(Edicion::class)->find($id);
-        $participante = $this->getUser()->getParticipante();
+        /** @var Usuario $user */
+        $user = $this->getUser();
+        $participante = $user->getParticipante();
 
         // Buscamos la inscripción en ParticipanteEdicion
         $inscripcion = $entityManager->getRepository(ParticipanteEdicion::class)->findOneBy([
@@ -137,7 +147,9 @@ class ParticipantePortalController extends AbstractController
     {
         // Obtenemos el participante y la edición
         $edicion = $entityManager->getRepository(Edicion::class)->find($id);
-        $participante = $this->getUser()->getParticipante();
+        /** @var Usuario $user */
+        $user = $this->getUser();
+        $participante = $user->getParticipante();
 
         // Buscamos la inscripción actual
         $inscripcionActual = $participante->getParticipanteEdiciones()->filter(function ($participanteEdicion) use ($edicion) {
@@ -176,7 +188,9 @@ class ParticipantePortalController extends AbstractController
     {
         // Obtenemos el participante y la edición
         $edicion = $entityManager->getRepository(Edicion::class)->find($id);
-        $participante = $this->getUser()->getParticipante();
+        /** @var Usuario $user */
+        $user = $this->getUser();
+        $participante = $user->getParticipante();
 
         // Creamos nueva inscripción
         $inscripcion = new ParticipanteEdicion();
@@ -197,6 +211,7 @@ class ParticipantePortalController extends AbstractController
     #[Route(path: '/proximas-ediciones', name: 'proximas_ediciones', defaults: ['titulo' => 'Próximas Ediciones'], methods: ['GET'])]
     public function listarProximasEdiciones(EntityManagerInterface $entityManager, UrlGeneratorInterface $urlGenerator): Response
     {
+        /** @var Usuario|null $user */
         $user = $this->getUser();
 
         // Verificamos si el usuario tiene un participante asociado

@@ -2,6 +2,7 @@
 
 namespace App\Controller\Intranet;
 
+use App\Entity\Sistema\Usuario;
 use DateInterval;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
@@ -32,15 +33,22 @@ class LoginController extends AbstractController
         // Comprobamos fecha de expiración de contraseña
         $now = new DateTime();
         $passwordExpirationInterval = new DateInterval($this->getParameter('password_expiration_interval'));
-        if ($this->getUser() && $this->getUser()->getPasswordChangedAt()) {
-            $passwordChangedAt = $this->getUser()->getPasswordChangedAt();
-            if ($passwordChangedAt->add($passwordExpirationInterval) < $now) {
-                $this->getUser()->setVerified(false);
-                $entityManager->flush();
+        /** @var Usuario|null $user */
+        $user = $this->getUser();
+        if ($user && $user->getPasswordChangedAt()) {
+            /** @var DateTime $passwordChangedAt */
+            $passwordChangedAt = $user->getPasswordChangedAt();
+            if ($passwordChangedAt instanceof DateTime) {
+                $passwordExpirationDate = clone $passwordChangedAt; // Clonamos para no modificar la original
+                $passwordExpirationDate->add($passwordExpirationInterval);
+                if ($passwordExpirationDate < $now) {
+                    $user->setVerified(false);
+                    $entityManager->flush();
+                }
             }
         }
         // Comprobamos activación de la cuenta del usuario o cambio de contraseña por expiración
-        if ($this->getUser() && !$this->getUser()->isVerified()) {
+        if ($user && !$user->isVerified()) {
             return $this->redirectToRoute('intranet_change_password');
         }
 
@@ -60,6 +68,7 @@ class LoginController extends AbstractController
         UserPasswordHasherInterface $passwordHasher,
         EntityManagerInterface $entityManager
     ): Response {
+        /** @var Usuario|null $user */
         $user = $this->getUser();
 
         // Verificar si el usuario ha iniciado sesión previamente para poder cambiar su contraseña

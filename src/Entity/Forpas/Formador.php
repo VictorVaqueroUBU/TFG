@@ -49,7 +49,7 @@ class Formador
     #[ORM\OneToMany(targetEntity: FormadorEdicion::class, mappedBy: 'formador', orphanRemoval: true)]
     private Collection $formadorEdiciones;
 
-    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
+    #[ORM\OneToOne(targetEntity: Usuario::class, inversedBy: 'formador', cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false)]
     private ?Usuario $usuario = null;
 
@@ -116,7 +116,7 @@ class Formador
         return $this->correo_aux;
     }
 
-    public function setCorreo(?string $correo_aux): static
+    public function setCorreoAux(?string $correo_aux): static
     {
         $this->correo_aux = $correo_aux;
 

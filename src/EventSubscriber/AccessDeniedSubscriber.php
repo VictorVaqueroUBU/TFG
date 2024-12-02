@@ -9,6 +9,7 @@ use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\HttpFoundation\Session\Session;
 
 /**
  * Controlador para redirigir los códigos 403.
@@ -31,7 +32,12 @@ class AccessDeniedSubscriber implements EventSubscriberInterface
 
         if ($exception instanceof AccessDeniedHttpException) {
             $request = $this->requestStack->getCurrentRequest();
-            $request->getSession()->getFlashBag()->add('warning', 'No tienes permiso para acceder a esta página.');
+            $session = $request->getSession();
+
+            if ($session instanceof Session) {
+                $session->getFlashBag()->add('warning', 'No tienes permiso para acceder a esta página.');
+            }
+
             $response = new RedirectResponse($this->router->generate('intranet_forpas'));
             $event->setResponse($response);
         }

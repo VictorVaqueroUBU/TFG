@@ -56,7 +56,7 @@ class RegistrationFormType extends AbstractType
                     'Participante' => 'ROLE_USER',
                     'Formador' => 'ROLE_TEACHER',
                 ],
-            ]);
+            ])
         ;
     }
 

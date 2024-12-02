@@ -38,7 +38,6 @@ final class ParticipanteController extends AbstractController
     #[Route(path: '/new/{id}', name: 'new', defaults: ['titulo' => 'Crear Participante'], methods: ['GET', 'POST'])]
     public function new(
         int $id,
-        Request $request,
         FormadorRepository $formadorRepository,
         ParticipanteRepository $participanteRepository,
         EntityManagerInterface $entityManager
@@ -58,6 +57,7 @@ final class ParticipanteController extends AbstractController
         $participante->setNif($formador->getNif());
         $participante->setNombre($formador->getNombre());
         $participante->setApellidos($formador->getApellidos());
+        $participante->setOrganizacion($formador->getOrganizacion());
         $participante->setUnidad('Nota: !Unidad == cesado. No permite inscripción');
         $participante->setUsuario($usuario);
 
