@@ -28,6 +28,31 @@ Este proyecto es una aplicación web desarrollada en **Symfony** para la gestió
 
 ---
 
+## Cambios en el Sprint Actual
+
+### Funcionalidades añadidas:
+- Gestión de usuarios con roles: implementación del sistema de roles para administradores, participantes y formadores.
+- Formularios de registro y autenticación:
+    - Registro de usuarios con validación de datos.
+    - Sistema de autenticación y autorización con redirección basada en roles.
+- Mejoras en la gestión de ediciones:
+    - Vinculación de ediciones con cursos existentes.
+    - Gestión de plazas y calendario de ediciones.
+- Inscripción de participantes y asignación de formadores:
+    - Lógica para la inscripción de participantes en ediciones específicas.
+    - Asignación de formadores con información de retribuciones.
+
+### Requisitos para el envío de correos
+La aplicación utiliza un sistema de envío de correos para funciones como el registro de usuarios y otras notificaciones. Para habilitar esta funcionalidad, se requiere la instalación y configuración de un servidor local de correos, como Postfix.
+
+### Pruebas realizadas:
+- **PHPUnit**:
+    - 66 pruebas unitarias pasadas exitosamente, con 301 aserciones.
+- **PHPStan**:
+    - Código analizado y corregido sin errores, cumpliendo con los estándares de calidad.
+
+---
+
 ## Tecnologías utilizadas
 
 - **PHP** 8.2 o superior
@@ -93,6 +118,8 @@ Este proyecto es una aplicación web desarrollada en **Symfony** para la gestió
 
 ```dotenv
     DATABASE_URL="mysql://usuario:contraseña@127.0.0.1:3306/formacion?serverVersion=8.0"
+    MAILER_DSN=native://default
+    MAILER_SENDER="usuario@correo.es"
 ```
 
 10. Realiza las migraciones de la base de datos:
@@ -110,7 +137,7 @@ Este proyecto es una aplicación web desarrollada en **Symfony** para la gestió
 12. Accede a la aplicación en tu navegador en la dirección:
 
 ```bash
-    https://localhost:8000/intranet/forpas/gestor
+    https://localhost:8000/
 ```
 
 ---
