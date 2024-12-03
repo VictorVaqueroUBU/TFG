@@ -53,9 +53,16 @@ class Formador
     #[ORM\JoinColumn(nullable: false)]
     private ?Usuario $usuario = null;
 
+    /**
+     * @var Collection<int, Sesion>
+     */
+    #[ORM\OneToMany(targetEntity: Sesion::class, mappedBy: 'formador', orphanRemoval: true)]
+    private Collection $sesiones;
+
     public function __construct()
     {
         $this->formadorEdiciones = new ArrayCollection();
+        $this->sesiones = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -196,6 +203,35 @@ class Formador
     public function setUsuario(Usuario $usuario): static
     {
         $this->usuario = $usuario;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Sesion>
+     */
+    public function getSesiones(): Collection
+    {
+        return $this->sesiones;
+    }
+
+    public function addSesion(Sesion $sesion): static
+    {
+        if (!$this->sesiones->contains($sesion)) {
+            $this->sesiones->add($sesion);
+            $sesion->setFormador($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSesion(Sesion $sesion): static
+    {
+        if ($this->sesiones->removeElement($sesion)) {
+            if ($sesion->getFormador() === $this) {
+                $sesion->setFormador(null);
+            }
+        }
 
         return $this;
     }
