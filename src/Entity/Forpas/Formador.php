@@ -59,10 +59,17 @@ class Formador
     #[ORM\OneToMany(targetEntity: Sesion::class, mappedBy: 'formador', orphanRemoval: true)]
     private Collection $sesiones;
 
+    /**
+     * @var Collection<int, Asistencia>
+     */
+    #[ORM\OneToMany(targetEntity: Asistencia::class, mappedBy: 'formador', orphanRemoval: true)]
+    private Collection $asistencias;
+
     public function __construct()
     {
         $this->formadorEdiciones = new ArrayCollection();
         $this->sesiones = new ArrayCollection();
+        $this->asistencias = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -230,6 +237,35 @@ class Formador
         if ($this->sesiones->removeElement($sesion)) {
             if ($sesion->getFormador() === $this) {
                 $sesion->setFormador(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Asistencia>
+     */
+    public function getAsistencias(): Collection
+    {
+        return $this->asistencias;
+    }
+
+    public function addAsistencia(Asistencia $asistencia): static
+    {
+        if (!$this->asistencias->contains($asistencia)) {
+            $this->asistencias->add($asistencia);
+            $asistencia->setFormador($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAsistencia(Asistencia $asistencia): static
+    {
+        if ($this->asistencias->removeElement($asistencia)) {
+            if ($asistencia->getFormador() === $this) {
+                $asistencia->setFormador(null);
             }
         }
 

@@ -4,6 +4,8 @@ namespace App\Entity\Forpas;
 
 use App\Repository\Forpas\SesionRepository;
 use DateTimeInterface;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -37,6 +39,17 @@ class Sesion
     #[ORM\ManyToOne(inversedBy: '$sesiones')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Formador $formador = null;
+
+    /**
+     * @var Collection<int, Asistencia>
+     */
+    #[ORM\OneToMany(targetEntity: Asistencia::class, mappedBy: 'sesion', orphanRemoval: true)]
+    private Collection $asistencias;
+
+    public function __construct()
+    {
+        $this->asistencias = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -123,6 +136,35 @@ class Sesion
     public function setFormador(?Formador $formador): static
     {
         $this->formador = $formador;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Asistencia>
+     */
+    public function getAsistencias(): Collection
+    {
+        return $this->asistencias;
+    }
+
+    public function addAsistencia(Asistencia $asistencia): static
+    {
+        if (!$this->asistencias->contains($asistencia)) {
+            $this->asistencias->add($asistencia);
+            $asistencia->setSesion($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAsistencia(Asistencia $asistencia): static
+    {
+        if ($this->asistencias->removeElement($asistencia)) {
+            if ($asistencia->getSesion() === $this) {
+                $asistencia->setSesion(null);
+            }
+        }
 
         return $this;
     }
