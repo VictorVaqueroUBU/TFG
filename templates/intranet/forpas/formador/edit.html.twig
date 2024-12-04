@@ -1,0 +1,14 @@
+{% extends 'intranet/forpas/formador/index.html.twig' %}
+{% block migas %}
+    {{ parent() }}
+    <li class="breadcrumb-item active" aria-current="page">Mis Datos</li>
+{% endblock %}
+{% block title %}{{ titulo }}{% endblock %}
+
+{% block content %}
+    <div class="pagina-titulo">Portal del Formador</div>
+
+    <div class="pagina-seccion">{{ titulo }}</div>
+
+    {{ include('intranet/forpas/formador/_form.html.twig', {'button_label': 'Actualizar'}) }}
+{% endblock %}

@@ -2,10 +2,10 @@
 
 namespace App\Tests\Controller\Forpas;
 
-use App\Entity\Sistema\Usuario;
-use DateTime;
 use App\Entity\Forpas\Curso;
 use App\Entity\Forpas\Edicion;
+use App\Entity\Sistema\Usuario;
+use DateTime;
 use Doctrine\ORM\EntityRepository;
 
 final class EdicionControllerTest extends BaseControllerTest

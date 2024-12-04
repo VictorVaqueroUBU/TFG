@@ -6,9 +6,9 @@ use App\Entity\Forpas\Edicion;
 use App\Entity\Forpas\Participante;
 use App\Entity\Forpas\ParticipanteEdicion;
 use App\Entity\Sistema\Usuario;
+use App\Repository\Forpas\ParticipanteEdicionRepository;
 use DateTime;
 use Doctrine\ORM\Exception\ORMException;
-use App\Repository\Forpas\ParticipanteEdicionRepository;
 
 class ParticipantePortalControllerTest extends BaseControllerTest
 {

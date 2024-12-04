@@ -38,19 +38,18 @@ class ForpasController extends AbstractController
             ];
         }
 
-        /*if ($this->isGranted('ROLE_TEACHER')) {
+        if ($this->isGranted('ROLE_TEACHER')) {
             $accesos[] = [
                 'nombre' => 'Portal del Formador',
                 'ruta' => $this->generateUrl('intranet_forpas_formador'),
                 'icono' => 'fas fa-chalkboard-teacher',
             ];
-        }*/
+        }
 
         return $this->render('intranet/forpas/index.html.twig', [
             'accesos' => $accesos,
         ]);
     }
-    // TODO: Aquí crearemos una función por cada Rol (Gestor, Usuario, Formador)
     #[Route(path: '/gestor', name: '_gestor', defaults: ['titulo' => 'Gestión de Entidades'])]
     public function forpasGestor(CursoRepository $cursoRepository, EdicionRepository $edicionRepository,
                                  ParticipanteRepository $participanteRepository, FormadorRepository $formadorRepository): Response
@@ -67,5 +66,10 @@ class ForpasController extends AbstractController
     public function forpasParticipante(): Response
     {
         return $this->render('intranet/forpas/participante/index.html.twig');
+    }
+    #[Route(path: '/formador', name: '_formador', defaults: ['titulo' => 'Acciones disponibles'])]
+    public function forpasFormador(): Response
+    {
+        return $this->render('intranet/forpas/formador/index.html.twig');
     }
 }
