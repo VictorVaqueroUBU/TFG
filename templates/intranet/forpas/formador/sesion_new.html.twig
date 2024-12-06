@@ -1,0 +1,30 @@
+{% extends 'intranet/forpas/formador/index.html.twig' %}
+{% block migas %}
+    {{ parent() }}
+    <li class="breadcrumb-item">
+        <a href="{{ path('intranet_forpas_formador_mis_ediciones') }}">Ediciones Asignadas</a>
+    </li>
+    <li class="breadcrumb-item">
+        <a href="{{ path('intranet_forpas_formador_mis_ediciones_show', {'id': edicion.id} ) }}">{{ edicion.codigoEdicion }}</a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page">Nueva Sesión</li>
+{% endblock %}
+{% block title %}{{ titulo }}{% endblock %}
+
+{% block content %}
+    <div class="pagina-titulo">Portal del Formador</div>
+
+    <div class="pagina-seccion">{{ titulo }}</div>
+
+    {{ form_start(form) }}
+    {{ form_widget(form) }}
+    <!-- Botón "Volver" -->
+    <a class="btn btn-primary" href="{{ path('intranet_forpas_formador_mis_ediciones') }}">
+        <span class="fas fa-reply"></span> Volver
+    </a>
+    <!-- Botón "Guardar" -->
+    <button class="btn btn-primary">
+        <span class="fas fa-save"></span> {{ button_label|default('Guardar') }}
+    </button>
+    {{ form_end(form) }}
+{% endblock %}

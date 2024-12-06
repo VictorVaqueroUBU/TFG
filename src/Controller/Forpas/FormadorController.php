@@ -133,6 +133,7 @@ final class FormadorController extends AbstractController
             if ($participante) {
                 $roles = $usuario->getRoles();
                 $roles = array_filter($roles, fn($role) => $role !== 'ROLE_TEACHER');
+                $roles = array_values($roles);
                 $usuario->setRoles($roles);
             } else {
                 $entityManager->remove($usuario);

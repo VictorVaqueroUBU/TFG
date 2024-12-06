@@ -1,0 +1,30 @@
+<table class="tabla-condensada" id="{{ id }}">
+    <thead class="cabecera-condensada">
+    <tr>
+        <th>Código</th>
+        <th>Nombre</th>
+        <th>Fecha Inicio</th>
+        <th>Fecha Fin</th>
+        <th>Acciones</th>
+
+    </tr>
+    </thead>
+    <tbody>
+    {% for fe in formadorEdicion %}
+    <tr>
+        <td>{{ fe.edicion.codigoEdicion }}</td>
+        <td>{{ fe.edicion.curso.nombreCurso }}</td>
+        <td class="text-center">{{ fe.edicion.fechaInicio|date('Y-m-d') }}</td>
+        <td class="text-center">{{ fe.edicion.fechaFin|date('Y-m-d') }}</td>
+        <td>
+            <a href="{{ path('intranet_forpas_formador_mis_ediciones_show', {'id': fe.edicion.id}) }}" title="Ver">
+                <span class="fas fa-eye"></span>
+            </a>
+        </td>
+    </tr>
+    {% else %}
+    <tr>
+        <td>No existen ediciones asignadas</td><td></td><td></td><td></td><td></td>
+        {% endfor %}
+    </tbody>
+</table>

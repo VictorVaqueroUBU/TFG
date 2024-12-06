@@ -1,0 +1,118 @@
+{% extends 'intranet/forpas/formador/index.html.twig' %}
+{% block migas %}
+    {{ parent() }}
+    <li class="breadcrumb-item">
+        <a href="{{ path('intranet_forpas_formador_mis_ediciones') }}">Ediciones Asignadas</a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page">{{ edicion.codigoEdicion }}</li>
+{% endblock %}
+{% block title %}{{ titulo }}{% endblock %}
+{% block content %}
+    <div class="pagina-titulo">Portal del Formador</div>
+    <div class="pagina-seccion">{{ titulo }}</div>
+
+    <div class="container-fluid py-4 g-4">
+        <div class="row py-2">
+            <div class="fila-campo">Edición: </div>
+            <div class="fila-valor">{{ edicion.codigoEdicion ~ ': ' ~ edicion.curso.nombreCurso }}</div>
+        </div>
+        <div class="row py-2">
+            <div class="fila-campo">Calendario: </div>
+            <div class="fila-valor">{{ edicion.calendario }}</div>
+        </div>
+        <div class="row py-2">
+            <div class="fila-campo">Horario: </div>
+            <div class="fila-valor">{{ edicion.horario }}</div>
+        </div>
+        <div class="row py-2">
+            <div class="fila-campo">Lugar: </div>
+            <div class="fila-valor">{{ edicion.lugar }}</div>
+        </div>
+        <div class="row py-2">
+            <div class="fila-campo">Sesiones: </div>
+            <div class="fila-valor">{{ edicion.sesiones }}</div>
+        </div>
+        <div class="row py-2">
+            <div class="fila-campo">Horas Totales: </div>
+            <div class="fila-valor">{{ edicion.curso.horas }}</div>
+        </div>
+        <div class="row py-2">
+            <div class="fila-campo">Horas Virtuales: </div>
+            <div class="fila-valor">{{ edicion.curso.horasVirtuales }}</div>
+        </div>
+    </div>
+
+    <div class="pagina-seccion">Sesiones Creadas</div>
+    <table class="tabla-condensada" id="datosSesiones">
+        <thead class="cabecera-condensada">
+        <tr>
+            <th>Fecha</th>
+            <th>Hora Inicio</th>
+            <th>Hora Fin</th>
+            <th>Acciones</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for sesion in edicion.sesionesEdicion %}
+            <tr>
+                <td>{{ sesion.fecha|date('d-m-Y') }}</td>
+                <td>{{ sesion.horaInicio|date('H:i') }}</td>
+                <td>{{ sesion.duracion|date('H:i') }}</td>
+                <td>
+                    {# Aquí podrías añadir enlaces para editar o eliminar la sesión #}
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td>No hay sesiones creadas.</td><td></td><td></td><td></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
+
+{% block botones %}
+    <li class="nav-item me-2">
+        <a class="btn btn-primary" href="{{ path('intranet_forpas_formador_sesion_new', {'edicionId': edicion.id}) }}">
+            <span class="fas fa-plus"></span> Crear Sesión
+        </a>
+    </li>
+{% endblock %}
+
+{% block js %}
+    {{ parent() }}
+    <script type="module">
+        $(function () {
+            $('#datosSesiones').dataTable({
+                buttons: [
+                    {
+                        extend: 'copy',
+                        text: '<i class="fas fa-copy"></i>',
+                        titleAttr: 'Copiar',
+                    },
+                    {
+                        extend: 'print',
+                        text: '<i class="fas fa-print"></i>',
+                        titleAttr: 'Imprimir',
+                    },
+                    {
+                        extend: 'csv',
+                        text: '<i class="fas fa-file-csv"></i>',
+                        titleAttr: 'Generar fichero CSV',
+                    },
+                    {
+                        extend: 'excelHtml5',
+                        text: '<i class="fas fa-file-excel"></i>',
+                        titleAttr: 'Generar fichero Excel',
+                    },
+                ],
+                dom: '<"row"<"col-sm-12 col-md-4"B><"col-sm-12 col-md-4"l><"col-sm-12 col-md-4"f>>' +
+                    '<"row"<"col-sm-12"<"table-responsive"tr>>>' +
+                    '<"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
+                language: {
+                    url: '{{ asset("includes/datatable.es.json") }}'
+                },
+            });
+        });
+    </script>
+{% endblock %}

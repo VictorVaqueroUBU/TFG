@@ -49,7 +49,7 @@ class Formador
     #[ORM\OneToMany(targetEntity: FormadorEdicion::class, mappedBy: 'formador', orphanRemoval: true)]
     private Collection $formadorEdiciones;
 
-    #[ORM\OneToOne(targetEntity: Usuario::class, inversedBy: 'formador', cascade: ['persist', 'remove'])]
+    #[ORM\OneToOne(targetEntity: Usuario::class, inversedBy: 'formador', cascade: ['persist'])]
     #[ORM\JoinColumn(nullable: false)]
     private ?Usuario $usuario = null;
 
@@ -226,7 +226,6 @@ class Formador
     {
         if (!$this->sesiones->contains($sesion)) {
             $this->sesiones->add($sesion);
-            $sesion->setFormador($this);
         }
 
         return $this;

@@ -324,7 +324,6 @@ class Edicion
     {
         if (!$this->sesionesEdicion->contains($sesionEdicion)) {
             $this->sesionesEdicion->add($sesionEdicion);
-            $sesionEdicion->setEdicion($this);
         }
 
         return $this;

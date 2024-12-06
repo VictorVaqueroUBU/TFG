@@ -16,6 +16,42 @@ class FormadorEdicionRepository extends ServiceEntityRepository
         parent::__construct($registry, FormadorEdicion::class);
     }
 
+    /**
+     * Obtiene las ediciones abiertas (estado == 0) asignadas a un formador específico.
+     *
+     * @param int $formadorId ID del formador.
+     * @return FormadorEdicion[] Lista de FormadorEdicion con las ediciones abiertas.
+     */
+    public function findEdicionesAbiertasByFormador(int $formadorId): array
+    {
+        return $this->createQueryBuilder('fe')
+            ->join('fe.edicion', 'e')
+            ->where('e.estado = :estado')
+            ->andWhere('fe.formador = :formadorId')
+            ->setParameter('estado', 0)
+            ->setParameter('formadorId', $formadorId)
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * Obtiene las ediciones cerradas (estado != 0) asignadas a un formador específico.
+     *
+     * @param int $formadorId ID del formador.
+     * @return FormadorEdicion[] Lista de FormadorEdicion con las ediciones cerradas.
+     */
+    public function findEdicionesCerradasByFormador(int $formadorId): array
+    {
+        return $this->createQueryBuilder('fe')
+            ->join('fe.edicion', 'e')
+            ->where('e.estado != :estado')
+            ->andWhere('fe.formador = :formadorId')
+            ->setParameter('estado', 0)
+            ->setParameter('formadorId', $formadorId)
+            ->getQuery()
+            ->getResult();
+    }
+
     //    /**
     //     * @return FormadorEdicion[] Returns an array of FormadorEdicion objects
     //     */
