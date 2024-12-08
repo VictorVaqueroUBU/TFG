@@ -8,6 +8,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 #[ORM\Entity(repositoryClass: SesionRepository::class)]
 class Sesion
@@ -23,8 +25,8 @@ class Sesion
     #[ORM\Column(type: Types::TIME_MUTABLE)]
     private ?DateTimeInterface $hora_inicio = null;
 
-    #[ORM\Column(type: Types::DECIMAL, precision: 5, scale: 2)]
-    private ?string $duracion = null;
+    #[ORM\Column(type: Types::INTEGER)]
+    private ?int $duracion = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $observaciones = null;
@@ -43,14 +45,32 @@ class Sesion
     /**
      * @var Collection<int, Asistencia>
      */
-    #[ORM\OneToMany(targetEntity: Asistencia::class, mappedBy: 'sesion', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: Asistencia::class, mappedBy: 'sesion', cascade: ['remove'], orphanRemoval: true)]
     private Collection $asistencias;
 
     public function __construct()
     {
         $this->asistencias = new ArrayCollection();
     }
+    #[Assert\Callback]
+    public function validateFecha(ExecutionContextInterface $context): void
+    {
+        if (null === $this->edicion || null === $this->fecha) {
+            return; // Si faltan datos, no validamos en este punto
+        }
 
+        if ($this->fecha < $this->edicion->getFechaInicio()) {
+            $context->buildViolation('La fecha de la sesión no puede ser anterior a la fecha de inicio de la edición.')
+                ->atPath('fecha')
+                ->addViolation();
+        }
+
+        if ($this->fecha > $this->edicion->getFechaFin()) {
+            $context->buildViolation('La fecha de la sesión no puede ser posterior a la fecha de fin de la edición.')
+                ->atPath('fecha')
+                ->addViolation();
+        }
+    }
     public function getId(): ?int
     {
         return $this->id;
@@ -80,15 +100,14 @@ class Sesion
         return $this;
     }
 
-    public function getDuracion(): ?string
+    public function getDuracion(): ?int
     {
         return $this->duracion;
     }
 
-    public function setDuracion(string $duracion): static
+    public function setDuracion(?int $duracion): static
     {
         $this->duracion = $duracion;
-
         return $this;
     }
 

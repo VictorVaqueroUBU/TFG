@@ -10,7 +10,6 @@ use App\Form\Forpas\FormadorContactoType;
 use App\Form\Forpas\SesionType;
 use App\Repository\Forpas\EdicionRepository;
 use App\Repository\Forpas\FormadorEdicionRepository;
-use App\Repository\Forpas\SesionRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -101,8 +100,24 @@ class FormadorPortalController extends AbstractController
             throw $this->createAccessDeniedException('No tiene acceso a esta edición.');
         }
 
+        // Obtenemos los datos de las sesiones para usarlo en la plantilla
+        $sesiones = $edicion->getSesionesEdicion();
+        $sesionesGrabadas = count($sesiones);
+        $horasGrabadas = 0;
+        $horasVirtualesGrabadas = 0;
+        foreach ($sesiones as $sesion) {
+            $horasGrabadas += $sesion->getDuracion();
+            if ($sesion->getTipo() === 1) {
+                $horasVirtualesGrabadas += $sesion->getDuracion();
+            }
+
+        }
+
         return $this->render('intranet/forpas/formador/edicion_show.html.twig', [
             'edicion' => $edicion,
+            'sesionesGrabadas' => $sesionesGrabadas,
+            'horasGrabadas' => $horasGrabadas,
+            'horasVirtualesGrabadas' => $horasVirtualesGrabadas,
         ]);
     }
     #[Route(path: '/sesion-new/{edicionId}', name: 'sesion_new', defaults: ['titulo' => 'Crear Nueva Sesión'], methods: ['GET', 'POST'])]
@@ -128,6 +143,24 @@ class FormadorPortalController extends AbstractController
             throw $this->createAccessDeniedException('No tiene acceso a esta edición.');
         }
 
+        // Comprobamos que aún queden sesiones por crear
+        if (count($edicion->getSesionesEdicion()) >= $edicion->getSesiones()) {
+            $this->addFlash('warning', 'Ya se alcanzó el número máximo de sesiones para esta edición.');
+            return $this->redirectToRoute('intranet_forpas_formador_mis_ediciones_show', ['id' => $edicionId]);
+        }
+
+        // Obtenemos la duración ya grabada
+        $sesiones = $edicion->getSesionesEdicion();
+        $horasGrabadas = 0;
+        $horasVirtualesGrabadas = 0;
+        foreach ($sesiones as $sesion) {
+            $horasGrabadas += $sesion->getDuracion();
+            if ($sesion->getTipo() === 1) {
+                $horasVirtualesGrabadas += $sesion->getDuracion();
+            }
+
+        }
+
         $nuevaSesion = new Sesion();
         $nuevaSesion->setEdicion($edicion);
         $nuevaSesion->setFormador($user->getFormador());
@@ -135,17 +168,56 @@ class FormadorPortalController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            if (($horasGrabadas + $nuevaSesion->getDuracion()) > $edicion->getCurso()->getHoras() * 60) {
+                // Se exceden las horas totales
+                $this->addFlash('warning', 'Sesión no grabada. Con los datos introducidos se superan las horas totales del curso.');
+                return $this->redirectToRoute('intranet_forpas_formador_mis_ediciones_show', ['id' => $edicionId]);
+            }
+            if ($nuevaSesion->getTipo() === 1 && ($horasVirtualesGrabadas + $nuevaSesion->getDuracion()) > $edicion->getCurso()->getHorasVirtuales() * 60) {
+                // Se exceden las horas virtuales
+                $this->addFlash('warning', 'Sesión no grabada. Con los datos introducidos se superan las horas virtuales totales del curso.');
+                return $this->redirectToRoute('intranet_forpas_formador_mis_ediciones_show', ['id' => $edicionId]);
+            }
             $edicion->addSesionesEdicion($nuevaSesion);
             $user->getFormador()->addSesion($nuevaSesion);
             $entityManager->persist($nuevaSesion);
             $entityManager->flush();
             $this->addFlash('success', 'La sesión se ha creado correctamente.');
-            return $this->redirectToRoute('intranet_forpas_formador_mis_ediciones_show', ['id' => $edicion->getId()]);
+            return $this->redirectToRoute('intranet_forpas_formador_mis_ediciones_show', ['id' => $edicionId], Response::HTTP_SEE_OTHER);
         }
         return $this->render('intranet/forpas/formador/sesion_new.html.twig', [
             'nuevaSesion' => $nuevaSesion,
             'form' => $form,
             'edicion' => $edicion
         ]);
+    }
+    #[Route(path: '/{id}/sesion-edit', name: 'sesion_edit', defaults: ['titulo' => 'Editar Sesión'], methods: ['GET', 'POST'])]
+    public function sesionEdit(Request $request, Sesion $sesion, EntityManagerInterface $entityManager): Response
+    {
+        $form = $this->createForm(SesionType::class, $sesion);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->flush();
+            $this->addFlash('success', 'Los datos de la sesión se han modificado satisfactoriamente.');
+            return $this->redirectToRoute('intranet_forpas_formador_mis_ediciones_show', ['id' => $sesion->getEdicion()->getId()], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->render('intranet/forpas/formador/sesion_edit.html.twig', [
+            'sesion' => $sesion,
+            'form' => $form,
+            'edicion' => $sesion->getEdicion()
+        ]);
+    }
+    #[Route(path: '/{id}', name: 'sesion_delete', methods: ['POST'])]
+    public function SesionDelete(Request $request, Sesion $sesion, EntityManagerInterface $entityManager): Response
+    {
+        if ($this->isCsrfTokenValid('delete'.$sesion->getId(), $request->getPayload()->getString('_token'))) {
+            $entityManager->remove($sesion);
+            $entityManager->flush();
+            $this->addFlash('success', 'Sesion eliminada correctamente.');
+        }
+
+        return $this->redirectToRoute('intranet_forpas_formador_mis_ediciones_show', ['id' => $sesion->getEdicion()->getId()], Response::HTTP_SEE_OTHER);
     }
 }
