@@ -21,16 +21,16 @@ class SesionType extends AbstractType
         $builder
             ->add('fecha', DateType::class, [
                 'widget' => 'single_text',
-                'label' => 'Fecha de la sesión',
+                'label' => 'Fecha de la sesión*',
                 'required' => true,
             ])
             ->add('hora_inicio', TimeType::class, [
                 'widget' => 'single_text',
-                'label' => 'Hora de inicio',
+                'label' => 'Hora de inicio*',
                 'required' => true,
             ])
             ->add('duracionHoras', IntegerType::class, [
-                'label' => 'Horas',
+                'label' => 'Horas*',
                 'mapped' => false,
                 'required' => true,
                 'attr' => [
@@ -39,7 +39,7 @@ class SesionType extends AbstractType
                 ],
             ])
             ->add('duracionMinutos', IntegerType::class, [
-                'label' => 'Minutos',
+                'label' => 'Minutos*',
                 'mapped' => false,
                 'required' => true,
                 'attr' => [
@@ -52,7 +52,7 @@ class SesionType extends AbstractType
                 'required' => false,
             ])
             ->add('tipo', ChoiceType::class, [
-                'label' => 'Tipo de sesión',
+                'label' => 'Tipo de sesión*',
                 'choices' => [
                     'Presencial' => 0,
                     'Virtual' => 1,

@@ -35,6 +35,38 @@ class Asistencia
     #[ORM\JoinColumn(nullable: false)]
     private ?Sesion $sesion = null;
 
+    private ?string $estado = null;
+
+    public function getEstado(): ?string
+    {
+        if ($this->isAsiste()) {
+            return 'asiste';
+        } elseif ($this->isJustifica()) {
+            return 'justifica';
+        } else {
+            return 'ninguno';
+        }
+    }
+
+    public function setEstado(string $estado): self
+    {
+        switch ($estado) {
+            case 'asiste':
+                $this->setAsiste(true)->setJustifica(false);
+                break;
+            case 'justifica':
+                $this->setAsiste(false)->setJustifica(true);
+                break;
+            default:
+                $this->setAsiste(false)->setJustifica(false);
+                break;
+        }
+
+        $this->estado = $estado;
+
+        return $this;
+    }
+
     public function getId(): ?int
     {
         return $this->id;

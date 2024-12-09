@@ -11,7 +11,7 @@
     <div class="pagina-titulo">Portal del Formador</div>
     <div class="pagina-seccion">{{ titulo }}</div>
 
-    <div class="container-fluid py-4 g-4">
+    <div class="container-fluid g-4">
         <div class="row py-2">
             <div class="fila-campo">Edición: </div>
             <div class="fila-valor">{{ edicion.codigoEdicion ~ ': ' ~ edicion.curso.nombreCurso }}</div>
@@ -75,11 +75,10 @@
         </div>
     </div>
 
-    <div class="pagina-seccion">Sesiones Creadas</div>
     <table class="tabla-condensada" id="datosSesiones">
         <thead class="cabecera-condensada">
         <tr>
-            <th>Fecha</th>
+            <th>Fecha de la sesión</th>
             <th>Hora Inicio</th>
             <th>Duración</th>
             <th>Tipo de Sesión</th>
@@ -101,17 +100,16 @@
                     {% endif %}
                 </td>
                 <td>{% if sesion.tipo == 0 %}Presencial{% else %}Virtual{% endif %}</td>
-                <td>{{ 0 ~ ' / ' ~ edicion.participantesEdicion|length }}</td>
+                <td>{{ sessionsAsistencias[sesion.id]|default(0) }} / {{ edicion.participantesEdicion|length }}
+                    {% if sessionJustifica[sesion.id] > 0 %} - ({{ sessionJustifica[sesion.id] }} Justifica/n) {% endif %}</td>
                 <td>
+                    <a href="{{ path('intranet_forpas_formador_sesion_fillIn', {'id': sesion.id}) }}" title="Asistencia">
+                        <span class="fas fa-eye"></span>
+                    </a>
                     <a href="{{ path('intranet_forpas_formador_sesion_edit', {'id': sesion.id}) }}" title="Editar">
                         <span class="fas fa-edit"></span>
                     </a>
                     {{ include('intranet/forpas/formador/_delete_form.html.twig', { 'id': sesion.id, 'buttonType': 'inline' }) }}
-                    {# <a href="{{ path('intranet_forpas_formador_sesion_fillIn', {'id': sesion.id}) }}" title="Asistencia">
-                        <span class="fas fa-eye"></span>
-                    </a>
-
-                    %}#}
                 </td>
             </tr>
         {% else %}

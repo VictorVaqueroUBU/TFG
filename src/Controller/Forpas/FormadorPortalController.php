@@ -2,10 +2,12 @@
 
 namespace App\Controller\Forpas;
 
+use App\Entity\Forpas\Asistencia;
 use App\Entity\Forpas\Edicion;
 use App\Entity\Forpas\FormadorEdicion;
 use App\Entity\Forpas\Sesion;
 use App\Entity\Sistema\Usuario;
+use App\Form\Forpas\AsistenciaType;
 use App\Form\Forpas\FormadorContactoType;
 use App\Form\Forpas\SesionType;
 use App\Repository\Forpas\EdicionRepository;
@@ -15,6 +17,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 
 /**
  * Controlador para gestionar el Portal del Formador.
@@ -44,9 +47,10 @@ class FormadorPortalController extends AbstractController
             return $this->redirectToRoute('intranet_forpas_formador', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->render('intranet/forpas/formador/edit.html.twig', [
+        return $this->render('intranet/forpas/formador/datos_edit.html.twig', [
             'formador' => $user->getFormador(),
             'form' => $form,
+            'edicion' => $edicion ?? null,
         ]);
     }
 
@@ -113,11 +117,32 @@ class FormadorPortalController extends AbstractController
 
         }
 
+        $sessionsAsistencias = [];
+        foreach ($edicion->getSesionesEdicion() as $sesionAsiste) {
+            // Obtener las asistencias confirmadas para cada sesión
+            $asistencias = $entityManager->getRepository(Asistencia::class)
+                ->findBy(['sesion' => $sesionAsiste, 'asiste' => true]);
+
+            $sessionsAsistencias[$sesionAsiste->getId()] = count($asistencias);
+        }
+
+        $sessionJustifica = [];
+        foreach ($edicion->getSesionesEdicion() as $sesionJustifica) {
+            // Obtener las asistencias confirmadas para cada sesión
+            $asistencias = $entityManager->getRepository(Asistencia::class)
+                ->findBy(['sesion' => $sesionJustifica, 'justifica' => true]);
+
+            $sessionJustifica[$sesionJustifica->getId()] = count($asistencias);
+        }
+
         return $this->render('intranet/forpas/formador/edicion_show.html.twig', [
             'edicion' => $edicion,
             'sesionesGrabadas' => $sesionesGrabadas,
             'horasGrabadas' => $horasGrabadas,
             'horasVirtualesGrabadas' => $horasVirtualesGrabadas,
+            'sessionsAsistencias' => $sessionsAsistencias,
+            'sessionJustifica' => $sessionJustifica,
+
         ]);
     }
     #[Route(path: '/sesion-new/{edicionId}', name: 'sesion_new', defaults: ['titulo' => 'Crear Nueva Sesión'], methods: ['GET', 'POST'])]
@@ -191,7 +216,7 @@ class FormadorPortalController extends AbstractController
             'edicion' => $edicion
         ]);
     }
-    #[Route(path: '/{id}/sesion-edit', name: 'sesion_edit', defaults: ['titulo' => 'Editar Sesión'], methods: ['GET', 'POST'])]
+    #[Route(path: '/sesion-edit/{id}', name: 'sesion_edit', defaults: ['titulo' => 'Editar Sesión'], methods: ['GET', 'POST'])]
     public function sesionEdit(Request $request, Sesion $sesion, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(SesionType::class, $sesion);
@@ -219,5 +244,73 @@ class FormadorPortalController extends AbstractController
         }
 
         return $this->redirectToRoute('intranet_forpas_formador_mis_ediciones_show', ['id' => $sesion->getEdicion()->getId()], Response::HTTP_SEE_OTHER);
+    }
+    #[Route('/sesion/{id}/asistencia', name: 'sesion_fillIn', defaults: ['titulo' => 'Introducir Asistencia'], methods: ['GET', 'POST'])]
+    public function fillInAsistencia(Sesion $sesion, Request $request, EntityManagerInterface $entityManager): Response {
+        /** @var Usuario|null $user */
+        $user = $this->getUser();
+
+        // Verificamos que el usuario tiene un formador asociado
+        if (!$user || !$user->getFormador()) {
+            throw $this->createAccessDeniedException('No tienes acceso a esta sección.');
+        }
+
+        $edicion = $sesion->getEdicion();
+
+        // Validamos que la edición esté asignada al formador que ha iniciado sesión
+        $asignacion = $entityManager->getRepository(FormadorEdicion::class)->findOneBy([
+            'formador' => $user->getFormador()->getId(),
+            'edicion' => $edicion
+        ]);
+
+        if (!$asignacion) {
+            throw $this->createAccessDeniedException('No tiene acceso a esta edición.');
+        }
+
+        // Obtener los participantes inscritos en la edición de esta sesión
+        $participantesEdicion = $edicion->getParticipantesEdicion();
+
+        $asistencias = [];
+        foreach ($participantesEdicion as $participanteEdicion) {
+            // Intentar recuperar asistencia existente
+            $asistencia = $entityManager->getRepository(Asistencia::class)
+                ->findOneBy(['sesion' => $sesion, 'participante' => $participanteEdicion->getParticipante()]);
+
+            if (!$asistencia) {
+                $asistencia = new Asistencia();
+                $asistencia->setSesion($sesion);
+                $asistencia->setParticipante($participanteEdicion->getParticipante());
+                $asistencia->setFormador($user->getFormador());
+            }
+
+            $asistencias[] = $asistencia;
+        }
+
+        $form = $this->createFormBuilder(['asistencias' => $asistencias])
+            ->add('asistencias', CollectionType::class, [
+                'entry_type' => AsistenciaType::class,
+                'allow_add' => false,
+                'allow_delete' => false,
+            ])
+            ->getForm();
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            foreach ($form->getData()['asistencias'] as $asistencia) {
+                $entityManager->persist($asistencia);
+            }
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Asistencias registradas correctamente.');
+            return $this->redirectToRoute('intranet_forpas_formador_mis_ediciones_show', [
+                'id' => $edicion->getId()], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->render('intranet/forpas/formador/asistencia_fillIn.html.twig', [
+            'form' => $form->createView(),
+            'sesion' => $sesion,
+            'participantesEdicion' => $participantesEdicion,
+        ]);
     }
 }

@@ -1,0 +1,103 @@
+{% extends 'intranet/forpas/formador/index.html.twig' %}
+{% block migas %}
+    {{ parent() }}
+    <li class="breadcrumb-item">
+        <a href="{{ path('intranet_forpas_formador_mis_ediciones') }}">Ediciones Asignadas</a>
+    </li>
+    <li class="breadcrumb-item">
+        <a href="{{ path('intranet_forpas_formador_mis_ediciones_show', {'id': sesion.edicion.id} ) }}">{{ sesion.edicion.codigoEdicion }}</a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page">Registrar Asistencia</li>
+{% endblock %}
+{% block title %}{{ titulo }}{% endblock %}
+{% block content %}
+    <div class="pagina-titulo">Portal del Formador</div>
+
+    <div class="pagina-seccion">
+        Sesión: {{ sesion.fecha|date('d/m/Y') }} - {{ sesion.horaInicio|date('H:i') }}h
+    </div>
+    <!-- Botón para marcar "Asiste" en todos -->
+    <button type="button" id="mark-all-asiste" class="btn btn-light mb-3">
+        <span class="fas fa-check"></span> Marcar "Asiste" a todos los participantes
+    </button>
+
+    {{ form_start(form) }}
+    <table class="tabla-condensada" id="datosAsistencia">
+        <thead class="cabecera-condensada">
+        <tr>
+            <th>Participante</th>
+            <th>Asiste</th>
+            <th>Justifica</th>
+            <th>Ni Asiste/Ni Justifica</th>
+            <th>Observaciones</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for asistenciaForm in form.asistencias %}
+            <tr>
+                <td>
+                    {{ sesion.edicion.participantesEdicion[loop.index0].participante.nombre }}
+                    {{ sesion.edicion.participantesEdicion[loop.index0].participante.apellidos }}
+                </td>
+                <td>{{ form_widget(asistenciaForm.estado.0) }}</td>
+                <td>{{ form_widget(asistenciaForm.estado.1) }}</td>
+                <td>{{ form_widget(asistenciaForm.estado.2) }}</td>
+                <td>{{ form_widget(asistenciaForm.observaciones) }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Botón "Volver" -->
+    <a class="btn btn-primary" href="{{ path('intranet_forpas_formador_mis_ediciones_show', {'id': sesion.edicion.id}) }}">
+        <span class="fas fa-reply"></span> Volver
+    </a>
+    <!-- Botón "Guardar" -->
+    <button class="btn btn-primary">
+        <span class="fas fa-save"></span> {{ button_label|default('Guardar') }}
+    </button>
+    {{ form_end(form) }}
+{% endblock %}
+
+{% block js %}
+    {{ parent() }}
+    <script type="module">
+        $(function () {
+            $('#datosAsistencia').dataTable({
+                buttons: [
+                    {
+                        extend: 'copy',
+                        text: '<i class="fas fa-copy"></i>',
+                        titleAttr: 'Copiar',
+                    },
+                    {
+                        extend: 'print',
+                        text: '<i class="fas fa-print"></i>',
+                        titleAttr: 'Imprimir',
+                    },
+                    {
+                        extend: 'csv',
+                        text: '<i class="fas fa-file-csv"></i>',
+                        titleAttr: 'Generar fichero CSV',
+                    },
+                    {
+                        extend: 'excelHtml5',
+                        text: '<i class="fas fa-file-excel"></i>',
+                        titleAttr: 'Generar fichero Excel',
+                    },
+                ],
+                dom: '<"row"<"col-sm-12 col-md-4"B><"col-sm-12 col-md-4"l><"col-sm-12 col-md-4"f>>' +
+                    '<"row"<"col-sm-12"<"table-responsive"tr>>>' +
+                    '<"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
+                language: {
+                    url: '{{ asset("includes/datatable.es.json") }}'
+                },
+            });
+        });
+        document.getElementById('mark-all-asiste').addEventListener('click', function() {
+            document.querySelectorAll('input[type="radio"][value="asiste"]').forEach(radio => {
+                radio.checked = true;
+            });
+        });
+    </script>
+{% endblock %}

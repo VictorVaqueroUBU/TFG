@@ -21,10 +21,10 @@
         </ul>
         <div class="tab-content mt-2" id="edicionesAsignadasTabsContent">
             <div class="tab-pane fade show active" id="abiertas" role="tabpanel" aria-labelledby="abiertas-tab">
-                {% include 'intranet/forpas/formador/ediciones_tabla.html.twig' with {'formadorEdicion': edicionesAbiertas, 'id': 'tablaAbiertas'} %}
+                {% include 'intranet/forpas/formador/mis_ediciones_tabla.html.twig' with {'formadorEdicion': edicionesAbiertas, 'id': 'tablaAbiertas'} %}
             </div>
             <div class="tab-pane fade" id="cerradas" role="tabpanel" aria-labelledby="cerradas-tab">
-                {% include 'intranet/forpas/formador/ediciones_tabla.html.twig' with {'formadorEdicion': edicionesCerradas, 'id': 'tablaCerradas'} %}
+                {% include 'intranet/forpas/formador/mis_ediciones_tabla.html.twig' with {'formadorEdicion': edicionesCerradas, 'id': 'tablaCerradas'} %}
             </div>
         </div>
     </div>
