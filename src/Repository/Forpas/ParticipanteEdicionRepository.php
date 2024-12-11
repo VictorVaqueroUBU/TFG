@@ -4,6 +4,7 @@ namespace App\Repository\Forpas;
 
 use App\Entity\Forpas\Participante;
 use App\Entity\Forpas\ParticipanteEdicion;
+use App\Entity\Forpas\Edicion;
 use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -72,6 +73,28 @@ class ParticipanteEdicionRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    /**
+     * Método para contar las calificaciones de los participantes en una edición específica.
+     *
+     * @param Edicion $edicion La edición sobre la que se quieren contar las calificaciones.
+     * @return array Un array asociativo con las siguientes claves:
+     *               - `aptos`: Número de participantes marcados como aptos (apto = 1).
+     *               - `noAptos`: Número de participantes marcados como no aptos (apto = 0).
+     *               - `noPresentados`: Número de participantes marcados como no presentados (apto = -1).
+     */
+    public function contarCalificaciones(Edicion $edicion): array
+    {
+        $qb = $this->createQueryBuilder('pe')
+            ->select(
+                'SUM(CASE WHEN pe.apto = 1 THEN 1 ELSE 0 END) as aptos',
+                'SUM(CASE WHEN pe.apto = 0 THEN 1 ELSE 0 END) as noAptos',
+                'SUM(CASE WHEN pe.apto = -1 THEN 1 ELSE 0 END) as noPresentados'
+            )
+            ->where('pe.edicion = :edicion')
+            ->setParameter('edicion', $edicion);
+
+        return $qb->getQuery()->getSingleResult();
+    }
     //    /**
     //     * @return ParticipanteEdicion[] Returns an array of ParticipanteEdicion objects
     //     */

@@ -73,6 +73,18 @@
                 {% endif %}
             </div>
         </div>
+        {% if edicion.curso.calificable %}
+            <div class="row py-2">
+                <div class="fila-campo">Aptos / No Aptos / NP: </div>
+                <div class="fila-valor">{{ calificaciones.aptos }} / {{ calificaciones.noAptos }} / {{ calificaciones.noPresentados }}
+                    {% if calificacionesCompletas %}
+                        <sup class="text-success fas fa-check"></sup>
+                    {% else %}
+                        <sup class="text-danger fas fa-times"></sup>
+                    {% endif %}
+                </div>
+            </div>
+        {% endif %}
     </div>
 
     <table class="tabla-condensada" id="datosSesiones">
@@ -100,8 +112,12 @@
                     {% endif %}
                 </td>
                 <td>{% if sesion.tipo == 0 %}Presencial{% else %}Virtual{% endif %}</td>
-                <td>{{ sessionsAsistencias[sesion.id]|default(0) }} / {{ edicion.participantesEdicion|length }}
-                    {% if sessionJustifica[sesion.id] > 0 %} - ({{ sessionJustifica[sesion.id] }} Justifica/n) {% endif %}</td>
+                <td>
+                    {{ sessionsAsistencias[sesion.id]|default(0) }} / {{ edicion.participantesEdicion|length }}
+                    {% if (sessionJustifica[sesion.id]|default(0)) > 0 %}
+                        - ({{ sessionJustifica[sesion.id]|default(0) }} Justifica/n)
+                    {% endif %}
+                </td>
                 <td>
                     <a href="{{ path('intranet_forpas_formador_sesion_fillIn', {'id': sesion.id}) }}" title="Asistencia">
                         <span class="fas fa-eye"></span>
@@ -128,19 +144,24 @@
                 <span class="fas fa-plus"></span> Crear Sesión
             </a>
         </li>
+    {% elseif edicion.curso.calificable == false or calificacionesCompletas %}
+        <li class="nav-item me-2">
+            <form method="POST"
+                  action="{{ path('intranet_forpas_formador_mis_ediciones_remitir', {'id': edicion.id}) }}"
+                  onsubmit="return confirm('¿Está seguro que desea finalizar la introducción de datos y enviarlos para su revisión?');">
+                <button type="submit" class="btn btn-primary">
+                    <span class="fas fa-upload"></span> Remitir Datos
+                </button>
+            </form>
+        </li>
     {% endif %}
-    {#
-        Este botón llamaría a un método que pondría el estado de la edición a 1 y contendría la lógica
-        para comprobar asistencia y notas, en su caso, para certificar a los participantes.
-
-        {% if sesionesGrabadas == edicion.sesiones AND horasGrabadas == edicion.curso.horas
-            <li class="nav-item me-2">
-                <a class="btn btn-primary" href="{{ path('intranet_forpas_formador_remitir_datos', {'edicionId': edicion.id}) }}">
-                    <span class="fas fa-plus"></span> Remitir Datos
-                </a>
-            </li>
-        %}
-    #}
+    {% if edicion.curso.calificable == 1 %}
+        <li class="nav-item me-2">
+            <a class="btn btn-primary" href="{{ path('intranet_forpas_formador_calificaciones', {'id': edicion.id}) }}">
+                <span class="fas fa-plus"></span> Calificaciones
+            </a>
+        </li>
+    {% endif %}
 {% endblock %}
 
 {% block js %}

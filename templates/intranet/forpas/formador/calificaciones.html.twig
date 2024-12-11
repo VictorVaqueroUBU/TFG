@@ -5,51 +5,43 @@
         <a href="{{ path('intranet_forpas_formador_mis_ediciones') }}">Ediciones Asignadas</a>
     </li>
     <li class="breadcrumb-item">
-        <a href="{{ path('intranet_forpas_formador_mis_ediciones_show', {'id': sesion.edicion.id} ) }}">{{ sesion.edicion.codigoEdicion }}</a>
+        <a href="{{ path('intranet_forpas_formador_mis_ediciones_show', {'id': edicion.id} ) }}">{{ edicion.codigoEdicion }}</a>
     </li>
     <li class="breadcrumb-item active" aria-current="page">{{ titulo }}</li>
 {% endblock %}
 {% block title %}{{ titulo }}{% endblock %}
+
 {% block content %}
     <div class="pagina-titulo">Portal del Formador</div>
 
-    <div class="pagina-seccion">
-        Sesión: {{ sesion.fecha|date('d/m/Y') }} - {{ sesion.horaInicio|date('H:i') }}h
-    </div>
-    <!-- Botón para marcar "Asiste" en todos -->
-    <button type="button" id="mark-all-asiste" class="btn btn-light mb-3">
-        <span class="fas fa-check"></span> Marcar "Asiste" a todos los participantes
-    </button>
+    <div class="pagina-seccion">{{ titulo }}</div>
 
     {{ form_start(form) }}
-    <table class="tabla-condensada" id="datosAsistencia">
+    <table class="tabla-condensada" id="datosCalificaciones">
         <thead class="cabecera-condensada">
         <tr>
             <th>Participante</th>
-            <th>Asiste</th>
-            <th>Justifica</th>
-            <th>Ni Asiste/Ni Justifica</th>
-            <th>Observaciones</th>
+            <th>Apto</th>
+            <th>No Apto</th>
+            <th>No Presentado</th>
+            <th>Nota</th>
         </tr>
         </thead>
         <tbody>
-        {% for asistenciaForm in form.asistencias %}
+        {% for i, participanteEdicion in participantesEdicion %}
             <tr>
-                <td>
-                    {{ sesion.edicion.participantesEdicion[loop.index0].participante.nombre }}
-                    {{ sesion.edicion.participantesEdicion[loop.index0].participante.apellidos }}
-                </td>
-                <td>{{ form_widget(asistenciaForm.estado.0) }}</td>
-                <td>{{ form_widget(asistenciaForm.estado.1) }}</td>
-                <td>{{ form_widget(asistenciaForm.estado.2) }}</td>
-                <td>{{ form_widget(asistenciaForm.observaciones) }}</td>
+                <td>{{ participanteEdicion.participante.nombre }} {{ participanteEdicion.participante.apellidos }}</td>
+                <td>{{ form_widget(form['calificaciones_' ~ loop.index0].apto.0) }}</td>
+                <td>{{ form_widget(form['calificaciones_' ~ loop.index0].apto.1) }}</td>
+                <td>{{ form_widget(form['calificaciones_' ~ loop.index0].apto.2) }}</td>
+                <td>{{ form_widget(form['calificaciones_' ~ loop.index0].pruebaFinal) }}</td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
 
     <!-- Botón "Volver" -->
-    <a class="btn btn-primary" href="{{ path('intranet_forpas_formador_mis_ediciones_show', {'id': sesion.edicion.id}) }}">
+    <a class="btn btn-primary" href="{{ path('intranet_forpas_formador_mis_ediciones_show', {'id': edicion.id}) }}">
         <span class="fas fa-reply"></span> Volver
     </a>
     <!-- Botón "Guardar" -->
@@ -63,7 +55,7 @@
     {{ parent() }}
     <script type="module">
         $(function () {
-            $('#datosAsistencia').dataTable({
+            $('#datosCalificaciones').dataTable({
                 buttons: [
                     {
                         extend: 'copy',
@@ -92,11 +84,6 @@
                 language: {
                     url: '{{ asset("includes/datatable.es.json") }}'
                 },
-            });
-        });
-        document.getElementById('mark-all-asiste').addEventListener('click', function() {
-            document.querySelectorAll('input[type="radio"][value="asiste"]').forEach(radio => {
-                radio.checked = true;
             });
         });
     </script>
