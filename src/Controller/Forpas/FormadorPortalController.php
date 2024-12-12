@@ -223,12 +223,12 @@ class FormadorPortalController extends AbstractController
     #[Route('/sesion/{id}/asistencia', name: 'sesion_fillIn', defaults: ['titulo' => 'Introducir Asistencia'], methods: ['GET', 'POST'])]
     public function fillInAsistencia(Request $request, Sesion $sesion, EntityManagerInterface $entityManager): Response {
         $edicion = $this->getEdicionAsignada($sesion->getEdicion()->getId(), $entityManager);
-        // Obtener los participantes inscritos en la edición de esta sesión
+        // Obtenemos los participantes inscritos en la edición de esta sesión
         $participantesEdicion = $edicion->getParticipantesEdicion();
 
         $asistencias = [];
         foreach ($participantesEdicion as $participanteEdicion) {
-            // Intentar recuperar asistencia existente
+            // Intentamos recuperar la asistencia existente
             $asistencia = $entityManager->getRepository(Asistencia::class)
                 ->findOneBy(['sesion' => $sesion, 'participante' => $participanteEdicion->getParticipante()]);
 
@@ -247,6 +247,7 @@ class FormadorPortalController extends AbstractController
                 'entry_type' => AsistenciaType::class,
                 'allow_add' => false,
                 'allow_delete' => false,
+                'disabled' => $edicion->getEstado() != 0,
             ])
             ->getForm();
 
@@ -272,12 +273,13 @@ class FormadorPortalController extends AbstractController
     #[Route('/edicion/{id}/calificaciones', name: 'calificaciones', defaults: ['titulo' => 'Introducir Calificaciones'], methods: ['GET', 'POST'])]
     public function registrarCalificaciones(Request $request, Edicion $edicion, EntityManagerInterface $entityManager): Response {
         $edicion = $this->getEdicionAsignada($edicion->getId(), $entityManager);
-        // Verificar si la edición es calificable
+
+        // Verificamos si la edición es calificable
         if (!$edicion->getCurso()->isCalificable()) {
             throw $this->createAccessDeniedException('Esta edición no es calificable.');
         }
 
-        // Obtener los registros de ParticipanteEdicion
+        // Obtenemos los registros de ParticipanteEdicion
         $participantesEdicion = $edicion->getParticipantesEdicion();
 
         $formBuilder = $this->createFormBuilder();
@@ -287,6 +289,7 @@ class FormadorPortalController extends AbstractController
                     'apto' => $participanteEdicion->getApto(),
                     'pruebaFinal' => $participanteEdicion->getPruebaFinal(),
                 ],
+                'disabled' => $edicion->getEstado() != 0
             ]);
         }
         $form = $formBuilder->getForm();

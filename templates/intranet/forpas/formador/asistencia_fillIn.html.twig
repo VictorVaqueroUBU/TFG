@@ -16,11 +16,12 @@
     <div class="pagina-seccion">
         Sesión: {{ sesion.fecha|date('d/m/Y') }} - {{ sesion.horaInicio|date('H:i') }}h
     </div>
-    <!-- Botón para marcar "Asiste" en todos -->
-    <button type="button" id="mark-all-asiste" class="btn btn-light mb-3">
-        <span class="fas fa-check"></span> Marcar "Asiste" a todos los participantes
-    </button>
-
+    {% if sesion.edicion.estado == 0 %}
+        <!-- Botón para marcar "Asiste" en todos -->
+        <button type="button" id="mark-all-asiste" class="btn btn-light mb-3">
+            <span class="fas fa-check"></span> Marcar "Asiste" a todos los participantes
+        </button>
+    {% endif %}
     {{ form_start(form) }}
     <table class="tabla-condensada" id="datosAsistencia">
         <thead class="cabecera-condensada">
@@ -52,10 +53,12 @@
     <a class="btn btn-primary" href="{{ path('intranet_forpas_formador_mis_ediciones_show', {'id': sesion.edicion.id}) }}">
         <span class="fas fa-reply"></span> Volver
     </a>
-    <!-- Botón "Guardar" -->
-    <button class="btn btn-primary">
-        <span class="fas fa-save"></span> {{ button_label|default('Guardar') }}
-    </button>
+    {% if sesion.edicion.estado == 0 %}
+        <!-- Botón "Guardar" -->
+        <button class="btn btn-primary">
+            <span class="fas fa-save"></span> {{ button_label|default('Guardar') }}
+        </button>
+    {% endif %}
     {{ form_end(form) }}
 {% endblock %}
 

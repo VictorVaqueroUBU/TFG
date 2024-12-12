@@ -13,6 +13,7 @@ class AsistenciaType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        $disabled = $options['disabled'];
         $builder
             ->add('estado', ChoiceType::class, [
                 'label' => false,
@@ -23,11 +24,13 @@ class AsistenciaType extends AbstractType
                 ],
                 'expanded' => true, // Mostrar como radios
                 'multiple' => false,
+                'disabled' => $disabled,
             ])
             ->add('observaciones', TextareaType::class, [
                 'label' => 'Observaciones',
                 'attr' => ['rows' => 1],
                 'required' => false,
+                'disabled' => $disabled,
             ]);
     }
 
@@ -35,6 +38,7 @@ class AsistenciaType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Asistencia::class,
+            'disabled' => false,
         ]);
     }
 }

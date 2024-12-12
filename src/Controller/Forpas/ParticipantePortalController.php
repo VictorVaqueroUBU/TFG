@@ -114,10 +114,10 @@ class ParticipantePortalController extends AbstractController
     public function cancelarInscripcion(int $id, EntityManagerInterface $entityManager): Response
     {
         // Obtenemos el participante y la edición
-        $edicion = $entityManager->getRepository(Edicion::class)->find($id);
         /** @var Usuario $user */
         $user = $this->getUser();
         $participante = $user->getParticipante();
+        $edicion = $entityManager->getRepository(Edicion::class)->find($id);
 
         // Buscamos la inscripción en ParticipanteEdicion
         $inscripcion = $entityManager->getRepository(ParticipanteEdicion::class)->findOneBy([
@@ -146,10 +146,10 @@ class ParticipantePortalController extends AbstractController
     public function cambiarInscripcion(int $id, EntityManagerInterface $entityManager): Response
     {
         // Obtenemos el participante y la edición
-        $edicion = $entityManager->getRepository(Edicion::class)->find($id);
         /** @var Usuario $user */
         $user = $this->getUser();
         $participante = $user->getParticipante();
+        $edicion = $entityManager->getRepository(Edicion::class)->find($id);
 
         // Buscamos la inscripción actual
         $inscripcionActual = $participante->getParticipanteEdiciones()->filter(function ($participanteEdicion) use ($edicion) {
@@ -187,10 +187,10 @@ class ParticipantePortalController extends AbstractController
     public function realizarInscripcion(int $id, EntityManagerInterface $entityManager): Response
     {
         // Obtenemos el participante y la edición
-        $edicion = $entityManager->getRepository(Edicion::class)->find($id);
         /** @var Usuario $user */
         $user = $this->getUser();
         $participante = $user->getParticipante();
+        $edicion = $entityManager->getRepository(Edicion::class)->find($id);
 
         // Creamos nueva inscripción
         $inscripcion = new ParticipanteEdicion();

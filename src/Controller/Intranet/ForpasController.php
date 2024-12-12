@@ -55,12 +55,7 @@ class ForpasController extends AbstractController
                                  ParticipanteRepository $participanteRepository, FormadorRepository $formadorRepository): Response
     {
         //$this->denyAccessUnlessGranted('ROLE_ADMIN');
-        return $this->render('intranet/forpas/gestor/index.html.twig', [
-            'cursos' => $cursoRepository->findAll(),
-            'ediciones' => $edicionRepository->findAll(),
-            'participantes' => $participanteRepository->findAll(),
-            'formadores' => $formadorRepository->findAll(),
-        ]);
+        return $this->render('intranet/forpas/gestor/index.html.twig');
     }
     #[Route(path: '/participante', name: '_participante', defaults: ['titulo' => 'Acciones disponibles'])]
     public function forpasParticipante(): Response

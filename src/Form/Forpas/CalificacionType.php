@@ -11,6 +11,7 @@ class CalificacionType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        $disabled = $options['disabled'];
         $builder
             ->add('apto', ChoiceType::class, [
                 'label' => false,
@@ -21,12 +22,14 @@ class CalificacionType extends AbstractType
                 ],
                 'expanded' => true,
                 'multiple' => false,
+                'disabled' => $disabled,
             ])
             ->add('pruebaFinal', NumberType::class, [
                 'label' => 'Nota (opcional)',
                 'required' => false,
                 'scale' => 2,
                 'attr' => ['min' => 0, 'max' => 10],
+                'disabled' => $disabled,
             ]);
     }
 
@@ -34,6 +37,7 @@ class CalificacionType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => null,
+            'disabled' => false,
         ]);
     }
 }
