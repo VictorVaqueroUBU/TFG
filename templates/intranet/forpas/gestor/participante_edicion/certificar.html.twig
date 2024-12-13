@@ -1,0 +1,136 @@
+{% extends 'intranet/forpas/gestor/index.html.twig' %}
+{% block migas %}
+    {{ parent() }}
+    <li class="breadcrumb-item active" aria-current="page">{{ titulo }}</li>
+{% endblock %}
+{% block title %}{{ titulo }}{% endblock %}
+
+{% block content %}
+    <div class="pagina-titulo">Portal del Gestor</div>
+    <div class="pagina-seccion">{{ titulo }}</div>
+    <div class="container-fluid g-4">
+        <div class="row py-2">
+            <div class="fila-campo">Edición: </div>
+            <div class="fila-valor">{{ edicion.codigoEdicion ~ ': ' ~ edicion.curso.nombreCurso }}</div>
+        </div>
+        <div class="row py-2">
+            <div class="fila-campo">Calendario: </div>
+            <div class="fila-valor">{{ edicion.calendario }}</div>
+        </div>
+        <div class="row py-2">
+            <div class="fila-campo">Horario: </div>
+            <div class="fila-valor">{{ edicion.horario }}</div>
+        </div>
+        <div class="row py-2">
+            <div class="fila-campo">Calificable: </div>
+            <div class="fila-valor">
+                {% if edicion.curso.calificable %}
+                    <sup class="text-success fas fa-check"></sup>
+                {% else %}
+                    <sup class="text-danger fas fa-times"></sup>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <table class="tabla-condensada" id="datosEdicionCertificar">
+        <thead class="cabecera-condensada">
+        <tr>
+            <th>NIF</th>
+            <th>Participante</th>
+            <th>Baja Justificada</th>
+            <th class="text-center">Días</th>
+            <th>Asistencias</th>
+            <th>Justifica</th>
+            <th class="text-center">Horas Asistencia</th>
+            <th class="text-center">Aptitud</th>
+            <th>Prueba Final</th>
+            <th>Certificado</th>
+            <th>Título</th>
+            <th>Libro</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for pId, p in datos_participantes %}
+            <tr>
+                <td>{{ p.nif }}</td>
+                <td>{{ p.apellidos }}, {{ p.nombre }}</td>
+                <td>{{ p.bajaJustificada ? p.bajaJustificada|date('Y-m-d H:i:s') : '' }}</td>
+                <td class="text-center">{{ p.dias }}</td>
+                <td>
+                    {{ p.asistenciasFechas is not empty ? p.asistenciasFechas|map(fecha => fecha|date('dM'))|join(', ') : '' }}
+                </td>
+                <td>{{ p.justificacionesFechas is not empty ? p.justificacionesFechas|map(fecha => fecha|date('dM'))|join(', ') : '' }}</td>
+                <td class="text-center">
+                    {{ p.minutosAsistencia // 60 }}h
+                    {% if (p.minutosAsistencia % 60) > 0 %}
+                        {{ ' ' ~ (p.minutosAsistencia % 60) ~ 'm ' }}
+                    {% endif %}
+                </td>
+                <td class="text-center">{{ p.apto is not null ? (p.apto ? 'Apto' : 'No Apto') : '' }}</td>
+                <td>{{ p.pruebaFinal }}</td>
+                <td>{{ p.certificado }}</td>
+                <td>{{ p.libro }}</td>
+                <td>{{ p.numeroTitulo }}</td>
+            </tr>
+        {% else %}
+            <tr>
+                <td>No existen Inscripciones</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
+
+{% block botones %}
+    <li class="nav-item me-2">
+        <a class="btn btn-primary" href="{{ path('intranet_forpas_gestor_edicion_remitidas') }}">
+            <span class="fas fa-reply"></span> Volver
+        </a>
+    </li>
+    <li class="nav-item me-2">
+        <form method="POST" action="{{ path('intranet_forpas_gestor_participante_edicion_certificar_procesar', { 'edicionId': edicion.id }) }}">
+            <input type="hidden" name="datos_participantes" value="{{ datos_participantes|json_encode }}">
+            <button type="submit" class="btn btn-primary">
+                <span class="fas fa-check"></span> Certificar
+            </button>
+        </form>
+    </li>
+{% endblock %}
+
+{% block js %}
+    {{ parent() }}
+    <script type="module">
+        $(function () {
+            $('#datosEdicionCertificar').dataTable({
+                buttons: [
+                    {
+                        extend: 'copy',
+                        text: '<i class="fas fa-copy"></i>',
+                        titleAttr: 'Copiar',
+                    },
+                    {
+                        extend: 'print',
+                        text: '<i class="fas fa-print"></i>',
+                        titleAttr: 'Imprimir',
+                    },
+                    {
+                        extend: 'csv',
+                        text: '<i class="fas fa-file-csv"></i>',
+                        titleAttr: 'Generar fichero CSV',
+                    },
+                    {
+                        extend: 'excelHtml5',
+                        text: '<i class="fas fa-file-excel"></i>',
+                        titleAttr: 'Generar fichero Excel',
+                    },
+                ],
+                dom: '<"row"<"col-sm-12 col-md-4"B><"col-sm-12 col-md-4"l><"col-sm-12 col-md-4"f>>' +
+                    '<"row"<"col-sm-12"<"table-responsive"tr>>>' +
+                    '<"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
+                language: {
+                    url: '{{ asset("includes/datatable.es.json") }}'
+                },
+            });
+        });
+    </script>
+{% endblock %}

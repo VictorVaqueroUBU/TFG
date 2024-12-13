@@ -48,7 +48,7 @@ class ParticipanteEdicionRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('pe')
             ->join('pe.edicion', 'e')
             ->where('pe.participante = :participante')
-            ->andWhere('pe.certificado = true')
+            ->andWhere("pe.certificado = 'S'")
             ->setParameter('participante', $participante)
             ->getQuery()
             ->getResult();
@@ -65,12 +65,28 @@ class ParticipanteEdicionRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('pe')
             ->join('pe.edicion', 'e')
             ->where('pe.participante = :participante')
-            ->andWhere('pe.certificado IS NULL OR pe.certificado != true')
+            ->andWhere("pe.certificado IS NULL OR pe.certificado != 'S'")
             ->andWhere('e.fecha_inicio < :now')
             ->setParameter('participante', $participante)
             ->setParameter('now', new DateTime())
             ->getQuery()
             ->getResult();
+    }
+
+    /**
+     * Método para encontrar el número del título más alto en un libro específico.
+     *
+     * @param string $libro El año del curso sobre el cual se busca el número de título máximo.
+     * @return int|null El número de título máximo encontrado en el libro, o `null` si no existe ningún título.
+     */
+    public function findMaxNumeroTituloByLibro(string $libro): ?int
+    {
+        return $this->createQueryBuilder('pe')
+            ->select('MAX(pe.numero_titulo) as maxTitulo')
+            ->where('pe.libro = :libro')
+            ->setParameter('libro', $libro)
+            ->getQuery()
+            ->getSingleScalarResult();
     }
 
     /**

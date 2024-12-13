@@ -52,6 +52,21 @@ class EdicionRepository extends ServiceEntityRepository
             ->getResult();
     }
     /**
+     * Método para obtener todas las ediciones que tienen un estado específico.
+     *
+     * @param int $estado El valor del estado por el cual se filtran las ediciones.
+     * @return Edicion[] Un array de objetos `Edicion` que cumplen con el criterio de búsqueda.
+     */
+    public function findByEstado(int $estado): array
+    {
+        return $this->createQueryBuilder('e')
+            ->andWhere('e.estado = :estado')
+            ->setParameter('estado', $estado)
+            ->orderBy('e.fecha_inicio', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+    /**
      * Método para obtener el primer código de edición libre.
      *
      * @param string $codigoCurso Código del curso

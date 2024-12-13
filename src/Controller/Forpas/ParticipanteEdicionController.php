@@ -4,6 +4,7 @@ namespace App\Controller\Forpas;
 
 use App\Entity\Forpas\ParticipanteEdicion;
 use App\Form\Forpas\ParticipanteEdicionType;
+use App\Repository\Forpas\AsistenciaRepository;
 use App\Repository\Forpas\EdicionRepository;
 use App\Repository\Forpas\ParticipanteEdicionRepository;
 use App\Repository\Forpas\ParticipanteRepository;
@@ -32,6 +33,104 @@ final class ParticipanteEdicionController extends AbstractController
             'edicion' => $edicion,
         ]);
     }
+    #[Route(path: '/edicion/{edicionId}/certificar', name: 'certificar', defaults: ['titulo' => 'Certificar Edición'], methods: ['GET'])]
+    public function certificar(
+        int $edicionId,
+        ParticipanteEdicionRepository $participanteEdicionRepository,
+        EdicionRepository $edicionRepository,
+        AsistenciaRepository $asistenciaRepository
+    ): Response {
+        $edicion = $edicionRepository->find($edicionId);
+        $inscripciones = $participanteEdicionRepository->findBy(['edicion' => $edicionId]);
+        $asistencias = $asistenciaRepository->findAllByEdicion($edicionId);
+        $datos = [];
+
+        // Inicializamos el array con los datos básicos de cada participante
+        foreach ($inscripciones as $pe) {
+            $datos[$pe->getParticipante()->getId()] = [
+                'nif' => $pe->getParticipante()->getNif(),
+                'apellidos' => $pe->getParticipante()->getApellidos(),
+                'nombre' => $pe->getParticipante()->getNombre(),
+                'apto' => $pe->getApto(),
+                'pruebaFinal' => $pe->getPruebaFinal(),
+                'bajaJustificada' => $pe->getBajaJustificada(),
+                'certificado' => $pe->getCertificado(),
+                'libro' => $pe->getLibro(),
+                'numeroTitulo' => $pe->getNumeroTitulo(),
+                'dias' => 0,
+                'minutosAsistencia' => 0,
+                'asistenciasFechas' => [],
+                'justificacionesFechas' => [],
+            ];
+        }
+
+        // Rellenamos las fechas de asistencias y justificaciones
+        foreach ($asistencias as $asistencia) {
+            $pId = $asistencia->getParticipante()->getId();
+            $estado = $asistencia->getEstado(); // 'asiste', 'justifica', 'ninguno'
+            $fecha = $asistencia->getSesion()->getFecha(); // Obtenemos la fecha de la sesión
+            $duracion = $asistencia->getSesion()->getDuracion();
+
+            if ($estado === 'asiste') {
+                $datos[$pId]['asistenciasFechas'][] = $fecha;
+                $datos[$pId]['dias']++;
+                $datos[$pId]['minutosAsistencia'] += $duracion;
+            } elseif ($estado === 'justifica') {
+                $datos[$pId]['justificacionesFechas'][] = $fecha;
+            }
+        }
+        return $this->render('intranet/forpas/gestor/participante_edicion/certificar.html.twig', [
+            'edicion' => $edicion,
+            'datos_participantes' => $datos,
+        ]);
+    }
+    #[Route(path: '/edicion/{edicionId}/certificar/procesar', name: 'certificar_procesar', methods: ['POST'])]
+    public function calcularCertificados(
+        int $edicionId,
+        Request $request,
+        EntityManagerInterface $entityManager,
+        EdicionRepository $edicionRepository
+    ): Response {
+        $edicion = $edicionRepository->find($edicionId);
+        if (!$edicion) {
+            throw $this->createNotFoundException('Edición no encontrada.');
+        }
+
+        // Recuperamos el array de datos desde el formulario
+        $datos = json_decode($request->request->get('datos_participantes'), true);
+        $anyoCurso = '20' . substr($edicion->getCurso()->getCodigoCurso(), 0, 2);
+        $ultimoTitulo = $entityManager->getRepository(ParticipanteEdicion::class)->findMaxNumeroTituloByLibro($anyoCurso) ?? 0;
+        $porcentajeAsistencia = 75;
+
+        // Procesamos cada participante
+        foreach ($datos as $pId => $participante) {
+            $cumpleAsistencia = $participante['minutosAsistencia'] >= $edicion->getCurso()->getHoras() * 60 * ($porcentajeAsistencia / 100);
+            $cumpleApto = !$edicion->getCurso()->isCalificable() || $participante['apto'] === 1;
+            $participanteEdicion = $entityManager->getRepository(ParticipanteEdicion::class)
+                ->findOneBy([
+                    'participante' => $pId,
+                    'edicion' => $edicionId
+                ]);
+
+            if ($participante['certificado'] != 'S'){
+                if ($participanteEdicion && $participante['bajaJustificada'] === null && $cumpleAsistencia && $cumpleApto) {
+                    $participanteEdicion->setCertificado('S');
+                    $participanteEdicion->setLibro($anyoCurso);
+                    $participanteEdicion->setNumeroTitulo(++$ultimoTitulo);
+                } else {
+                    $participanteEdicion->setCertificado('N');
+                }
+
+                $entityManager->persist($participanteEdicion);
+            }
+        }
+
+        $edicion->setEstado('2');
+        $entityManager->flush();
+        $this->addFlash('success', 'Edición certificada correctamente.');
+        return $this->redirectToRoute('intranet_forpas_gestor_participante_edicion_certificar', ['edicionId' => $edicionId]);
+    }
+
     #[Route(path: '/new/{id}/{edicionId}', name: 'new', defaults: ['titulo' => 'Crear Nueva Inscripción'], methods: ['GET', 'POST'])]
     public function new(int $id, int $edicionId, EntityManagerInterface $entityManager,
                         ParticipanteRepository $participanteRepository, EdicionRepository $edicionRepository): Response
