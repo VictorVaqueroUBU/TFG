@@ -93,7 +93,7 @@ class ParticipanteEdicionRepository extends ServiceEntityRepository
      * Método para contar las calificaciones de los participantes en una edición específica.
      *
      * @param Edicion $edicion La edición sobre la que se quieren contar las calificaciones.
-     * @return array Un array asociativo con las siguientes claves:
+     * @return array{aptos: int, noAptos: int, noPresentados: int} Un array asociativo con las siguientes claves:
      *               - `aptos`: Número de participantes marcados como aptos (apto = 1).
      *               - `noAptos`: Número de participantes marcados como no aptos (apto = 0).
      *               - `noPresentados`: Número de participantes marcados como no presentados (apto = -1).

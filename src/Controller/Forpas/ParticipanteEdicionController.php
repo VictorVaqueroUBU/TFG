@@ -115,7 +115,7 @@ final class ParticipanteEdicionController extends AbstractController
             if ($participante['certificado'] != 'S'){
                 if ($participanteEdicion && $participante['bajaJustificada'] === null && $cumpleAsistencia && $cumpleApto) {
                     $participanteEdicion->setCertificado('S');
-                    $participanteEdicion->setLibro($anyoCurso);
+                    $participanteEdicion->setLibro((int) $anyoCurso);
                     $participanteEdicion->setNumeroTitulo(++$ultimoTitulo);
                 } else {
                     $participanteEdicion->setCertificado('N');
@@ -125,7 +125,7 @@ final class ParticipanteEdicionController extends AbstractController
             }
         }
 
-        $edicion->setEstado('2');
+        $edicion->setEstado(2);
         $entityManager->flush();
         $this->addFlash('success', 'Edición certificada correctamente.');
         return $this->redirectToRoute('intranet_forpas_gestor_participante_edicion_certificar', ['edicionId' => $edicionId]);

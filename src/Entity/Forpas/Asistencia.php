@@ -35,8 +35,6 @@ class Asistencia
     #[ORM\JoinColumn(nullable: false)]
     private ?Sesion $sesion = null;
 
-    private ?string $estado = null;
-
     public function getEstado(): ?string
     {
         if ($this->isAsiste()) {
@@ -61,8 +59,6 @@ class Asistencia
                 $this->setAsiste(false)->setJustifica(false);
                 break;
         }
-
-        $this->estado = $estado;
 
         return $this;
     }

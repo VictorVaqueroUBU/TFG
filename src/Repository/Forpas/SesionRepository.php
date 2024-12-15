@@ -21,8 +21,8 @@ class SesionRepository extends ServiceEntityRepository
      * Método para calcular el número de sesiones y las horas totales de una edición específica.
      *
      * @param Edicion $edicion La edición sobre la que se calculan las sesiones y las horas.
-     * @return array Un array asociativo con las siguientes claves:
-     *               - `sesionesGrabadas`: Número total de sesiones registradas.
+     * @return array{sesionesGrabadas: int, horasGrabadas: int, horasVirtualesGrabadas: int}
+     * *         Un array asociativo con las siguientes claves:
      *               - `horasGrabadas`: Suma total de las horas (duración) de todas las sesiones.
      *               - `horasVirtualesGrabadas`: Suma total de las horas de las sesiones virtuales (tipo = 1).
      */

@@ -2,6 +2,7 @@
 
 namespace App\Tests\Controller\Intranet;
 
+use App\Controller\Intranet\LoginController;
 use App\Tests\Controller\Forpas\BaseControllerTest;
 use DateTime;
 
@@ -82,4 +83,75 @@ class LoginControllerTest extends BaseControllerTest
             'La contraseña temporal no es correcta.'
         );
     }
+    public function testLogoutThrowsExceptionManually(): void
+    {
+        $this->expectException(\LogicException::class);
+
+        $controller = new LoginController();
+        $controller->logout();
+    }
+    public function testRedirectIfUserNotAuthenticated(): void
+    {
+        // Petición sin usuario logueado
+        $this->client->request('GET', '/intranet/change-password');
+
+        $this->assertResponseRedirects('/intranet/login');
+    }
+    public function testRedirectIfUserAlreadyVerified(): void
+    {
+        $user = $this->createUserWithRole('ROLE_USER');
+        $user->setVerified(true); // Usuario ya verificado
+        $this->manager->persist($user);
+        $this->manager->flush();
+
+        $this->client->loginUser($user);
+        $this->client->request('GET', '/intranet/change-password');
+
+        $this->assertResponseRedirects('/intranet');
+    }
+    public function testChangePasswordFailsIfPasswordsDoNotMatch(): void
+    {
+        $user = $this->createUserWithRole('ROLE_USER');
+        $user->setVerified(false); // Simula cuenta no verificada
+        $user->setPassword(password_hash('old_password', PASSWORD_BCRYPT));
+        $this->manager->persist($user);
+        $this->manager->flush();
+
+        $this->client->loginUser($user);
+        $this->client->request('POST', '/intranet/change-password', [
+            'temporary_password' => 'old_password',
+            'new_password' => 'new_password',
+            'confirm_password' => 'different_password', // Contraseña no coincide
+        ]);
+
+        $this->assertResponseRedirects('/intranet/change-password');
+        $this->client->followRedirect();
+        $this->assertSelectorTextContains(
+            '.alert-warning',
+            'Las contraseñas no coinciden.'
+        );
+    }
+    public function testChangePasswordFailsIfNewPasswordIsSameAsOld(): void
+    {
+        $user = $this->createUserWithRole('ROLE_USER');
+        $user->setVerified(false); // Simula cuenta no verificada
+        $user->setPassword(password_hash('old_password', PASSWORD_BCRYPT));
+        $this->manager->persist($user);
+        $this->manager->flush();
+
+        $this->client->loginUser($user);
+        $this->client->request('POST', '/intranet/change-password', [
+            'temporary_password' => 'old_password',
+            'new_password' => 'old_password', // Igual a la antigua contraseña
+            'confirm_password' => 'old_password',
+        ]);
+
+        $this->assertResponseRedirects('/intranet/change-password');
+        $this->client->followRedirect();
+        $this->assertSelectorTextContains(
+            '.alert-warning',
+            'La nueva contraseña tiene que ser distinta de la antigua.'
+        );
+    }
+
 }

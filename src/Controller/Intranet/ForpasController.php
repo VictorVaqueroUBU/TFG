@@ -2,10 +2,6 @@
 
 namespace App\Controller\Intranet;
 
-use App\Repository\Forpas\CursoRepository;
-use App\Repository\Forpas\EdicionRepository;
-use App\Repository\Forpas\FormadorRepository;
-use App\Repository\Forpas\ParticipanteRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -51,10 +47,8 @@ class ForpasController extends AbstractController
         ]);
     }
     #[Route(path: '/gestor', name: '_gestor', defaults: ['titulo' => 'Gestión de Entidades'])]
-    public function forpasGestor(CursoRepository $cursoRepository, EdicionRepository $edicionRepository,
-                                 ParticipanteRepository $participanteRepository, FormadorRepository $formadorRepository): Response
+    public function forpasGestor(): Response
     {
-        //$this->denyAccessUnlessGranted('ROLE_ADMIN');
         return $this->render('intranet/forpas/gestor/index.html.twig');
     }
     #[Route(path: '/participante', name: '_participante', defaults: ['titulo' => 'Acciones disponibles'])]

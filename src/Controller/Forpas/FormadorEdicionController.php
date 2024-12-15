@@ -86,7 +86,7 @@ final class FormadorEdicionController extends AbstractController
     {
         $edicionId = $formadorEdicion->getEdicion()->getId();
 
-        if ($this->isCsrfTokenValid('delete'.$formadorEdicion->getId(), $request->getPayload()->getString('_token'))) {
+        if ($this->isCsrfTokenValid('delete'.$formadorEdicion->getId(), $request->request->get('_token'))) {
             // Eliminamos la asignación de las colecciones de Formador y Edición
             $formador = $formadorEdicion->getFormador();
             $edicion = $formadorEdicion->getEdicion();

@@ -5,9 +5,10 @@ namespace App\Tests\Controller\Forpas;
 use App\Entity\Forpas\Curso;
 use App\Entity\Forpas\Edicion;
 use App\Entity\Forpas\Formador;
+use App\Entity\Forpas\FormadorEdicion;
 use App\Entity\Forpas\Participante;
-use App\Entity\Sistema\Usuario;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\Tools\SchemaTool;
 
 final class FormadorControllerTest extends BaseControllerTest
 {
@@ -20,21 +21,12 @@ final class FormadorControllerTest extends BaseControllerTest
     {
         parent::setUp(); // Llama al setUp de la clase base
 
-        // Limpiamos datos de Edición, Curso y Formador
-        $repositories = [
-            Participante::class,
-            Formador::class,
-            Edicion::class,
-            Curso::class,
-            Usuario::class,
-        ];
-
-        foreach ($repositories as $repositoryClass) {
-            $repository = $this->manager->getRepository($repositoryClass);
-            foreach ($repository->findAll() as $object) {
-                $this->manager->remove($object);
-            }
-        }
+        $this->manager = static::getContainer()->get('doctrine')->getManager();
+        // Limpieza completa de la base de datos
+        $schemaTool = new SchemaTool($this->manager);
+        $classes = $this->manager->getMetadataFactory()->getAllMetadata();
+        $schemaTool->dropSchema($classes);
+        $schemaTool->createSchema($classes);
 
         $this->manager->flush();
 
@@ -51,6 +43,40 @@ final class FormadorControllerTest extends BaseControllerTest
         self::assertResponseStatusCodeSame(200);
         self::assertPageTitleContains('Listado de Formadores');
     }
+    public function testFind(): void
+    {
+        // Creamos un formador para tener datos visibles
+        $usuario = $this->createUserWithRole('ROLE_USER');
+
+        $formador = new Formador();
+        $formador->setNif('FIND-TEST');
+        $formador->setNombre('Nombre de prueba');
+        $formador->setApellidos('Apellidos de prueba');
+        $formador->setOrganizacion('Organización de prueba');
+        $formador->setCorreoAux('aux@test.com');
+        $formador->setTelefono('123456789');
+        $formador->setObservaciones('Observaciones de prueba');
+        $formador->setFormadorRJ(0);
+        $formador->setUsuario($usuario);
+
+        $this->manager->persist($formador);
+        $this->manager->flush();
+
+        // Realizamos la petición al método find
+        $this->client->request('GET', $this->path . 'find');
+
+        // Verificamos el estado de la respuesta
+        self::assertResponseStatusCodeSame(200);
+
+        // Verificamos que el título de la página corresponde al esperado (en defaults['titulo'])
+        self::assertPageTitleContains('Listado de Formadores');
+
+        // Opcional: Comprobamos que el contenido del formador creado aparece en la respuesta
+        $responseContent = $this->client->getResponse()->getContent();
+        self::assertStringContainsString('FIND-TEST', $responseContent);
+        self::assertStringContainsString('Nombre de prueba', $responseContent);
+    }
+
     public function testNew(): void
     {
         // Caso 1: Creamos un Formador desde un Participante válido
@@ -144,7 +170,7 @@ final class FormadorControllerTest extends BaseControllerTest
         self::assertSame('Something New', $fixture[0]->getObservaciones());
         self::assertSame(1, $fixture[0]->getFormadorRJ());
     }
-    public function testRemove(): void
+    public function testDelete(): void
     {
         $usuario = $this->createUserWithRole('ROLE_USER');
 
@@ -168,6 +194,110 @@ final class FormadorControllerTest extends BaseControllerTest
         self::assertResponseRedirects($this->path);
         self::assertSame(0, $this->repository->count([]));
     }
+    public function testRemove(): void
+    {
+        $usuario = $this->createUserWithRole('ROLE_USER');
+
+        // Creamos un participante asociado al mismo usuario, para que luego al eliminar el Formador
+        // se cumpla la condición if ($participante).
+        $participante = new Participante();
+        $participante->setNif('12345678B');
+        $participante->setNombre('Participante');
+        $participante->setApellidos('De prueba');
+        $participante->setUsuario($usuario);
+        $participante->setOrganizacion('Organización Ejemplo');
+        $this->manager->persist($participante);
+
+        $formador = new Formador();
+        $formador->setNif('Value2');
+        $formador->setApellidos('Value2');
+        $formador->setNombre('Value2');
+        $formador->setOrganizacion('Value2');
+        $formador->setCorreoAux('Value2');
+        $formador->setTelefono('Value2');
+        $formador->setObservaciones('Value2');
+        $formador->setFormadorRJ(2);
+        $formador->setUsuario($usuario);
+
+        $this->manager->persist($formador);
+        $this->manager->flush();
+
+        // Ahora eliminamos el formador
+        $this->client->request('GET', sprintf('%s%s', $this->path, $formador->getId()));
+        $this->client->submitForm('Eliminar');
+
+        // Verificamos que se hizo el redirect
+        self::assertResponseRedirects($this->path);
+
+        // Verificamos que el formador fue eliminado
+        self::assertSame(0, $this->repository->count([]));
+
+        // Ahora, dado que existía un participante para el mismo usuario,
+        // el código del if ($participante) se habrá ejecutado,
+        // lo que debería mejorar la cobertura.
+    }
+    public function testRemoveWithEdicionesAsociadas(): void
+    {
+        $usuario = $this->createUserWithRole('ROLE_USER');
+
+        // Crear el Formador
+        $formador = new Formador();
+        $formador->setNif('Value4');
+        $formador->setApellidos('Value4');
+        $formador->setNombre('Value4');
+        $formador->setOrganizacion('Value4');
+        $formador->setCorreoAux('Value4');
+        $formador->setTelefono('Value4');
+        $formador->setObservaciones('Value4');
+        $formador->setFormadorRJ(2);
+        $formador->setUsuario($usuario);
+        $this->manager->persist($formador);
+
+        // Crear el Curso
+        $curso = new Curso();
+        $curso->setNombreCurso('Curso de Prueba Eliminación');
+        $curso->setCodigoCurso('99999');
+        $curso->setHoras(10);
+        $curso->setParticipantesEdicion(10);
+        $curso->setEdicionesEstimadas(1);
+        $curso->setVisibleWeb(true);
+        $curso->setHorasVirtuales(0);
+        $curso->setCalificable(true);
+        $this->manager->persist($curso);
+
+        // Crear la Edición asociada al Curso
+        $edicion = new Edicion();
+        $edicion->setCodigoEdicion('99999/01');
+        $edicion->setEstado(0);
+        $edicion->setSesiones(2);
+        $edicion->setMaxParticipantes(20);
+        $edicion->setCurso($curso);
+        $this->manager->persist($edicion);
+
+        // Persistimos para generar IDs
+        $this->manager->flush();
+
+        // Crear la entidad intermedia FormadorEdicion
+        $formadorEdicion = new FormadorEdicion();
+        $formadorEdicion->setFormador($formador);
+        $formadorEdicion->setEdicion($edicion);
+        // Opcionalmente setear otros campos si es necesario
+        $this->manager->persist($formadorEdicion);
+
+        $this->manager->flush();
+
+        // Ahora intentamos eliminar el Formador
+        $this->client->request('GET', sprintf('%s%s', $this->path, $formador->getId()));
+        $this->client->submitForm('Eliminar');
+
+        // Al haber una edición asociada, deberíamos obtener el mensaje de advertencia.
+        self::assertResponseRedirects($this->path);
+
+        $this->client->followRedirect();
+        $responseContent = $this->client->getResponse()->getContent();
+        self::assertStringContainsString('No se puede eliminar al formador porque tiene ediciones asociadas.', $responseContent);
+    }
+
     public function testAppend(): void
     {
         $usuario = $this->createUserWithRole('ROLE_USER');

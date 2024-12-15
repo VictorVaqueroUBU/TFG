@@ -4,7 +4,6 @@ namespace App\Controller\Forpas;
 
 use App\Entity\Forpas\Asistencia;
 use App\Entity\Forpas\Edicion;
-use App\Entity\Forpas\FormadorEdicion;
 use App\Entity\Forpas\ParticipanteEdicion;
 use App\Entity\Forpas\Sesion;
 use App\Entity\Sistema\Usuario;
@@ -38,31 +37,11 @@ class FormadorPortalController extends AbstractController
 
         return $user;
     }
-    private function getEdicionAsignada(int $id, EntityManagerInterface $entityManager): Edicion
-    {
-        $user = $this->getUsuarioFormador();
 
-        $edicion = $entityManager->getRepository(Edicion::class)->find($id);
-        if (!$edicion) {
-            throw $this->createNotFoundException('No se ha encontrado la edición solicitada.');
-        }
-
-        $asignacion = $entityManager->getRepository(FormadorEdicion::class)->findOneBy([
-            'formador' => $user->getFormador()->getId(),
-            'edicion' => $id
-        ]);
-
-        if (!$asignacion) {
-            throw $this->createAccessDeniedException('No tiene acceso a esta edición.');
-        }
-
-        return $edicion;
-    }
     #[Route(path: '/mis-datos', name: 'mis_datos', defaults: ['titulo' => 'Mis datos de contacto'], methods: ['GET', 'POST'])]
     public function misDatos(Request $request, EntityManagerInterface $entityManager): Response
     {
         $user = $this->getUsuarioFormador();
-
         $formador = $user->getFormador();
         $form = $this->createForm(FormadorContactoType::class, $formador,
             ['email' => $formador->getUsuario()->getEmail()]);
@@ -77,7 +56,7 @@ class FormadorPortalController extends AbstractController
         return $this->render('intranet/forpas/formador/datos_edit.html.twig', [
             'formador' => $user->getFormador(),
             'form' => $form,
-            'edicion' => $edicion ?? null,
+            'edicion' => null,
         ]);
     }
 
@@ -100,7 +79,8 @@ class FormadorPortalController extends AbstractController
     #[Route(path: '/mis-ediciones/{id}', name: 'mis_ediciones_show', defaults: ['titulo' => 'Datos de la Edición'], methods: ['GET', 'POST'])]
     public function edicionShow(int $id, EntityManagerInterface $entityManager): Response
     {
-        $edicion = $this->getEdicionAsignada($id, $entityManager);
+        $edicion = $entityManager->getRepository(Edicion::class)->find($id);
+
         $sesionStats = $entityManager->getRepository(Sesion::class)
             ->calcularSesionesYHoras($edicion);
         $sessionsAsistencias = $entityManager->getRepository(Asistencia::class)
@@ -129,7 +109,7 @@ class FormadorPortalController extends AbstractController
     #[Route('/mis-ediciones/{id}/remitir', name: 'mis_ediciones_remitir', methods: ['POST'])]
     public function remitirDatos(int $id, EntityManagerInterface $entityManager): Response
     {
-        $edicion = $this->getEdicionAsignada($id, $entityManager);
+        $edicion = $entityManager->getRepository(Edicion::class)->find($id);
         // Actualizamos el estado de la edición a 1
         $edicion->setEstado(1);
         $entityManager->persist($edicion);
@@ -142,12 +122,9 @@ class FormadorPortalController extends AbstractController
     #[Route(path: '/sesion-new/{edicionId}', name: 'sesion_new', defaults: ['titulo' => 'Crear Nueva Sesión'], methods: ['GET', 'POST'])]
     public function sesionNew(Request $request, int $edicionId, EntityManagerInterface $entityManager): Response
     {
-        $edicion = $this->getEdicionAsignada($edicionId, $entityManager);
-        // Comprobamos que aún queden sesiones por crear
-        if (count($edicion->getSesionesEdicion()) >= $edicion->getSesiones()) {
-            $this->addFlash('warning', 'Ya se alcanzó el número máximo de sesiones para esta edición.');
-            return $this->redirectToRoute('intranet_forpas_formador_mis_ediciones_show', ['id' => $edicionId]);
-        }
+        $user = $this->getUsuarioFormador();
+        $edicion = $entityManager->getRepository(Edicion::class)->find($edicionId);
+
         // Obtenemos la duración ya grabada
         $sesiones = $edicion->getSesionesEdicion();
         $horasGrabadas = 0;
@@ -161,7 +138,7 @@ class FormadorPortalController extends AbstractController
 
         $nuevaSesion = new Sesion();
         $nuevaSesion->setEdicion($edicion);
-        $nuevaSesion->setFormador($this->getUser()->getFormador());
+        $nuevaSesion->setFormador($user->getFormador());
         $form = $this->createForm(SesionType::class, $nuevaSesion);
         $form->handleRequest($request);
 
@@ -177,7 +154,7 @@ class FormadorPortalController extends AbstractController
                 return $this->redirectToRoute('intranet_forpas_formador_mis_ediciones_show', ['id' => $edicionId]);
             }
             $edicion->addSesionesEdicion($nuevaSesion);
-            $this->getUser()->getFormador()->addSesion($nuevaSesion);
+            $user->getFormador()->addSesion($nuevaSesion);
             $entityManager->persist($nuevaSesion);
             $entityManager->flush();
             $this->addFlash('success', 'La sesión se ha creado correctamente.');
@@ -192,7 +169,7 @@ class FormadorPortalController extends AbstractController
     #[Route(path: '/sesion-edit/{id}', name: 'sesion_edit', defaults: ['titulo' => 'Editar Sesión'], methods: ['GET', 'POST'])]
     public function sesionEdit(Request $request, Sesion $sesion, EntityManagerInterface $entityManager): Response
     {
-        $edicion = $this->getEdicionAsignada($sesion->getEdicion()->getId(), $entityManager);
+        $edicion = $entityManager->getRepository(Edicion::class)->find($sesion->getEdicion()->getId());
         $form = $this->createForm(SesionType::class, $sesion);
         $form->handleRequest($request);
 
@@ -211,7 +188,7 @@ class FormadorPortalController extends AbstractController
     #[Route(path: '/{id}', name: 'sesion_delete', methods: ['POST'])]
     public function SesionDelete(Request $request, Sesion $sesion, EntityManagerInterface $entityManager): Response
     {
-        $edicion = $this->getEdicionAsignada($sesion->getEdicion()->getId(), $entityManager);
+        $edicion = $entityManager->getRepository(Edicion::class)->find($sesion->getEdicion()->getId());
         if ($this->isCsrfTokenValid('delete'.$sesion->getId(), $request->getPayload()->getString('_token'))) {
             $entityManager->remove($sesion);
             $entityManager->flush();
@@ -222,7 +199,8 @@ class FormadorPortalController extends AbstractController
     }
     #[Route('/sesion/{id}/asistencia', name: 'sesion_fillIn', defaults: ['titulo' => 'Introducir Asistencia'], methods: ['GET', 'POST'])]
     public function fillInAsistencia(Request $request, Sesion $sesion, EntityManagerInterface $entityManager): Response {
-        $edicion = $this->getEdicionAsignada($sesion->getEdicion()->getId(), $entityManager);
+        $user = $this->getUsuarioFormador();
+        $edicion = $entityManager->getRepository(Edicion::class)->find($sesion->getEdicion()->getId());
         // Obtenemos los participantes inscritos en la edición de esta sesión
         $participantesEdicion = $edicion->getParticipantesEdicion();
 
@@ -236,7 +214,7 @@ class FormadorPortalController extends AbstractController
                 $asistencia = new Asistencia();
                 $asistencia->setSesion($sesion);
                 $asistencia->setParticipante($participanteEdicion->getParticipante());
-                $asistencia->setFormador($this->getUser()->getFormador());
+                $asistencia->setFormador($user->getFormador());
             }
 
             $asistencias[] = $asistencia;
@@ -272,7 +250,7 @@ class FormadorPortalController extends AbstractController
     }
     #[Route('/edicion/{id}/calificaciones', name: 'calificaciones', defaults: ['titulo' => 'Introducir Calificaciones'], methods: ['GET', 'POST'])]
     public function registrarCalificaciones(Request $request, Edicion $edicion, EntityManagerInterface $entityManager): Response {
-        $edicion = $this->getEdicionAsignada($edicion->getId(), $entityManager);
+        $edicion = $entityManager->getRepository(Edicion::class)->find($edicion->getId());
 
         // Verificamos si la edición es calificable
         if (!$edicion->getCurso()->isCalificable()) {

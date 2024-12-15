@@ -34,11 +34,11 @@ class Sesion
     #[ORM\Column(type: Types::SMALLINT)]
     private ?int $tipo = null;
 
-    #[ORM\ManyToOne(inversedBy: '$sesionesEdicion')]
+    #[ORM\ManyToOne(targetEntity: Edicion::class, inversedBy: 'sesionesEdicion')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Edicion $edicion = null;
 
-    #[ORM\ManyToOne(inversedBy: '$sesiones')]
+    #[ORM\ManyToOne(targetEntity: Formador::class, inversedBy: 'sesiones')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Formador $formador = null;
 

@@ -21,7 +21,7 @@ class AsistenciaRepository extends ServiceEntityRepository
      * Método para contar las asistencias confirmadas para cada sesión de una edición.
      *
      * @param Edicion $edicion La edición para la cual se cuentan las asistencias.
-     * @return array Un array asociativo con la estructura [sesionId => totalAsistencias].
+     * @return array<string|int, int> Un array asociativo con la estructura [sesionId => totalAsistencias].
      */
     public function contarAsistenciasPorSesion(Edicion $edicion): array
     {
@@ -34,7 +34,7 @@ class AsistenciaRepository extends ServiceEntityRepository
 
         $result = $qb->getQuery()->getResult();
 
-        // Convertir el resultado en un array asociativo [sesionId => totalAsistencias]
+        // Convertimos el resultado en un array asociativo [sesionId => totalAsistencias]
         return array_column($result, 'totalAsistencias', 'sesionId');
     }
 
@@ -42,7 +42,7 @@ class AsistenciaRepository extends ServiceEntityRepository
      * Método para contar las justificaciones confirmadas para cada sesión de una edición.
      *
      * @param Edicion $edicion La edición para la cual se cuentan las justificaciones.
-     * @return array Un array asociativo con la estructura [sesionId => totalJustificaciones].
+     * @return array<string|int, int> Un array asociativo con la estructura [sesionId => totalJustificaciones].
      */
     public function contarJustificacionesPorSesion(Edicion $edicion): array
     {
