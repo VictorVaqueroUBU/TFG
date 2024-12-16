@@ -1,0 +1,54 @@
+name: Symfony Tests
+
+on:
+  push:
+    branches: [ issue-66-crear-pipeline-CI ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  phpunit-tests:
+    runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: bandit650n
+          MYSQL_DATABASE: formacion
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          ini-values: memory_limit=512M
+
+      - name: Install dependencies
+        run: |
+          composer install --prefer-dist --no-progress --no-suggest
+
+      - name: Install JavaScript dependencies
+        run: bin/console importmap:install
+
+      - name: Build assets
+        run: php bin/console sass:build
+
+      - name: Configure DATABASE_URL_TEST
+        run: |
+          echo "DATABASE_URL_TEST=mysql://root:bandit650n@127.0.0.1:3306/formacion?serverVersion=8.0.32&charset=utf8mb4" > .env.test
+
+      - name: Run database migrations
+        run: |
+          php bin/console doctrine:database:create --if-not-exists --env=test
+          php bin/console doctrine:migrations:migrate --no-interaction --env=test
