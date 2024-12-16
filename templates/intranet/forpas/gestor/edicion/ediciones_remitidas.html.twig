@@ -1,0 +1,97 @@
+{% extends 'intranet/forpas/gestor/index.html.twig' %}
+{% block migas %}
+    {{ parent() }}
+    <li class="breadcrumb-item active" aria-current="page">Ediciones remitidas</li>
+{% endblock %}
+{% block title %}{{ titulo }}{% endblock %}
+{% block content %}
+    <div class="pagina-titulo">Portal del Gestor</div>
+    <div class="pagina-seccion">{{ titulo }}</div>
+
+    <table class="tabla-condensada" id="datosEdicionesRemitidas">
+        <thead class="cabecera-condensada">
+        <tr>
+            <th>Código</th>
+            <th>Nombre curso</th>
+            <th class="text-center">Fecha inicio</th>
+            <th class="text-center">Fecha fin</th>
+            <th>Horas</th>
+            <th>Inscritos</th>
+            <th>Profesor/es</th>
+            <th>Acciones</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for edicion in edicionesRemitidas %}
+            <tr>
+                <td>{{ edicion.codigoEdicion }}</td>
+                <td>{{ edicion.curso.nombreCurso }}</td>
+                <td class="text-center">{{ edicion.fechaInicio ? edicion.fechaInicio|date('Y-m-d') : '' }}</td>
+                <td class="text-center">{{ edicion.fechaFin ? edicion.fechaFin|date('Y-m-d') : '' }}</td>
+                <td class="text-center">{{ edicion.curso.horas }}</td>
+                <td class="text-center">{{ edicion.participantesEdicion|length }}</td>
+                <td>
+                    {% for formadores in edicion.formadoresEdicion %}
+                        {{ formadores.formador.nombre }} {{ formadores.formador.apellidos }}<br>
+                    {% endfor %}
+                </td>
+                <td>
+                    <a href="{{ path('intranet_forpas_gestor_participante_edicion_certificar', {'edicionId': edicion.id}) }}">
+                        <span class="mx-1 fas fa-edit" title="Editar"></span>
+                    </a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td>No existen ediciones pendientes de certificar</td><td></td><td></td><td></td><td></td><td></td><td></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
+
+{% block botones %}
+    <li class="nav-item me-2">
+        <a class="btn btn-primary" href="{{ path('intranet_forpas_gestor') }}">
+            <span class="fas fa-reply"></span> Volver
+        </a>
+    </li>
+{% endblock %}
+
+{% block js %}
+    {{ parent() }}
+    <script type="module">
+        $(function () {
+            $('#datosEdicionesRemitidas').dataTable({
+                buttons: [
+                    {
+                        extend: 'copy',
+                        text: '<i class="fas fa-copy"></i>',
+                        titleAttr: 'Copiar',
+                    },
+                    {
+                        extend: 'print',
+                        text: '<i class="fas fa-print"></i>',
+                        titleAttr: 'Imprimir',
+                    },
+                    {
+                        extend: 'csv',
+                        text: '<i class="fas fa-file-csv"></i>',
+                        titleAttr: 'Generar fichero CSV',
+                    },
+                    {
+                        extend: 'excelHtml5',
+                        text: '<i class="fas fa-file-excel"></i>',
+                        titleAttr: 'Generar fichero Excel',
+                    },
+                ],
+                dom: '<"row"<"col-sm-12 col-md-4"B><"col-sm-12 col-md-4"l><"col-sm-12 col-md-4"f>>' +
+                    '<"row"<"col-sm-12"<"table-responsive"tr>>>' +
+                    '<"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
+                language: {
+                    url: '{{ asset("includes/datatable.es.json") }}'
+                },
+            });
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,12 @@
+{{ form_start(form) }}
+    {{ form_widget(form) }}
+    <p class="text-muted mt-3">* Campos obligatorios</p>
+    <!-- Botón "Volver" -->
+    <a class="btn btn-primary" href="{{ edicion ? path('intranet_forpas_formador_mis_ediciones_show', {'id': edicion.id}) : path('intranet_forpas_formador') }}">
+        <span class="fas fa-reply"></span> Volver
+    </a>
+    <!-- Botón "Guardar" -->
+    <button class="btn btn-primary">
+        <span class="fas fa-save"></span> {{ button_label|default('Guardar') }}
+    </button>
+{{ form_end(form) }}

@@ -1,0 +1,7 @@
+<form method="post" action="{{ path('intranet_forpas_formador_sesion_delete', {'id': sesion.id}) }}"
+      onsubmit="return confirm('Está seguro que desea eliminar esta sesión?');" style="display: inline;">
+    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ sesion.id) }}">
+    <button type="submit" title="Eliminar" style="border: none; background: none; padding: 0; color: rgb(156, 31, 46); cursor: pointer;">
+        <span class="mx-1 fas fa-trash"></span>
+    </button>
+</form>

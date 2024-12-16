@@ -107,13 +107,20 @@ class Participante
     #[ORM\OneToMany(targetEntity: ParticipanteEdicion::class, mappedBy: 'participante', orphanRemoval: true)]
     private Collection $participanteEdiciones;
 
-    #[ORM\OneToOne(targetEntity: Usuario::class, inversedBy: 'participante', cascade: ['persist', 'remove'])]
+    #[ORM\OneToOne(targetEntity: Usuario::class, inversedBy: 'participante', cascade: ['persist'])]
     #[ORM\JoinColumn(nullable: false)]
     private ?Usuario $usuario = null;
+
+    /**
+     * @var Collection<int, Asistencia>
+     */
+    #[ORM\OneToMany(targetEntity: Asistencia::class, mappedBy: 'participante', orphanRemoval: true)]
+    private Collection $asistencias;
 
     public function __construct()
     {
         $this->participanteEdiciones = new ArrayCollection();
+        $this->asistencias = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -481,6 +488,35 @@ class Participante
     public function setUsuario(Usuario $usuario): static
     {
         $this->usuario = $usuario;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Asistencia>
+     */
+    public function getAsistencias(): Collection
+    {
+        return $this->asistencias;
+    }
+
+    public function addAsistencia(Asistencia $asistencia): static
+    {
+        if (!$this->asistencias->contains($asistencia)) {
+            $this->asistencias->add($asistencia);
+            $asistencia->setParticipante($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAsistencia(Asistencia $asistencia): static
+    {
+        if ($this->asistencias->removeElement($asistencia)) {
+            if ($asistencia->getParticipante() === $this) {
+                $asistencia->setParticipante(null);
+            }
+        }
 
         return $this;
     }

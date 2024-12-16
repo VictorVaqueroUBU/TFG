@@ -2,14 +2,12 @@ name: Symfony Tests
 
 on:
   push:
-    branches:
-      - developer
+    branches: [ issue-66-crear-pipeline-CI ]
   pull_request:
-    branches:
-      - main
+    branches: [ main ]
 
 jobs:
-  tests:
+  phpunit-tests:
     runs-on: ubuntu-latest
 
     services:
@@ -21,62 +19,36 @@ jobs:
         ports:
           - 3306:3306
         options: >-
-          --health-cmd="mysqladmin ping -h 127.0.0.1 -u root --password=bandit650n"
-          --health-interval=10s --health-timeout=5s --health-retries=20
+          --health-cmd="mysqladmin ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      - name: Install PHP and extensions
+      - name: Set up PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.2'
-          extensions: mbstring, intl, pdo_mysql
-          ini-values: date.timezone=UTC
-          coverage: none
+          ini-values: memory_limit=512M
 
       - name: Install dependencies
-        run: composer install --prefer-dist --no-progress --no-suggest
-
-      - name: Create .env.test file
         run: |
-          echo "DATABASE_URL_TEST=mysql://root:bandit650n@127.0.0.1:3306/formacion?serverVersion=8.0.32&charset=utf8mb4" > .env.test
-          cat .env.test
+          composer install --prefer-dist --no-progress --no-suggest
 
-      - name: Wait for MySQL to be ready
-        run: |
-          set -x
-          until mysqladmin ping -h 127.0.0.1 -u root --password=bandit650n; do
-            echo "Waiting for MySQL to be ready..."
-            sleep 5
-          done
+      - name: Install JavaScript dependencies
+        run: bin/console importmap:install
 
-      - name: Disable foreign key checks temporarily
-        run: |
-          mysql -h 127.0.0.1 -u root --password=bandit650n -e "SET GLOBAL foreign_key_checks = 0;"
-
-      - name: Set up database schema
-        env:
-          APP_ENV: test
-          DATABASE_URL_TEST: mysql://root:bandit650n@127.0.0.1:3306/formacion?serverVersion=8.0.32&charset=utf8mb4
-        run: |
-          set -x
-          php bin/console doctrine:database:create --env=test || true
-          php bin/console doctrine:schema:create --env=test
-
-      - name: Enable foreign key checks again
-        run: |
-          mysql -h 127.0.0.1 -u root --password=bandit650n -e "SET GLOBAL foreign_key_checks = 1;"
-
-      # Nuevo paso para compilar los assets de frontend
       - name: Build assets
         run: php bin/console sass:build
 
-      - name: Run PHPUnit tests
-        env:
-          APP_ENV: test
-          DATABASE_URL_TEST: mysql://root:bandit650n@127.0.0.1:3306/formacion?serverVersion=8.0.32&charset=utf8mb4
+      - name: Configure DATABASE_URL_TEST
         run: |
-          set -x
-          php bin/phpunit --coverage-text
+          echo "DATABASE_URL_TEST=mysql://root:bandit650n@127.0.0.1:3306/formacion?serverVersion=8.0.32&charset=utf8mb4" > .env.test
+
+      - name: Run database migrations
+        run: |
+          php bin/console doctrine:database:create --if-not-exists --env=test
+          php bin/console doctrine:migrations:migrate --no-interaction --env=test

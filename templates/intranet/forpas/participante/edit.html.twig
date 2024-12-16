@@ -1,7 +1,7 @@
 {% extends 'intranet/forpas/participante/index.html.twig' %}
 {% block migas %}
     {{ parent() }}
-    <li class="breadcrumb-item active" aria-current="page">Mis Datos</li>
+    <li class="breadcrumb-item active" aria-current="page">{{ titulo }}</li>
 {% endblock %}
 {% block title %}{{ titulo }}{% endblock %}
 
@@ -10,5 +10,15 @@
 
     <div class="pagina-seccion">{{ titulo }}</div>
 
-    {{ include('intranet/forpas/participante/_form.html.twig', {'button_label': 'Actualizar'}) }}
+    {{ form_start(form) }}
+    {{ form_widget(form) }}
+    <!-- Botón "Volver" -->
+    <a class="btn btn-primary" href="{{ path('intranet_forpas_participante') }}">
+        <span class="fas fa-reply"></span> Volver
+    </a>
+    <!-- Botón "Guardar" -->
+    <button class="btn btn-primary">
+        <span class="fas fa-save"></span> {{ button_label|default('Actualizar') }}
+    </button>
+    {{ form_end(form) }}
 {% endblock %}

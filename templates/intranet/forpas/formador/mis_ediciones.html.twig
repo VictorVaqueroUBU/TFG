@@ -1,0 +1,76 @@
+{% extends 'intranet/forpas/formador/index.html.twig' %}
+{% block migas %}
+    {{ parent() }}
+    <li class="breadcrumb-item active" aria-current="page">{{ titulo }}</li>
+{% endblock %}
+{% block title %}{{ titulo }}{% endblock %}
+
+{% block content %}
+    <div class="pagina-titulo">Portal del Formador</div>
+
+    <div class="pagina-seccion">{{ titulo }}</div>
+
+    <div class="container-fluid">
+        <ul class="nav nav-tabs" id="edicionesAsignadasTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="abiertas-tab" data-bs-toggle="tab" data-bs-target="#abiertas" type="button" role="tab" aria-controls="abiertas" aria-selected="true">Ediciones Abiertas</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="cerradas-tab" data-bs-toggle="tab" data-bs-target="#cerradas" type="button" role="tab" aria-controls="cerradas" aria-selected="false">Ediciones Cerradas</button>
+            </li>
+        </ul>
+        <div class="tab-content mt-2" id="edicionesAsignadasTabsContent">
+            <div class="tab-pane fade show active" id="abiertas" role="tabpanel" aria-labelledby="abiertas-tab">
+                {% include 'intranet/forpas/formador/mis_ediciones_tabla.html.twig' with {'formadorEdicion': edicionesAbiertas, 'id': 'tablaAbiertas'} %}
+            </div>
+            <div class="tab-pane fade" id="cerradas" role="tabpanel" aria-labelledby="cerradas-tab">
+                {% include 'intranet/forpas/formador/mis_ediciones_tabla.html.twig' with {'formadorEdicion': edicionesCerradas, 'id': 'tablaCerradas'} %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block js %}
+    {{ parent() }}
+    <script type="module">
+        $(function () {
+            // Función para inicializar una tabla con DataTables
+            function inicializarDataTable(id) {
+                $(`#${id}`).dataTable({
+                    buttons: [
+                        {
+                            extend: 'copy',
+                            text: '<i class="fas fa-copy"></i>',
+                            titleAttr: 'Copiar',
+                        },
+                        {
+                            extend: 'print',
+                            text: '<i class="fas fa-print"></i>',
+                            titleAttr: 'Imprimir',
+                        },
+                        {
+                            extend: 'csv',
+                            text: '<i class="fas fa-file-csv"></i>',
+                            titleAttr: 'Generar fichero CSV',
+                        },
+                        {
+                            extend: 'excelHtml5',
+                            text: '<i class="fas fa-file-excel"></i>',
+                            titleAttr: 'Generar fichero Excel',
+                        },
+                    ],
+                    dom: '<"row"<"col-sm-12 col-md-4"B><"col-sm-12 col-md-4"l><"col-sm-12 col-md-4"f>>' +
+                        '<"row"<"col-sm-12"<"table-responsive"tr>>>' +
+                        '<"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
+                    language: {
+                        url: '{{ asset("includes/datatable.es.json") }}'
+                    },
+                });
+            }
+
+            // Inicializar todas las tablas
+            const tablas = ['tablaAbiertas', 'tablaCerradas'];
+            tablas.forEach(id => inicializarDataTable(id));
+        });
+    </script>
+{% endblock %}

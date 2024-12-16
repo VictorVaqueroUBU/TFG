@@ -7,8 +7,6 @@ use Symfony\Component\HttpFoundation\RequestStack;
 use Twig\Extension\AbstractExtension;
 use Twig\Extension\GlobalsInterface;
 use Twig\TwigFilter;
-use Twig\TwigFunction;
-use DateTimeInterface;
 
 /**
  * Servicio para añadir filtros a las plantillas Twig.
@@ -32,18 +30,6 @@ class AppExtension extends AbstractExtension implements GlobalsInterface
 
         return [
             'titulo' => $titulo,
-        ];
-    }
-
-    /** Añadimos funciones. */
-    public function getFunctions(): array
-    {
-        return [
-            // Devuelve los días de diferencia entre 2 fechas
-            new TwigFunction(
-                'diff_days',
-                static fn (DateTimeInterface $inicio, DateTimeInterface $fin): int => $inicio->diff($fin)->days + 1
-            ),
         ];
     }
 

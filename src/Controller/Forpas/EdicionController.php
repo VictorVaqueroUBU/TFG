@@ -39,6 +39,14 @@ final class EdicionController extends AbstractController
             'year' => $year,
         ]);
     }
+    #[Route(path: '/remitidas', name: 'remitidas', defaults: ['titulo' => 'Ediciones remitidas para certificar'], methods: ['GET'])]
+    public function remitir(EdicionRepository $edicionRepository): Response
+    {
+        $edicionesRemitidas = $edicionRepository->findByEstado(1);
+        return $this->render('intranet/forpas/gestor/edicion/ediciones_remitidas.html.twig', [
+            'edicionesRemitidas' => $edicionesRemitidas,
+        ]);
+    }
     #[Route(path: '/new/{cursoId}', name: 'new', defaults: ['titulo' => 'Crear Nueva Edición'], methods: ['GET', 'POST'])]
     public function new(Request $request, int $cursoId, EntityManagerInterface $entityManager,
                         CursoRepository $cursoRepository, EdicionRepository $edicionRepository): Response
@@ -66,10 +74,6 @@ final class EdicionController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->persist($edicion);
             $entityManager->flush();
-
-            if (!$curso->getEdiciones()->contains($edicion)) {
-                $curso->addEdiciones($edicion);
-            }
 
             $this->addFlash('success', 'La creación de la edición se ha realizada satisfactoriamente.');
             return $this->redirectToRoute('intranet_forpas_gestor_edicion_index', ['cursoId'=> $cursoId], Response::HTTP_SEE_OTHER);

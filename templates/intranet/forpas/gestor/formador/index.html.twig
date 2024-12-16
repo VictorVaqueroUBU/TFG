@@ -17,6 +17,7 @@
             <th>Nombre</th>
             <th>Organización</th>
             <th>Correo Principal</th>
+            <th>Correo Auxiliar</th>
             <th>Teléfono</th>
             <th>Régimen Jurídico</th>
             <th>Observaciones</th>
@@ -31,6 +32,7 @@
                 <td>{{ formador.nombre }}</td>
                 <td>{{ formador.organizacion }}</td>
                 <td>{{ formador.usuario.email }}</td>
+                <td>{{ formador.correoAux }}</td>
                 <td class="text-center">{{ formador.telefono }}</td>
                 <td>{{ formador.formadorRJ | formadorRJTexto }}</td>
                 <td>{{ formador.observaciones }}</td>
@@ -42,7 +44,7 @@
             </tr>
         {% else %}
             <tr>
-                <td>No existen Formadores</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+                <td>No existen Formadores</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
             </tr>
         {% endfor %}
         </tbody>

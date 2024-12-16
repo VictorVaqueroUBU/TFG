@@ -18,11 +18,12 @@ class ForpasControllerTest extends BaseControllerTest
         $this->assertSelectorTextContains('h5', 'Portal del Participante');
         $this->assertSelectorExists('a[href="/intranet/forpas/participante"]');
         $this->assertSelectorNotExists('a[href="/intranet/forpas/gestor"]');
+        $this->assertSelectorNotExists('a[href="/intranet/forpas/formador"]');
     }
     public function testInicioPageAccessAsAdmin(): void
     {
-        $admin = $this->createUserWithRole('ROLE_ADMIN');
-        $this->client->loginUser($admin);
+        $user = $this->createUserWithRole('ROLE_ADMIN');
+        $this->client->loginUser($user);
 
         $this->client->request('GET', '/intranet/forpas/');
         $response = $this->client->getResponse();
@@ -31,25 +32,21 @@ class ForpasControllerTest extends BaseControllerTest
         $this->assertSelectorTextContains('h5', 'Portal del Gestor');
         $this->assertSelectorExists('a[href="/intranet/forpas/gestor"]');
         $this->assertSelectorNotExists('a[href="/intranet/forpas/participante"]');
+        $this->assertSelectorNotExists('a[href="/intranet/forpas/formador"]');
     }
-    public function testAccessGestorWithAdminRole(): void
+    public function testInicioPageAccessAsTeacher(): void
     {
-        $admin = $this->createUserWithRole('ROLE_ADMIN');
-        $this->client->loginUser($admin);
+        $user = $this->createUserWithRole('ROLE_TEACHER');
+        $this->client->loginUser($user);
 
-        $this->client->request('GET', '/intranet/forpas/gestor');
+        $this->client->request('GET', '/intranet/forpas/');
         $response = $this->client->getResponse();
 
         $this->assertResponseIsSuccessful();
-        $this->assertSelectorExists('div.pagina-titulo', 'Portal del Gestor');
-    }
-    public function testAccessGestorDeniedForUserRole(): void
-    {
-        $user = $this->createUserWithRole('ROLE_USER');
-        $this->client->loginUser($user);
-
-        $this->client->request('GET', '/intranet/forpas/gestor');
-        $this->assertResponseRedirects('/intranet/forpas/'); // Verifica la redirección
+        $this->assertSelectorTextContains('h5', 'Portal del Formador');
+        $this->assertSelectorExists('a[href="/intranet/forpas/formador"]');
+        $this->assertSelectorNotExists('a[href="/intranet/forpas/participante"]');
+        $this->assertSelectorNotExists('a[href="/intranet/forpas/gestor"]');
     }
     public function testAccessParticipanteWithUserRole(): void
     {
@@ -62,16 +59,56 @@ class ForpasControllerTest extends BaseControllerTest
         $this->assertResponseIsSuccessful();
         $this->assertSelectorExists('div.pagina-titulo', 'Portal del Participante');
     }
-    public function testAccessParticipanteDeniedForAdminRole(): void
+    public function testAccessDeniedForUserRole(): void
     {
-        $admin = $this->createUserWithRole('ROLE_ADMIN');
-        $this->client->loginUser($admin);
+        $user = $this->createUserWithRole('ROLE_USER');
+        $this->client->loginUser($user);
 
-        $this->client->request('GET', '/intranet/forpas/participante');
+        $this->client->request('GET', '/intranet/forpas/gestor');
+        $this->assertResponseRedirects('/intranet/forpas/'); // Verifica la redirección
+        $this->client->request('GET', '/intranet/forpas/formador');
+        $this->assertResponseRedirects('/intranet/forpas/'); // Verifica la redirección
+    }
+    public function testAccessGestorWithAdminRole(): void
+    {
+        $user = $this->createUserWithRole('ROLE_ADMIN');
+        $this->client->loginUser($user);
+
+        $this->client->request('GET', '/intranet/forpas/gestor');
         $response = $this->client->getResponse();
 
-        $this->client->followRedirect();
-        $this->assertSelectorTextContains('.alert-warning', 'No tienes permiso para acceder a esta página.');
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorExists('div.pagina-titulo', 'Portal del Gestor');
+    }
+    public function testAccessDeniedForAdminRole(): void
+    {
+        $user = $this->createUserWithRole('ROLE_ADMIN');
+        $this->client->loginUser($user);
 
+        $this->client->request('GET', '/intranet/forpas/participante');
+        $this->assertResponseRedirects('/intranet/forpas/'); // Verifica la redirección
+        $this->client->request('GET', '/intranet/forpas/formador');
+        $this->assertResponseRedirects('/intranet/forpas/'); // Verifica la redirección
+    }
+    public function testAccessFormadorWithTeacherRole(): void
+    {
+        $user = $this->createUserWithRole('ROLE_TEACHER');
+        $this->client->loginUser($user);
+
+        $this->client->request('GET', '/intranet/forpas/formador');
+        $response = $this->client->getResponse();
+
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorExists('div.pagina-titulo', 'Portal del Formador');
+    }
+    public function testAccessDeniedForTeacherRole(): void
+    {
+        $user = $this->createUserWithRole('ROLE_TEACHER');
+        $this->client->loginUser($user);
+
+        $this->client->request('GET', '/intranet/forpas/gestor');
+        $this->assertResponseRedirects('/intranet/forpas/'); // Verifica la redirección
+        $this->client->request('GET', '/intranet/forpas/participante');
+        $this->assertResponseRedirects('/intranet/forpas/'); // Verifica la redirección
     }
 }

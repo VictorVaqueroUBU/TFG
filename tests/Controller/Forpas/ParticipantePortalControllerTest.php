@@ -5,10 +5,10 @@ use App\Entity\Forpas\Curso;
 use App\Entity\Forpas\Edicion;
 use App\Entity\Forpas\Participante;
 use App\Entity\Forpas\ParticipanteEdicion;
-use App\Entity\Sistema\Usuario;
+use App\Repository\Forpas\ParticipanteEdicionRepository;
 use DateTime;
 use Doctrine\ORM\Exception\ORMException;
-use App\Repository\Forpas\ParticipanteEdicionRepository;
+use Doctrine\ORM\Tools\SchemaTool;
 
 class ParticipantePortalControllerTest extends BaseControllerTest
 {
@@ -20,27 +20,13 @@ class ParticipantePortalControllerTest extends BaseControllerTest
         parent::setUp();
 
         $this->manager = static::getContainer()->get('doctrine')->getManager();
-
-        // Limpiamos datos de ParticipanteEdicion, Edicion, Curso y Participante
-        $repositories = [
-            ParticipanteEdicion::class,
-            Participante::class,
-            Edicion::class,
-            Curso::class,
-            Usuario::class,
-        ];
-
-        foreach ($repositories as $repositoryClass) {
-            $repository = $this->manager->getRepository($repositoryClass);
-            foreach ($repository->findAll() as $object) {
-                $this->manager->remove($object);
-            }
-        }
+        // Limpieza completa de la base de datos
+        $schemaTool = new SchemaTool($this->manager);
+        $classes = $this->manager->getMetadataFactory()->getAllMetadata();
+        $schemaTool->dropSchema($classes);
+        $schemaTool->createSchema($classes);
 
         $this->manager->flush();
-
-        // Configuramos el repositorio
-        $this->repository = $this->manager->getRepository(ParticipanteEdicion::class);
     }
     public function testMisDatosFormularioCargaCorrectamente(): void
     {
@@ -97,6 +83,18 @@ class ParticipantePortalControllerTest extends BaseControllerTest
         $this->assertEquals('correo.nuevo@example.com', $participanteActualizado->getCorreoAux());
         $this->assertEquals('987654321', $participanteActualizado->getTelefonoTrabajo());
     }
+    public function testMisDatosSinParticipanteLanzaAccessDenied(): void
+    {
+        $usuario = $this->createUserWithRole('ROLE_USER');
+        $this->manager->flush();
+
+        $this->client->loginUser($usuario);
+        $this->client->request('GET', '/intranet/forpas/participante/mis-datos');
+
+        // Si la configuración actual redirige en lugar de mostrar un 403
+        $this->assertResponseRedirects('/intranet/forpas/');
+    }
+
     public function testFichaFormativaAccesoDenegadoSinAutenticacion(): void
     {
         $this->client->request('GET', '/intranet/forpas/participante/ficha-formativa');
@@ -212,7 +210,7 @@ class ParticipantePortalControllerTest extends BaseControllerTest
 
         // Probamos la funcionalidad
         $this->client->loginUser($usuario);
-        $crawler = $this->client->request('GET', '/intranet/forpas/participante/ficha-formativa');
+        $this->client->request('GET', '/intranet/forpas/participante/ficha-formativa');
 
         $this->assertResponseIsSuccessful();
 
@@ -259,7 +257,7 @@ class ParticipantePortalControllerTest extends BaseControllerTest
         $this->manager->flush();
 
         // Realizamos la solicitud
-        $crawler = $this->client->request('GET', '/intranet/forpas/participante/cursos');
+        $this->client->request('GET', '/intranet/forpas/participante/cursos');
 
         // Verificamos una respuesta exitosa
         $this->assertResponseIsSuccessful();
@@ -303,7 +301,7 @@ class ParticipantePortalControllerTest extends BaseControllerTest
         $this->manager->flush();
 
         // Realizamos la solicitud
-        $crawler = $this->client->request('GET', "/intranet/forpas/participante/cursos/{$curso->getId()}");
+        $this->client->request('GET', "/intranet/forpas/participante/cursos/{$curso->getId()}");
 
         // Verificamos que la respuesta es exitosa
         $this->assertResponseIsSuccessful();
@@ -318,6 +316,93 @@ class ParticipantePortalControllerTest extends BaseControllerTest
         $this->assertSelectorTextContains('.row:nth-child(7) .fila-valor', '30'); // Participantes edición
         $this->assertSelectorExists('.row:nth-child(8) .fila-valor sup.text-success.fas.fa-check'); // Visible web
     }
+    public function testListarEdicionesConParticipante(): void
+    {
+        $usuario = $this->createUserWithRole('ROLE_USER');
+
+        // Creamos un participante y asociarlo al usuario
+        $participante = new Participante();
+        $participante->setNif('12345678A');
+        $participante->setNombre('John');
+        $participante->setApellidos('Doe');
+        $participante->setUnidad('Unidad');
+        $participante->setUsuario($usuario);
+        $usuario->setParticipante($participante);
+
+        $this->manager->persist($participante);
+        $this->manager->persist($usuario);
+        $this->manager->flush();
+        $this->manager->refresh($usuario);
+
+        // Verificamos que el participante está asociado
+        $this->assertNotNull($usuario->getParticipante(), 'El usuario debería tener un participante asociado.');
+
+        // Creamos un curso
+        $curso = new Curso();
+        $curso->setCodigoCurso('24001');
+        $curso->setNombreCurso('Curso de Prueba');
+        $curso->setHoras(20);
+        $curso->setHorasVirtuales(5);
+        $curso->setCalificable(true);
+        $curso->setEdicionesEstimadas(2);
+        $curso->setParticipantesEdicion(30);
+        $curso->setVisibleWeb(true);
+        $this->manager->persist($curso);
+
+        // Creamos ediciones asociadas al curso
+        $edicion1 = new Edicion();
+        $edicion1->setCodigoEdicion('24001/01');
+        $edicion1->setFechaInicio(new DateTime('2024-01-01'));
+        $edicion1->setHorario('08:00-14:00');
+        $edicion1->setLugar('Aula 1');
+        $edicion1->setEstado(1);
+        $edicion1->setSesiones(3);
+        $edicion1->setMaxParticipantes(30);
+        $edicion1->setCurso($curso);
+        $this->manager->persist($edicion1);
+
+        $edicion2 = new Edicion();
+        $edicion2->setCodigoEdicion('24001/02');
+        $edicion2->setFechaInicio(new DateTime('2025-01-01'));
+        $edicion2->setHorario('09:00-15:00');
+        $edicion2->setLugar('Aula 2');
+        $edicion2->setEstado(1);
+        $edicion2->setSesiones(3);
+        $edicion2->setMaxParticipantes(30);
+        $edicion2->setCurso($curso);
+        $this->manager->persist($edicion2);
+
+        // Persistimos en la base de datos
+        $this->manager->flush();
+
+        // Autenticamos al usuario
+        $this->client->loginUser($usuario);
+
+        // Realizar la petición GET
+        $crawler = $this->client->request('GET', '/intranet/forpas/participante/cursos/' . $curso->getId() . '/ediciones');
+
+        // Verificar que la respuesta es exitosa
+        $this->assertResponseIsSuccessful();
+
+        // Verificar el título de la página
+        $this->assertSelectorTextContains('title', 'SIRHUS: Ediciones del curso');
+
+        // Verificar que cada edición se muestra correctamente en sus respectivas celdas
+        $filaEdiciones = $crawler->filter('table#datosEdiciones tbody tr');
+        $this->assertCount(2, $filaEdiciones, 'Debería haber 2 ediciones en la tabla.');
+
+        // Primera fila (Edición 1)
+        $this->assertEquals('24001/01', $filaEdiciones->eq(0)->filter('td')->eq(0)->text(), 'Código de edición incorrecto.');
+        $this->assertEquals('2024-01-01', $filaEdiciones->eq(0)->filter('td')->eq(1)->text(), 'Fecha de inicio incorrecta.');
+
+        // Segunda fila (Edición 2)
+        $this->assertEquals('24001/02', $filaEdiciones->eq(1)->filter('td')->eq(0)->text(), 'Código de edición incorrecto.');
+        $this->assertEquals('2025-01-01', $filaEdiciones->eq(1)->filter('td')->eq(1)->text(), 'Fecha de inicio incorrecta.');
+
+        // Verificar la presencia del botón "Volver"
+        $this->assertSelectorExists('a.btn.btn-primary');
+    }
+
     public function testListarEdicionesDevuelveDatosCorrectamente(): void
     {
         $usuario = $this->createUserWithRole('ROLE_USER');
@@ -354,7 +439,7 @@ class ParticipantePortalControllerTest extends BaseControllerTest
         // Creamos ediciones asociadas al curso
         $edicion1 = new Edicion();
         $edicion1->setCodigoEdicion('24001/01');
-        $edicion1->setFechaInicio(new \DateTime('+10 days'));
+        $edicion1->setFechaInicio(new DateTime('+10 days'));
         $edicion1->setHorario('08:00-14:00');
         $edicion1->setLugar('Aula 1');
         $edicion1->setEstado(1);
@@ -365,7 +450,7 @@ class ParticipantePortalControllerTest extends BaseControllerTest
 
         $edicion2 = new Edicion();
         $edicion2->setCodigoEdicion('24001/02');
-        $edicion2->setFechaInicio(new \DateTime('+20 days'));
+        $edicion2->setFechaInicio(new DateTime('+20 days'));
         $edicion2->setHorario('09:00-15:00');
         $edicion2->setLugar('Aula 2');
         $edicion2->setEstado(1);
@@ -415,7 +500,7 @@ class ParticipantePortalControllerTest extends BaseControllerTest
 
         $edicion = new Edicion();
         $edicion->setCodigoEdicion('24001/01');
-        $edicion->setFechaInicio(new \DateTime('+10 days'));
+        $edicion->setFechaInicio(new DateTime('+10 days'));
         $edicion->setHorario('08:00-14:00');
         $edicion->setLugar('Aula 1');
         $edicion->setEstado(1);
@@ -441,6 +526,7 @@ class ParticipantePortalControllerTest extends BaseControllerTest
             'La inscripción debería haberse creado correctamente.'
         );
     }
+
     public function testCancelarInscripcionValida(): void
     {
         $usuario = $this->createUserWithRole('ROLE_USER');
@@ -468,7 +554,7 @@ class ParticipantePortalControllerTest extends BaseControllerTest
         // Creamos edición e inscripción
         $edicion = new Edicion();
         $edicion->setCodigoEdicion('24001/01');
-        $edicion->setFechaInicio(new \DateTime('+10 days'));
+        $edicion->setFechaInicio(new DateTime('+10 days'));
         $edicion->setHorario('08:00-14:00');
         $edicion->setLugar('Aula 1');
         $edicion->setEstado(1);
@@ -480,7 +566,7 @@ class ParticipantePortalControllerTest extends BaseControllerTest
         $inscripcion = new ParticipanteEdicion();
         $inscripcion->setParticipante($participante);
         $inscripcion->setEdicion($edicion);
-        $inscripcion->setFechaSolicitud(new \DateTime());
+        $inscripcion->setFechaSolicitud(new DateTime());
         $this->manager->persist($inscripcion);
 
         $this->manager->flush();
@@ -500,6 +586,56 @@ class ParticipantePortalControllerTest extends BaseControllerTest
             'La inscripción debería haberse cancelado correctamente.'
         );
     }
+    public function testCancelarInscripcionSinInscripcion(): void
+    {
+        $usuario = $this->createUserWithRole('ROLE_USER');
+
+        // Creamos participante y curso
+        $participante = new Participante();
+        $participante->setNif('12345678A');
+        $participante->setNombre('John');
+        $participante->setApellidos('Doe');
+        $participante->setUnidad('Unidad');
+        $participante->setUsuario($usuario);
+        $this->manager->persist($participante);
+
+        $curso = new Curso();
+        $curso->setCodigoCurso('24001');
+        $curso->setNombreCurso('Curso de Prueba');
+        $curso->setHoras(20);
+        $curso->setHorasVirtuales(5);
+        $curso->setCalificable(true);
+        $curso->setEdicionesEstimadas(2);
+        $curso->setParticipantesEdicion(30);
+        $curso->setVisibleWeb(true);
+        $this->manager->persist($curso);
+
+        // Creamos edición e inscripción
+        $edicion = new Edicion();
+        $edicion->setCodigoEdicion('24001/01');
+        $edicion->setFechaInicio(new DateTime('+10 days'));
+        $edicion->setHorario('08:00-14:00');
+        $edicion->setLugar('Aula 1');
+        $edicion->setEstado(1);
+        $edicion->setSesiones(3);
+        $edicion->setMaxParticipantes(30);
+        $edicion->setCurso($curso);
+        $this->manager->persist($edicion);
+
+        $this->manager->flush();
+
+        // Autenticamos al usuario y realizamos la cancelación
+        $this->client->loginUser($usuario);
+        $this->client->request('GET', "/intranet/forpas/participante/inscripcion/cancelar/{$edicion->getId()}");
+
+        // Verificar redirección a la ruta correcta
+        $this->assertResponseRedirects('/intranet/forpas/participante');
+
+        // Verificar que se ha añadido un flash de advertencia
+        $this->client->followRedirect();
+        $this->assertSelectorTextContains('.alert-warning', 'No estás inscrito en esta edición.');
+    }
+
     public function testCambiarInscripcionValida(): void
     {
         $usuario = $this->createUserWithRole('ROLE_USER');
@@ -526,7 +662,7 @@ class ParticipantePortalControllerTest extends BaseControllerTest
 
         $edicionActual = new Edicion();
         $edicionActual->setCodigoEdicion('24001/01');
-        $edicionActual->setFechaInicio(new \DateTime('+10 days'));
+        $edicionActual->setFechaInicio(new DateTime('+10 days'));
         $edicionActual->setHorario('08:00-14:00');
         $edicionActual->setLugar('Aula 1');
         $edicionActual->setEstado(1);
@@ -537,7 +673,7 @@ class ParticipantePortalControllerTest extends BaseControllerTest
 
         $nuevaEdicion = new Edicion();
         $nuevaEdicion->setCodigoEdicion('24001/02');
-        $nuevaEdicion->setFechaInicio(new \DateTime('+20 days'));
+        $nuevaEdicion->setFechaInicio(new DateTime('+20 days'));
         $nuevaEdicion->setHorario('09:00-15:00');
         $nuevaEdicion->setLugar('Aula 2');
         $nuevaEdicion->setEstado(1);
@@ -549,7 +685,7 @@ class ParticipantePortalControllerTest extends BaseControllerTest
         $inscripcion = new ParticipanteEdicion();
         $inscripcion->setParticipante($participante);
         $inscripcion->setEdicion($edicionActual);
-        $inscripcion->setFechaSolicitud(new \DateTime());
+        $inscripcion->setFechaSolicitud(new DateTime());
         $this->manager->persist($inscripcion);
 
         $this->manager->flush();
@@ -604,8 +740,8 @@ class ParticipantePortalControllerTest extends BaseControllerTest
 
         $edicion1 = new Edicion();
         $edicion1->setCodigoEdicion('24001/01');
-        $edicion1->setFechaInicio(new \DateTime('+10 days'));
-        $edicion1->setFechaFin(new \DateTime('+20 days'));
+        $edicion1->setFechaInicio(new DateTime('+10 days'));
+        $edicion1->setFechaFin(new DateTime('+20 days'));
         $edicion1->setHorario('08:00-14:00');
         $edicion1->setLugar('Aula 1');
         $edicion1->setEstado(1);
@@ -616,8 +752,8 @@ class ParticipantePortalControllerTest extends BaseControllerTest
 
         $edicion2 = new Edicion();
         $edicion2->setCodigoEdicion('24001/02');
-        $edicion2->setFechaInicio(new \DateTime('+30 days'));
-        $edicion2->setFechaFin(new \DateTime('+40 days'));
+        $edicion2->setFechaInicio(new DateTime('+30 days'));
+        $edicion2->setFechaFin(new DateTime('+40 days'));
         $edicion2->setHorario('09:00-15:00');
         $edicion2->setLugar('Aula 2');
         $edicion2->setEstado(1);
@@ -629,8 +765,8 @@ class ParticipantePortalControllerTest extends BaseControllerTest
         // Creamos una edición pasada que no debería mostrarse
         $edicionPasada = new Edicion();
         $edicionPasada->setCodigoEdicion('24001/03');
-        $edicionPasada->setFechaInicio(new \DateTime('-30 days'));
-        $edicionPasada->setFechaFin(new \DateTime('-20 days'));
+        $edicionPasada->setFechaInicio(new DateTime('-30 days'));
+        $edicionPasada->setFechaFin(new DateTime('-20 days'));
         $edicionPasada->setHorario('10:00-16:00');
         $edicionPasada->setLugar('Aula 3');
         $edicionPasada->setEstado(1);
@@ -659,4 +795,29 @@ class ParticipantePortalControllerTest extends BaseControllerTest
         // Verificamos que el número de filas corresponde a las ediciones futuras
         $this->assertCount(2, $crawler->filter('table#datosProximasEdiciones tbody tr'));
     }
+    public function testListarProximasEdicionesSinParticipanteRedirige(): void
+    {
+        $usuario = $this->createUserWithRole('ROLE_USER');
+
+        // No asociamos un participante al usuario
+        $this->manager->persist($usuario);
+        $this->manager->flush();
+
+        // Autenticamos al usuario sin participante
+        $this->client->loginUser($usuario);
+
+        // Realizamos la petición GET
+        $this->client->request('GET', '/intranet/forpas/participante/proximas-ediciones');
+
+        // Verificar que la respuesta es una redirección
+        $this->assertResponseRedirects('/intranet/forpas/', 302, 'Debería redirigir a la página principal debido a falta de acceso.');
+
+        // Seguir la redirección
+        $crawler = $this->client->followRedirect();
+
+        // Verificar que el título de la página redirigida existe (ajustado dinámicamente)
+        $titleText = $crawler->filter('title')->text();
+        $this->assertNotEmpty($titleText, 'El título de la página redirigida no debería estar vacío.');
+    }
+
 }

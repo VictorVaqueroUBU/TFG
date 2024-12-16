@@ -6,7 +6,6 @@
 {% block title %}{{ titulo }}{% endblock %}
 {% block content %}
     <div class="pagina-titulo">Portal del Gestor</div>
-
     <div class="pagina-seccion">{{ titulo }}</div>
     <div class="col-md-4 mb-4">
         <div class="card">
@@ -21,17 +20,24 @@
                             Gestionar cursos
                         </a>
                     </li>
-                    {% if ediciones %}
-                        <li class="d-flex align-items-center mb-2">
-                            <a href="{{ path('intranet_forpas_gestor_edicion_index') }}"
-                               class="text-decoration-none d-flex align-items-center">
-                            <span class="me-3 d-flex justify-content-center" style="width: 30px;">
-                                <i class="fas fa-list"></i>
-                            </span>
-                                Gestionar ediciones
-                            </a>
-                        </li>
-                    {% endif %}
+                    <li class="d-flex align-items-center mb-2">
+                        <a href="{{ path('intranet_forpas_gestor_edicion_index') }}"
+                           class="text-decoration-none d-flex align-items-center">
+                        <span class="me-3 d-flex justify-content-center" style="width: 30px;">
+                            <i class="fas fa-list"></i>
+                        </span>
+                            Gestionar ediciones
+                        </a>
+                    </li>
+                    <li class="d-flex align-items-center mb-2">
+                        <a href="{{ path('intranet_forpas_gestor_edicion_remitidas') }}"
+                           class="text-decoration-none d-flex align-items-center">
+                        <span class="me-3 d-flex justify-content-center" style="width: 30px;">
+                            <i class="fas fa-file-pdf"></i>
+                        </span>
+                            Ediciones para certificar
+                        </a>
+                    </li>
                     <li class="d-flex align-items-center mb-2">
                         <a href="{{ path('intranet_forpas_gestor_participante_index') }}"
                            class="text-decoration-none d-flex align-items-center">

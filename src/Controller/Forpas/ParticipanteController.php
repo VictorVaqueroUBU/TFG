@@ -134,8 +134,10 @@ final class ParticipanteController extends AbstractController
             if ($formador) {
                 $roles = $usuario->getRoles();
                 $roles = array_filter($roles, fn($role) => $role !== 'ROLE_USER');
+                $roles = array_values($roles);
                 $usuario->setRoles($roles);
-            } else {
+            }
+            else {
                 $entityManager->remove($usuario);
             }
 

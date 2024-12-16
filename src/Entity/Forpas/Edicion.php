@@ -2,14 +2,14 @@
 
 namespace App\Entity\Forpas;
 
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use App\Repository\Forpas\EdicionRepository;
+use DateTime;
+use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use DateTimeInterface;
-use DateTime;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 #[UniqueEntity(fields: ['codigo_edicion'], message: 'El código de la edición ya existe.')]
@@ -64,10 +64,17 @@ class Edicion
     #[ORM\OneToMany(targetEntity: FormadorEdicion::class, mappedBy: 'edicion', orphanRemoval: true)]
     private Collection $formadoresEdicion;
 
+    /**
+     * @var Collection<int, Sesion>
+     */
+    #[ORM\OneToMany(targetEntity: Sesion::class, mappedBy: 'edicion', cascade: ['remove'], orphanRemoval: true)]
+    private Collection $sesionesEdicion;
+
     public function __construct()
     {
         $this->participantesEdicion = new ArrayCollection();
         $this->formadoresEdicion = new ArrayCollection();
+        $this->sesionesEdicion = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -299,6 +306,34 @@ class Edicion
         if ($this->formadoresEdicion->removeElement($formadorEdicion)) {
             if ($formadorEdicion->getEdicion() === $this) {
                 $formadorEdicion->setEdicion(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Sesion>
+     */
+    public function getSesionesEdicion(): Collection
+    {
+        return $this->sesionesEdicion;
+    }
+
+    public function addSesionesEdicion(Sesion $sesionEdicion): static
+    {
+        if (!$this->sesionesEdicion->contains($sesionEdicion)) {
+            $this->sesionesEdicion->add($sesionEdicion);
+        }
+
+        return $this;
+    }
+
+    public function removeSesionesEdicion(Sesion $sesionEdicion): static
+    {
+        if ($this->sesionesEdicion->removeElement($sesionEdicion)) {
+            if ($sesionEdicion->getEdicion() === $this) {
+                $sesionEdicion->setEdicion(null);
             }
         }
 

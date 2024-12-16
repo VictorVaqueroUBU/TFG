@@ -20,16 +20,10 @@ abstract class BaseControllerTest extends WebTestCase
     }
     protected function createUserWithRole(string $role): Usuario
     {
-        $username = 'test_user_' . strtolower($role); // Nombre único basado en el rol
-        $userRepository = $this->manager->getRepository(Usuario::class);
+        // Genera un sufijo único (timestamp o un random ID)
+        $uniqueSuffix = bin2hex(random_bytes(4));
+        $username = 'test_user_' . strtolower($role) . '_' . $uniqueSuffix;
 
-        // Busca si el usuario ya existe
-        $existingUser = $userRepository->findOneBy(['username' => $username]);
-        if ($existingUser) {
-            return $existingUser;
-        }
-
-        // Crea un nuevo usuario
         $user = new Usuario();
         $user->setEmail($username . '@example.com');
         $user->setUsername($username);

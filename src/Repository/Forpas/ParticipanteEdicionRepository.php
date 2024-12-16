@@ -4,9 +4,10 @@ namespace App\Repository\Forpas;
 
 use App\Entity\Forpas\Participante;
 use App\Entity\Forpas\ParticipanteEdicion;
+use App\Entity\Forpas\Edicion;
+use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
-use DateTime;
 
 /**
  * @extends ServiceEntityRepository<ParticipanteEdicion>
@@ -47,7 +48,7 @@ class ParticipanteEdicionRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('pe')
             ->join('pe.edicion', 'e')
             ->where('pe.participante = :participante')
-            ->andWhere('pe.certificado = true')
+            ->andWhere("pe.certificado = 'S'")
             ->setParameter('participante', $participante)
             ->getQuery()
             ->getResult();
@@ -64,7 +65,7 @@ class ParticipanteEdicionRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('pe')
             ->join('pe.edicion', 'e')
             ->where('pe.participante = :participante')
-            ->andWhere('pe.certificado IS NULL OR pe.certificado != true')
+            ->andWhere("pe.certificado IS NULL OR pe.certificado != 'S'")
             ->andWhere('e.fecha_inicio < :now')
             ->setParameter('participante', $participante)
             ->setParameter('now', new DateTime())
@@ -72,6 +73,44 @@ class ParticipanteEdicionRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    /**
+     * Método para encontrar el número del título más alto en un libro específico.
+     *
+     * @param string $libro El año del curso sobre el cual se busca el número de título máximo.
+     * @return int|null El número de título máximo encontrado en el libro, o `null` si no existe ningún título.
+     */
+    public function findMaxNumeroTituloByLibro(string $libro): ?int
+    {
+        return $this->createQueryBuilder('pe')
+            ->select('MAX(pe.numero_titulo) as maxTitulo')
+            ->where('pe.libro = :libro')
+            ->setParameter('libro', $libro)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    /**
+     * Método para contar las calificaciones de los participantes en una edición específica.
+     *
+     * @param Edicion $edicion La edición sobre la que se quieren contar las calificaciones.
+     * @return array{aptos: int, noAptos: int, noPresentados: int} Un array asociativo con las siguientes claves:
+     *               - `aptos`: Número de participantes marcados como aptos (apto = 1).
+     *               - `noAptos`: Número de participantes marcados como no aptos (apto = 0).
+     *               - `noPresentados`: Número de participantes marcados como no presentados (apto = -1).
+     */
+    public function contarCalificaciones(Edicion $edicion): array
+    {
+        $qb = $this->createQueryBuilder('pe')
+            ->select(
+                'SUM(CASE WHEN pe.apto = 1 THEN 1 ELSE 0 END) as aptos',
+                'SUM(CASE WHEN pe.apto = 0 THEN 1 ELSE 0 END) as noAptos',
+                'SUM(CASE WHEN pe.apto = -1 THEN 1 ELSE 0 END) as noPresentados'
+            )
+            ->where('pe.edicion = :edicion')
+            ->setParameter('edicion', $edicion);
+
+        return $qb->getQuery()->getSingleResult();
+    }
     //    /**
     //     * @return ParticipanteEdicion[] Returns an array of ParticipanteEdicion objects
     //     */

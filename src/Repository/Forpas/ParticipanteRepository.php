@@ -27,13 +27,8 @@ class ParticipanteRepository extends ServiceEntityRepository
      */
     public function findPossibleEntries(Edicion $edicion): array
     {
-        // Obtener el ID del curso de la edición actual
         $cursoId = $edicion->getCurso()->getId();
-
-        // Crear el QueryBuilder principal
         $qb = $this->createQueryBuilder('p');
-
-        // Crear una subconsulta para filtrar participantes inscritos en el curso actual
         $subQuery = $this->getEntityManager()->createQueryBuilder()
             ->select('1')
             ->from(ParticipanteEdicion::class, 'pe')
@@ -41,7 +36,6 @@ class ParticipanteRepository extends ServiceEntityRepository
             ->where('pe.participante = p.id')
             ->andWhere('e.curso = :cursoId');
 
-        // Construir la consulta principal usando el QueryBuilder
         return $qb
             ->where('p.unidad IS NOT NULL')
             ->andWhere(
@@ -51,8 +45,6 @@ class ParticipanteRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
-
-
 
     //    /**
     //     * @return Participante[] Returns an array of Participante objects

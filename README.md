@@ -15,20 +15,41 @@ Este proyecto es una aplicación web desarrollada en **Symfony** para la gestió
 - Gestión de formadores: gestión de formadores y su asignación a ediciones con datos específicos como gestión de retribuciones y evaluaciones por parte de los alumnos.
 
 <p align="left">
-   <img src="assets/images/gestor.png" alt="Portal del Gestor" width="800">
+   <img src="assets/images/login.png" alt="Portal del Gestor" width="800">
+</p>
+
+<p align="left">
+   <img src="assets/images/portales.png" alt="Portal del Gestor" width="800">
 </p>
 
 <p align="left">
    <img src="assets/images/cursos.png" alt="Portal del Gestor" width="800">
 </p>
 
-<p align="left">
-   <img src="assets/images/ediciones.png" alt="Portal del Gestor" width="800">
-</p>
+---
+## Cambios en el Sprint Actual
 
+### Funcionalidades añadidas:
+- **Portal del Formador**:
+  - Visualización de ediciones abiertas y cerradas asignadas al formador.
+  - Gestión de sesiones: creación de sesiones con fecha, hora de inicio, duración y tipo (presencial o virtual).
+  - Registro de asistencia y calificación de participantes.
+  - Validación del estado de las ediciones, sesiones y calificaciones, si las hubiera.
+- **Portal del Gestor**:
+  - Nueva herramienta de certificaciones de ediciones.
+
+- **Pruebas Unitarias y Calidad del Código**:
+  - Implementación de pruebas para nuevas entidades y controladores.
+  - Código validado con **PHPStan** para asegurar estándares de calidad.
+
+### Pruebas realizadas:
+- **PHPUnit**:
+  - 107 pruebas unitarias pasadas exitosamente, con 483 aserciones.
+- **PHPStan**:
+  - Código analizado y corregido sin errores.
 ---
 
-## Cambios en el Sprint Actual
+## Cambios en el Sprint Anterior
 
 ### Funcionalidades añadidas:
 - Gestión de usuarios con roles: implementación del sistema de roles para administradores, participantes y formadores.

@@ -3,14 +3,13 @@
 <!-- https://phpunit.readthedocs.io/en/latest/configuration.html -->
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
-         backupGlobals="false"
-         colors="true"
          bootstrap="tests/bootstrap.php"
          convertDeprecationsToExceptions="false"
 >
     <php>
         <ini name="display_errors" value="1" />
         <ini name="error_reporting" value="-1" />
+        <ini name="memory_limit" value="256M"/>
         <server name="APP_ENV" value="test" force="true" />
         <server name="SHELL_VERBOSITY" value="-1" />
         <server name="SYMFONY_PHPUNIT_REMOVE" value="" />
@@ -32,8 +31,8 @@
             <directory suffix=".php">src</directory>
         </include>
         <report>
-            <html outputDirectory="tests/coverage-report" />
-            <text outputFile="tests/coverage-report/coverage.txt" />
+            <html outputDirectory="report/coverage-report" />
+            <text outputFile="coverage.txt" />
         </report>
     </coverage>
 

@@ -6,9 +6,11 @@ use App\Entity\Forpas\Curso;
 use App\Entity\Forpas\Edicion;
 use App\Entity\Forpas\Formador;
 use App\Entity\Forpas\Participante;
+use App\Entity\Forpas\ParticipanteEdicion;
 use App\Entity\Sistema\Usuario;
 use DateTime;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\Tools\SchemaTool;
 
 final class ParticipanteControllerTest extends BaseControllerTest
 {
@@ -21,21 +23,12 @@ final class ParticipanteControllerTest extends BaseControllerTest
     {
         parent::setUp(); // Llama al setUp de la clase base
 
-        // Limpiamos datos de ParticipanteEdicion, Edicion, Curso y Participante
-        $repositories = [
-            Edicion::class,
-            Curso::class,
-            Participante::class,
-            Formador::class,
-            Usuario::class,
-        ];
-
-        foreach ($repositories as $repositoryClass) {
-            $repository = $this->manager->getRepository($repositoryClass);
-            foreach ($repository->findAll() as $object) {
-                $this->manager->remove($object);
-            }
-        }
+        $this->manager = static::getContainer()->get('doctrine')->getManager();
+        // Limpieza completa de la base de datos
+        $schemaTool = new SchemaTool($this->manager);
+        $classes = $this->manager->getMetadataFactory()->getAllMetadata();
+        $schemaTool->dropSchema($classes);
+        $schemaTool->createSchema($classes);
 
         $this->manager->flush();
 
@@ -52,6 +45,39 @@ final class ParticipanteControllerTest extends BaseControllerTest
         self::assertResponseStatusCodeSame(200);
         self::assertPageTitleContains('Listado de Participantes');
     }
+    public function testFind(): void
+    {
+        // Creamos un usuario
+        $usuario = $this->createUserWithRole('ROLE_USER');
+
+        // Creamos un participante asociado a este usuario
+        $participante = new Participante();
+        $participante->setNif('99999999Z');
+        $participante->setNombre('Carlos');
+        $participante->setApellidos('Fernández');
+        $participante->setOrganizacion('Organización de Prueba');
+        $participante->setUsuario($usuario);
+        $participante->setUnidad('Unidad de prueba');
+        $this->manager->persist($participante);
+
+        $this->manager->flush();
+
+        // Hacemos la petición GET a la ruta find de Participante
+        $this->client->request('GET', '/intranet/forpas/gestor/participante/find');
+
+        // Verificamos que la respuesta es exitosa (200)
+        self::assertResponseStatusCodeSame(200);
+
+        // Verificamos que la página contiene el título definido en defaults['titulo']
+        self::assertPageTitleContains('Listado de Participantes');
+
+        // Opcional: Comprobamos que el participante recién creado aparece en el HTML
+        $responseContent = $this->client->getResponse()->getContent();
+        self::assertStringContainsString('Carlos', $responseContent);
+        self::assertStringContainsString('Fernández', $responseContent);
+        self::assertStringContainsString('99999999Z', $responseContent);
+    }
+
     public function testNew(): void
     {
         // Caso 1: Creamos un Participante desde un Formador válido
@@ -79,6 +105,34 @@ final class ParticipanteControllerTest extends BaseControllerTest
         $participantes = $this->repository->findBy(['usuario' => $usuario]);
         $this->assertCount(1, $participantes, 'No debería haber duplicados de Participante para el mismo Usuario.');
     }
+    public function testNew2(): void
+    {
+    // Creamos un usuario sin el rol ROLE_USER, por ejemplo con ROLE_ADMIN
+    $usuario = $this->createUserWithRole('ROLE_ADMIN');
+
+    $formador = new Formador();
+    $formador->setNif('87654321B');
+    $formador->setNombre('María');
+    $formador->setApellidos('López');
+    $formador->setUsuario($usuario);
+    $formador->setOrganizacion('Otra organización');
+
+    $this->manager->persist($formador);
+    $this->manager->flush();
+
+        // Al acceder a la ruta new, el código intentará añadir ROLE_USER al usuario si no lo tiene
+    $this->client->request('GET', $this->path . 'new/' . $formador->getId());
+
+        // Verificamos que se ha creado el participante
+    $participante = $this->repository->findOneBy(['usuario' => $usuario]);
+    $this->assertNotNull($participante, 'El Participante debería haber sido creado.');
+
+        // Comprobamos que ahora el usuario tiene ROLE_USER
+    $roles = $usuario->getRoles();
+    $this->assertContains('ROLE_USER', $roles, 'El usuario debería tener el rol ROLE_USER agregado.');
+
+    $this->assertResponseRedirects('/intranet/forpas/gestor/participante/', 303);
+}
     public function testShow(): void
     {
         // Creamos un usuario para asociar al formador
@@ -266,6 +320,118 @@ final class ParticipanteControllerTest extends BaseControllerTest
         self::assertResponseRedirects('/intranet/forpas/gestor/participante/', 303);
         self::assertSame(0, $this->repository->count([]));
     }
+    public function testRemoveWithEdicionesAsociadas(): void
+    {
+        $usuario = $this->createUserWithRole('ROLE_USER');
+
+        // Creamos el Participante
+        $participante = new Participante();
+        $participante->setNif('11111111A');
+        $participante->setNombre('Nombre Participante');
+        $participante->setApellidos('Apellidos Participante');
+        $participante->setOrganizacion('Organización');
+        $participante->setUnidad('Unidad');
+        $participante->setUsuario($usuario);
+        $this->manager->persist($participante);
+
+        // Creamos un Curso y una Edición
+        $curso = new Curso();
+        $curso->setCodigoCurso('25001');
+        $curso->setNombreCurso('Curso con Ediciones');
+        $curso->setHoras(20);
+        $curso->setParticipantesEdicion(20);
+        $curso->setEdicionesEstimadas(1);
+        $curso->setVisibleWeb(true);
+        $curso->setHorasVirtuales(0);
+        $curso->setCalificable(true);
+        $this->manager->persist($curso);
+
+        $edicion = new Edicion();
+        $edicion->setCodigoEdicion('25001/01');
+        $edicion->setEstado(0);
+        $edicion->setSesiones(2);
+        $edicion->setMaxParticipantes(20);
+        $edicion->setCurso($curso);
+        $this->manager->persist($edicion);
+
+        $this->manager->flush();
+
+        // Ahora creamos la entidad ParticipanteEdicion asociando el Participante con la Edición
+        $participanteEdicion = new ParticipanteEdicion();
+        $participanteEdicion->setParticipante($participante);
+        $participanteEdicion->setEdicion($edicion);
+        $participanteEdicion->setFechaSolicitud(new DateTime('2024-01-01'));
+        $this->manager->persist($participanteEdicion);
+        $this->manager->flush();
+
+        // Intentamos eliminar el participante que tiene ediciones asociadas
+        $this->client->request('GET', sprintf('%s%s', $this->path, $participante->getId()));
+        $this->client->submitForm('Eliminar');
+
+        // Deberíamos ser redirigidos sin eliminar al participante
+        self::assertResponseRedirects('/intranet/forpas/gestor/participante/');
+
+        $this->client->followRedirect();
+        $responseContent = $this->client->getResponse()->getContent();
+        self::assertStringContainsString('No se puede eliminar al participante porque tiene ediciones asociadas.', $responseContent);
+
+        // Verificamos que el participante sigue existiendo en la base de datos
+        $this->manager->clear();
+        $stillExists = $this->manager->getRepository(Participante::class)->find($participante->getId());
+        self::assertNotNull($stillExists, 'El participante no debería haberse eliminado.');
+    }
+
+
+    public function testRemoveWithFormadorAsociado(): void
+    {
+        // Creamos un usuario sin ROLE_USER, por ejemplo con ROLE_ADMIN (para ver el cambio de roles)
+        $usuario = $this->createUserWithRole('ROLE_ADMIN');
+
+        // Creamos el Participante
+        $participante = new Participante();
+        $participante->setNif('22222222B');
+        $participante->setNombre('Participante con Formador');
+        $participante->setApellidos('Test');
+        $participante->setOrganizacion('Org');
+        $participante->setUnidad('Unidad');
+        $participante->setUsuario($usuario);
+        $this->manager->persist($participante);
+
+        // Creamos el Formador asociado al mismo usuario
+        $formador = new Formador();
+        $formador->setNif('22222222B');
+        $formador->setNombre('Formador');
+        $formador->setApellidos('Asociado');
+        $formador->setOrganizacion('Org');
+        $formador->setUsuario($usuario);
+        $this->manager->persist($formador);
+
+        $this->manager->flush();
+
+        // Ahora eliminamos el participante
+        $this->client->request('GET', sprintf('%s%s', $this->path, $participante->getId()));
+        $this->client->submitForm('Eliminar');
+
+        // Verificamos la redirección
+        self::assertResponseRedirects('/intranet/forpas/gestor/participante/');
+
+        // Seguimos la redirección
+        $this->client->followRedirect();
+        $responseContent = $this->client->getResponse()->getContent();
+        self::assertStringContainsString('Participante eliminado correctamente.', $responseContent);
+
+        // Verificamos que el participante se ha eliminado
+        $this->manager->clear();
+        $stillExists = $this->manager->getRepository(Participante::class)->find($participante->getId());
+        self::assertNull($stillExists, 'El participante debería haberse eliminado.');
+
+        // Ahora verificamos que el usuario sigue existiendo (por el Formador), 
+        // pero sin ROLE_USER
+        $updatedUsuario = $this->manager->getRepository(Usuario::class)->find($usuario->getId());
+        self::assertNotNull($updatedUsuario, 'El usuario no debería haberse eliminado, ya que hay un formador asociado.');
+        self::assertNotContains('ROLE_USER', $updatedUsuario->getRoles(), 'El ROLE_USER debería haberse eliminado de los roles del usuario.');
+    }
+
     public function testAppend(): void
     {
         $usuario = $this->createUserWithRole('ROLE_USER');

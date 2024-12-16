@@ -4,8 +4,9 @@ namespace App\Tests\Controller\Forpas;
 
 use App\Entity\Forpas\Curso;
 use App\Entity\Forpas\Edicion;
-use App\Entity\Sistema\Usuario;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\Tools\SchemaTool;
+use DateTime;
 
 final class CursoControllerTest extends BaseControllerTest
 {
@@ -16,21 +17,14 @@ final class CursoControllerTest extends BaseControllerTest
     private string $path = '/intranet/forpas/gestor/curso/';
     protected function setUp(): void
     {
-        parent::setUp(); // Llama al setUp de la clase base
+        parent::setUp();
 
-        // Limpiamos datos de Edición, Curso y Usuario.
-        $repositories = [
-            Edicion::class,
-            Curso::class,
-            Usuario::class,
-        ];
-
-        foreach ($repositories as $repositoryClass) {
-            $repository = $this->manager->getRepository($repositoryClass);
-            foreach ($repository->findAll() as $object) {
-                $this->manager->remove($object);
-            }
-        }
+        $this->manager = static::getContainer()->get('doctrine')->getManager();
+        // Limpieza completa de la base de datos
+        $schemaTool = new SchemaTool($this->manager);
+        $classes = $this->manager->getMetadataFactory()->getAllMetadata();
+        $schemaTool->dropSchema($classes);
+        $schemaTool->createSchema($classes);
 
         $this->manager->flush();
 
@@ -196,6 +190,60 @@ final class CursoControllerTest extends BaseControllerTest
         self::assertResponseRedirects('/intranet/forpas/gestor/curso/');
         self::assertSame(0, $this->repository->count([]));
     }
+    public function testRemoveWithEdicionesAsociadas(): void
+    {
+        $curso = new Curso();
+        $curso->setCodigoCurso('Value');
+        $curso->setNombreCurso('Value');
+        $curso->setHoras(20);
+        $curso->setObjetivos('Value');
+        $curso->setContenidos('Value');
+        $curso->setDestinatarios('Value');
+        $curso->setRequisitos('Value');
+        $curso->setJustificacion('Value');
+        $curso->setCoordinador('Value');
+        $curso->setParticipantesEdicion(20);
+        $curso->setEdicionesEstimadas(2);
+        $curso->setPlazoSolicitud('Value');
+        $curso->setObservaciones('Value');
+        $curso->setVisibleWeb(true);
+        $curso->setHorasVirtuales(20);
+        $curso->setCalificable(true);
+
+        $this->manager->persist($curso);
+
+        // Creamos una edición asociada al curso
+        $edicion = new Edicion();
+        $edicion->setCodigoEdicion('ValueEdicion');
+        $edicion->setFechaInicio(new DateTime('2024-01-01'));
+        $edicion->setFechaFin(new DateTime('2024-01-02'));
+        $edicion->setCalendario('Calendario test');
+        $edicion->setHorario('Horario test');
+        $edicion->setLugar('Lugar test');
+        $edicion->setEstado(0);
+        $edicion->setSesiones(2);
+        $edicion->setMaxParticipantes(20);
+        $edicion->setCurso($curso);
+
+        $this->manager->persist($edicion);
+        $this->manager->flush();
+
+        // Ahora intentamos eliminar el curso con ediciones asociadas
+        $this->client->request('GET', sprintf('%s%s', $this->path, $curso->getId()));
+        $this->client->submitForm('Eliminar');
+
+        // Comprobamos el redirect
+        self::assertResponseRedirects('/intranet/forpas/gestor/curso/');
+
+        // Seguimos el redirect y comprobamos el mensaje flash
+        $this->client->followRedirect();
+        $responseContent = $this->client->getResponse()->getContent();
+        self::assertStringContainsString('No se puede eliminar el curso porque tiene ediciones creadas.', $responseContent);
+
+        // El curso no debe haberse eliminado
+        self::assertSame(1, $this->repository->count([]));
+    }
+
     public function testAddEdiciones(): void
     {
         $curso = new Curso();

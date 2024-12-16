@@ -1,0 +1,92 @@
+{% extends 'intranet/forpas/formador/index.html.twig' %}
+{% block migas %}
+    {{ parent() }}
+    <li class="breadcrumb-item">
+        <a href="{{ path('intranet_forpas_formador_mis_ediciones') }}">Ediciones Asignadas</a>
+    </li>
+    <li class="breadcrumb-item">
+        <a href="{{ path('intranet_forpas_formador_mis_ediciones_show', {'id': edicion.id} ) }}">{{ edicion.codigoEdicion }}</a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page">{{ titulo }}</li>
+{% endblock %}
+{% block title %}{{ titulo }}{% endblock %}
+
+{% block content %}
+    <div class="pagina-titulo">Portal del Formador</div>
+
+    <div class="pagina-seccion">{{ titulo }}</div>
+
+    {{ form_start(form) }}
+    <table class="tabla-condensada" id="datosCalificaciones">
+        <thead class="cabecera-condensada">
+        <tr>
+            <th>Participante</th>
+            <th>Apto</th>
+            <th>No Apto</th>
+            <th>No Presentado</th>
+            <th>Nota</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for i, participanteEdicion in participantesEdicion %}
+            <tr>
+                <td>{{ participanteEdicion.participante.nombre }} {{ participanteEdicion.participante.apellidos }}</td>
+                <td>{{ form_widget(form['calificaciones_' ~ loop.index0].apto.0) }}</td>
+                <td>{{ form_widget(form['calificaciones_' ~ loop.index0].apto.1) }}</td>
+                <td>{{ form_widget(form['calificaciones_' ~ loop.index0].apto.2) }}</td>
+                <td>{{ form_widget(form['calificaciones_' ~ loop.index0].pruebaFinal) }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Botón "Volver" -->
+    <a class="btn btn-primary" href="{{ path('intranet_forpas_formador_mis_ediciones_show', {'id': edicion.id}) }}">
+        <span class="fas fa-reply"></span> Volver
+    </a>
+    {% if edicion.estado == 0 %}
+        <!-- Botón "Guardar" -->
+        <button class="btn btn-primary">
+            <span class="fas fa-save"></span> {{ button_label|default('Guardar') }}
+        </button>
+    {% endif %}
+    {{ form_end(form) }}
+{% endblock %}
+
+{% block js %}
+    {{ parent() }}
+    <script type="module">
+        $(function () {
+            $('#datosCalificaciones').dataTable({
+                buttons: [
+                    {
+                        extend: 'copy',
+                        text: '<i class="fas fa-copy"></i>',
+                        titleAttr: 'Copiar',
+                    },
+                    {
+                        extend: 'print',
+                        text: '<i class="fas fa-print"></i>',
+                        titleAttr: 'Imprimir',
+                    },
+                    {
+                        extend: 'csv',
+                        text: '<i class="fas fa-file-csv"></i>',
+                        titleAttr: 'Generar fichero CSV',
+                    },
+                    {
+                        extend: 'excelHtml5',
+                        text: '<i class="fas fa-file-excel"></i>',
+                        titleAttr: 'Generar fichero Excel',
+                    },
+                ],
+                dom: '<"row"<"col-sm-12 col-md-4"B><"col-sm-12 col-md-4"l><"col-sm-12 col-md-4"f>>' +
+                    '<"row"<"col-sm-12"<"table-responsive"tr>>>' +
+                    '<"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
+                language: {
+                    url: '{{ asset("includes/datatable.es.json") }}'
+                },
+            });
+        });
+    </script>
+{% endblock %}

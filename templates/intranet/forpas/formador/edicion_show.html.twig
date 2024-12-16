@@ -1,0 +1,205 @@
+{% extends 'intranet/forpas/formador/index.html.twig' %}
+{% block migas %}
+    {{ parent() }}
+    <li class="breadcrumb-item">
+        <a href="{{ path('intranet_forpas_formador_mis_ediciones') }}">Ediciones Asignadas</a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page">{{ edicion.codigoEdicion }}</li>
+{% endblock %}
+{% block title %}{{ titulo }}{% endblock %}
+{% block content %}
+    <div class="pagina-titulo">Portal del Formador</div>
+    <div class="pagina-seccion">{{ titulo }}</div>
+
+    <div class="container-fluid g-4">
+        <div class="row py-2">
+            <div class="fila-campo">Edición: </div>
+            <div class="fila-valor">{{ edicion.codigoEdicion ~ ': ' ~ edicion.curso.nombreCurso }}</div>
+        </div>
+        <div class="row py-2">
+            <div class="fila-campo">Calendario: </div>
+            <div class="fila-valor">{{ edicion.calendario }}</div>
+        </div>
+        <div class="row py-2">
+            <div class="fila-campo">Horario: </div>
+            <div class="fila-valor">{{ edicion.horario }}</div>
+        </div>
+        <div class="row py-2">
+            <div class="fila-campo">Lugar: </div>
+            <div class="fila-valor">{{ edicion.lugar }}</div>
+        </div>
+        <div class="row py-2">
+            <div class="fila-campo">Sesiones Grabadas / Totales: </div>
+            <div class="fila-valor">
+                {{ sesionesGrabadas ~ ' / ' ~ edicion.sesiones }}
+                {% if sesionesGrabadas == edicion.sesiones %}
+                    <sup class="text-success fas fa-check"></sup>
+                {% else %}
+                    <sup class="text-danger fas fa-times"></sup>
+                {% endif %}
+            </div>
+        </div>
+        <div class="row py-2">
+            <div class="fila-campo">Horas Grabadas / Totales: </div>
+            <div class="fila-valor">
+                {{ (horasGrabadas // 60) }}h
+                {% if (horasGrabadas % 60) > 0 %}
+                    {{ ' ' ~ (horasGrabadas % 60) ~ 'm ' }}
+                {% else %}
+                    {{ ' ' }}
+                {% endif %}
+                / {{ edicion.curso.horas }}h
+                {% if (horasGrabadas // 60) == edicion.curso.horas %}
+                    <sup class="text-success fas fa-check"></sup>
+                {% else %}
+                    <sup class="text-danger fas fa-times"></sup>
+                {% endif %}
+            </div>
+        </div>
+        <div class="row py-2">
+            <div class="fila-campo">Virtuales Grab / V. Totales: </div>
+            <div class="fila-valor">
+                {{ (horasVirtualesGrabadas // 60) }}h
+                {% if (horasVirtualesGrabadas % 60) > 0 %}
+                    {{ ' ' ~ (horasVirtualesGrabadas % 60) ~ 'm ' }}
+                {% else %}
+                    {{ ' ' }}
+                {% endif %}
+                / {{ edicion.curso.horasVirtuales }}h
+                {% if (horasVirtualesGrabadas // 60) == edicion.curso.horasVirtuales %}
+                    <sup class="text-success fas fa-check"></sup>
+                {% else %}
+                    <sup class="text-danger fas fa-times"></sup>
+                {% endif %}
+            </div>
+        </div>
+        {% if edicion.curso.calificable %}
+            <div class="row py-2">
+                <div class="fila-campo">Aptos / No Aptos / NP: </div>
+                <div class="fila-valor">{{ calificaciones.aptos }} / {{ calificaciones.noAptos }} / {{ calificaciones.noPresentados }}
+                    {% if calificacionesCompletas %}
+                        <sup class="text-success fas fa-check"></sup>
+                    {% else %}
+                        <sup class="text-danger fas fa-times"></sup>
+                    {% endif %}
+                </div>
+            </div>
+        {% endif %}
+    </div>
+
+    <table class="tabla-condensada" id="datosSesiones">
+        <thead class="cabecera-condensada">
+        <tr>
+            <th>Fecha de la sesión</th>
+            <th>Hora Inicio</th>
+            <th>Duración</th>
+            <th>Tipo de Sesión</th>
+            <th>Asistentes</th>
+            <th>Acciones</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for sesion in edicion.sesionesEdicion %}
+            {% set horas = sesion.duracion // 60 %}
+            {% set minutos = sesion.duracion % 60 %}
+            <tr>
+                <td>{{ sesion.fecha|date('d-m-Y') }}</td>
+                <td>{{ sesion.horaInicio|date('H:i') }}</td>
+                <td>
+                    {{ horas }}h
+                    {% if minutos > 0 %}
+                        {{ minutos }}m
+                    {% endif %}
+                </td>
+                <td>{% if sesion.tipo == 0 %}Presencial{% else %}Virtual{% endif %}</td>
+                <td>
+                    {{ sessionsAsistencias[sesion.id]|default(0) }} / {{ edicion.participantesEdicion|length }}
+                    {% if (sessionJustifica[sesion.id]|default(0)) > 0 %}
+                        - ({{ sessionJustifica[sesion.id]|default(0) }} Justifica/n)
+                    {% endif %}
+                </td>
+                <td>
+                    <a href="{{ path('intranet_forpas_formador_sesion_fillIn', {'id': sesion.id}) }}" title="Asistencia">
+                        <span class="fas fa-eye"></span>
+                    </a>
+                    {% if edicion.estado == 0 %}
+                        <a href="{{ path('intranet_forpas_formador_sesion_edit', {'id': sesion.id}) }}" title="Editar">
+                            <span class="fas fa-edit"></span>
+                        </a>
+                        {{ include('intranet/forpas/formador/_delete_form.html.twig', { 'id': sesion.id, 'buttonType': 'inline' }) }}
+                    {% endif %}
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td>No hay sesiones creadas.</td><td></td><td></td><td></td><td></td><td></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
+
+{% block botones %}
+    {% if sesionesGrabadas < edicion.sesiones and horasGrabadas < edicion.curso.horas * 60 %}
+        <li class="nav-item me-2">
+            <a class="btn btn-primary" href="{{ path('intranet_forpas_formador_sesion_new', {'edicionId': edicion.id}) }}">
+                <span class="fas fa-plus"></span> Crear Sesión
+            </a>
+        </li>
+    {% elseif edicion.estado == 0 and (edicion.curso.calificable == false or calificacionesCompletas) %}
+        <li class="nav-item me-2">
+            <form method="POST"
+                  action="{{ path('intranet_forpas_formador_mis_ediciones_remitir', {'id': edicion.id}) }}"
+                  onsubmit="return confirm('¿Está seguro que desea finalizar la introducción de datos y enviarlos para su revisión?');">
+                <button type="submit" class="btn btn-primary">
+                    <span class="fas fa-upload"></span> Remitir Datos
+                </button>
+            </form>
+        </li>
+    {% endif %}
+    {% if edicion.curso.calificable == 1 %}
+        <li class="nav-item me-2">
+            <a class="btn btn-primary" href="{{ path('intranet_forpas_formador_calificaciones', {'id': edicion.id}) }}">
+                <span class="fas fa-plus"></span> Calificaciones
+            </a>
+        </li>
+    {% endif %}
+{% endblock %}
+
+{% block js %}
+    {{ parent() }}
+    <script type="module">
+        $(function () {
+            $('#datosSesiones').dataTable({
+                buttons: [
+                    {
+                        extend: 'copy',
+                        text: '<i class="fas fa-copy"></i>',
+                        titleAttr: 'Copiar',
+                    },
+                    {
+                        extend: 'print',
+                        text: '<i class="fas fa-print"></i>',
+                        titleAttr: 'Imprimir',
+                    },
+                    {
+                        extend: 'csv',
+                        text: '<i class="fas fa-file-csv"></i>',
+                        titleAttr: 'Generar fichero CSV',
+                    },
+                    {
+                        extend: 'excelHtml5',
+                        text: '<i class="fas fa-file-excel"></i>',
+                        titleAttr: 'Generar fichero Excel',
+                    },
+                ],
+                dom: '<"row"<"col-sm-12 col-md-4"B><"col-sm-12 col-md-4"l><"col-sm-12 col-md-4"f>>' +
+                    '<"row"<"col-sm-12"<"table-responsive"tr>>>' +
+                    '<"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
+                language: {
+                    url: '{{ asset("includes/datatable.es.json") }}'
+                },
+            });
+        });
+    </script>
+{% endblock %}

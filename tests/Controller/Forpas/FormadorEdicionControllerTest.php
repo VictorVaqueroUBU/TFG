@@ -6,11 +6,9 @@ use App\Entity\Forpas\Curso;
 use App\Entity\Forpas\Edicion;
 use App\Entity\Forpas\Formador;
 use App\Entity\Forpas\FormadorEdicion;
-use App\Entity\Sistema\Usuario;
 use DateTime;
 use Doctrine\ORM\EntityRepository;
-use Symfony\Component\BrowserKit\Cookie;
-use Symfony\Component\HttpFoundation\Request;
+use Doctrine\ORM\Tools\SchemaTool;
 
 final class FormadorEdicionControllerTest extends BaseControllerTest
 {
@@ -23,37 +21,14 @@ final class FormadorEdicionControllerTest extends BaseControllerTest
     {
         parent::setUp(); // Llama al setUp de la clase base
 
-        // Creamos una sesión activa
-        $session = static::getContainer()->get('session.factory')->createSession();
-        $session->start();
-
-        // Creamos una solicitud simulada con la sesión activa
-        $request = new Request();
-        $request->setSession($session);
-        static::getContainer()->get('request_stack')->push($request);
-
-        // Añadimos la cookie de sesión al cliente
-        $cookieJar = $this->client->getCookieJar();
-        $cookieJar->set(new Cookie($session->getName(), $session->getId()));
-
         $this->manager = static::getContainer()->get('doctrine')->getManager();
 
-        // Limpiamos datos de FormadorEdicion, Edicion, Curso y Formador
-        $repositories = [
-            FormadorEdicion::class,
-            Formador::class,
-            Edicion::class,
-            Curso::class,
-            Usuario::class,
-        ];
+        // Limpieza completa de la base de datos
+        $schemaTool = new SchemaTool($this->manager);
+        $classes = $this->manager->getMetadataFactory()->getAllMetadata();
+        $schemaTool->dropSchema($classes);
+        $schemaTool->createSchema($classes);
 
-        foreach ($repositories as $repositoryClass) {
-            $repository = $this->manager->getRepository($repositoryClass);
-            foreach ($repository->findAll() as $object) {
-                $this->manager->remove($object);
-            }
-        }
-        $this->manager->flush();
         // Creamos y autenticamos un usuario por defecto
         $this->client->loginUser($this->createUserWithRole('ROLE_ADMIN'));
         // Asignamos el repositorio de FormadorEdicion para los tests
@@ -290,13 +265,14 @@ final class FormadorEdicionControllerTest extends BaseControllerTest
         $actualizado = $this->repository->find($formadorEdicion->getId());
         self::assertSame('Nueva observación', $actualizado->getObservaciones());
     }
-    public function testRemoveSuccess(): void
+    public function testFormadorEdicionDelete(): void
     {
-        $usuario = $this->createUserWithRole('ROLE_USER');
-        // Creamos la entidad Curso
+        $usuario = $this->createUserWithRole('ROLE_ADMIN');
+
+        // Creamos una entidad Curso
         $curso = new Curso();
         $curso->setNombreCurso('Curso de Prueba');
-        $curso->setCodigoCurso('24305');
+        $curso->setCodigoCurso('24501');
         $curso->setHoras(20);
         $curso->setParticipantesEdicion(20);
         $curso->setEdicionesEstimadas(2);
@@ -305,27 +281,30 @@ final class FormadorEdicionControllerTest extends BaseControllerTest
         $curso->setCalificable(true);
         $this->manager->persist($curso);
 
-        // Creamos la entidad Edicion
+        // Creamos una entidad Edicion (Abierta)
         $edicion = new Edicion();
-        $edicion->setCodigoEdicion('24305/01');
-        $edicion->setEstado(0);
-        $edicion->setSesiones(3);
-        $edicion->setMaxParticipantes(30);
-        $edicion->setFechaInicio(new DateTime('+10 days'));
+        $edicion->setCodigoEdicion('24501/01');
+        $edicion->setEstado(0); // Abierta
+        $edicion->setFechaInicio(new DateTime('+1 day'));
+        $edicion->setFechaFin(new DateTime('+1 day'));
+        $edicion->setSesiones(2);
+        $edicion->setMaxParticipantes(20);
         $edicion->setCurso($curso);
-        $curso->addEdiciones($edicion);
         $this->manager->persist($edicion);
 
-        // Creamos la entidad Formador
+        // Crear Formador
         $formador = new Formador();
-        $formador->setNif('51515151E');
-        $formador->setNombre('Víctor');
-        $formador->setApellidos('Vaquero');
+        $formador->setNif('12345678A');
+        $formador->setNombre('John');
+        $formador->setApellidos('Doe');
         $formador->setOrganizacion('USE');
         $formador->setUsuario($usuario);
         $this->manager->persist($formador);
 
-        // Creamos una entidad FormadorEdicion
+        $usuario->setFormador($formador);
+        $this->manager->persist($usuario);
+
+        // Asociar Formador con la Edicion a través de FormadorEdicion
         $formadorEdicion = new FormadorEdicion();
         $formadorEdicion->setFormador($formador);
         $formadorEdicion->setEdicion($edicion);
@@ -333,16 +312,21 @@ final class FormadorEdicionControllerTest extends BaseControllerTest
 
         $this->manager->flush();
 
-        // Generamos el token CSRF
-        $csrfTokenManager = static::getContainer()->get('security.csrf.token_manager');
-        $token = $csrfTokenManager->getToken('delete' . $formadorEdicion->getId());
+        // Loguear el usuario
+        $this->client->loginUser($usuario);
 
-        // Realizamos la solicitud POST
-        $this->client->request('POST', sprintf('%s%s', $this->path, $formadorEdicion->getId()), [
-            '_token' => $token->getValue(),
-        ]);
+        // Acceder y enviar el formulario de eliminación
+        $crawler = $this->client->request('GET', '/intranet/forpas/gestor/formador_edicion/edicion/' . $edicion->getId());
+        $form = $crawler->filter('form button[title="Eliminar"]')->form();
+        $this->client->submit($form);
 
-        // Verificamos la redirección
-        self::assertResponseRedirects(sprintf('/intranet/forpas/gestor/formador_edicion/edicion/%s', $edicion->getId()));
+        // Verificar la redirección y la eliminación
+        $this->client->followRedirect();
+        $this->assertResponseIsSuccessful();
+
+        $this->assertNull(
+            $this->manager->getRepository(FormadorEdicion::class)->find($formadorEdicion->getId()),
+            'La relación Formador-Edicion no fue eliminada correctamente.'
+        );
     }
 }

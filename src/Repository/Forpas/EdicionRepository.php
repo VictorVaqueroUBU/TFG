@@ -4,9 +4,9 @@ namespace App\Repository\Forpas;
 
 use App\Entity\Forpas\Curso;
 use App\Entity\Forpas\Edicion;
+use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
-Use DateTime;
 
 /**
  * @extends ServiceEntityRepository<Edicion>
@@ -41,13 +41,28 @@ class EdicionRepository extends ServiceEntityRepository
      */
     public function findByYear(int $year): array
     {
-        $yearCode = substr((string)$year, -2); // Obtiene los últimos 2 dígitos del año
+        $yearCode = substr((string)$year, -2);
 
         return $this->createQueryBuilder('e')
             ->leftJoin('e.curso', 'c')
             ->andWhere('c.codigo_curso LIKE :yearCode')
             ->andWhere('LENGTH(c.codigo_curso) = 5')
             ->setParameter('yearCode', $yearCode . '%')
+            ->getQuery()
+            ->getResult();
+    }
+    /**
+     * Método para obtener todas las ediciones que tienen un estado específico.
+     *
+     * @param int $estado El valor del estado por el cual se filtran las ediciones.
+     * @return Edicion[] Un array de objetos `Edicion` que cumplen con el criterio de búsqueda.
+     */
+    public function findByEstado(int $estado): array
+    {
+        return $this->createQueryBuilder('e')
+            ->andWhere('e.estado = :estado')
+            ->setParameter('estado', $estado)
+            ->orderBy('e.fecha_inicio', 'ASC')
             ->getQuery()
             ->getResult();
     }
@@ -59,7 +74,6 @@ class EdicionRepository extends ServiceEntityRepository
      */
     public function findPrimerCodigoEdicionLibre(string $codigoCurso): ?string
     {
-        // Obtenemos todas las ediciones para el curso en orden ascendente
         $result = $this->createQueryBuilder('e')
             ->select('e.codigo_edicion')
             ->join('e.curso', 'c')
@@ -69,12 +83,10 @@ class EdicionRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
 
-        // Extraemos los números de edición en forma de enteros
         $edicionesExistentes = array_map(function($item) use ($codigoCurso) {
             return (int) substr($item['codigo_edicion'], strlen($codigoCurso) + 1);
         }, $result);
 
-        // Buscamos el primer número faltante en la secuencia
         $siguienteNumeroLibre = 0; // Comenzamos desde 0
         foreach ($edicionesExistentes as $numero) {
             if ($numero !== $siguienteNumeroLibre) {
@@ -83,7 +95,6 @@ class EdicionRepository extends ServiceEntityRepository
             $siguienteNumeroLibre++;
         }
 
-        // Devolvemos el código libre en el formato "codigoCurso/XX"
         return sprintf('%s/%02d', $codigoCurso, $siguienteNumeroLibre);
     }
 

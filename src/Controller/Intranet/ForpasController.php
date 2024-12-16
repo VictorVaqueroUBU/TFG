@@ -2,10 +2,6 @@
 
 namespace App\Controller\Intranet;
 
-use App\Repository\Forpas\CursoRepository;
-use App\Repository\Forpas\EdicionRepository;
-use App\Repository\Forpas\FormadorRepository;
-use App\Repository\Forpas\ParticipanteRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -38,34 +34,31 @@ class ForpasController extends AbstractController
             ];
         }
 
-        /*if ($this->isGranted('ROLE_TEACHER')) {
+        if ($this->isGranted('ROLE_TEACHER')) {
             $accesos[] = [
                 'nombre' => 'Portal del Formador',
                 'ruta' => $this->generateUrl('intranet_forpas_formador'),
                 'icono' => 'fas fa-chalkboard-teacher',
             ];
-        }*/
+        }
 
         return $this->render('intranet/forpas/index.html.twig', [
             'accesos' => $accesos,
         ]);
     }
-    // TODO: Aquí crearemos una función por cada Rol (Gestor, Usuario, Formador)
     #[Route(path: '/gestor', name: '_gestor', defaults: ['titulo' => 'Gestión de Entidades'])]
-    public function forpasGestor(CursoRepository $cursoRepository, EdicionRepository $edicionRepository,
-                                 ParticipanteRepository $participanteRepository, FormadorRepository $formadorRepository): Response
+    public function forpasGestor(): Response
     {
-        //$this->denyAccessUnlessGranted('ROLE_ADMIN');
-        return $this->render('intranet/forpas/gestor/index.html.twig', [
-            'cursos' => $cursoRepository->findAll(),
-            'ediciones' => $edicionRepository->findAll(),
-            'participantes' => $participanteRepository->findAll(),
-            'formadores' => $formadorRepository->findAll(),
-        ]);
+        return $this->render('intranet/forpas/gestor/index.html.twig');
     }
     #[Route(path: '/participante', name: '_participante', defaults: ['titulo' => 'Acciones disponibles'])]
     public function forpasParticipante(): Response
     {
         return $this->render('intranet/forpas/participante/index.html.twig');
+    }
+    #[Route(path: '/formador', name: '_formador', defaults: ['titulo' => 'Acciones disponibles'])]
+    public function forpasFormador(): Response
+    {
+        return $this->render('intranet/forpas/formador/index.html.twig');
     }
 }

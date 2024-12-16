@@ -10,13 +10,14 @@ use DateTimeInterface;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: UsuarioRepository::class)]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_USERNAME', fields: ['username'])]
 #[UniqueEntity(fields: ['email'], message: 'Ya existe una cuenta con este correo electrónico')]
 #[UniqueEntity(fields: ['username'], message: 'Ya existe una cuenta con ese nombre de usuario')]
-class Usuario implements UserInterface
+class Usuario implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -50,10 +51,10 @@ class Usuario implements UserInterface
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?DateTimeInterface $passwordChangedAt = null;
 
-    #[ORM\OneToOne(targetEntity: Participante::class, mappedBy: 'usuario', cascade: ['persist', 'remove'])]
+    #[ORM\OneToOne(targetEntity: Participante::class, mappedBy: 'usuario', cascade: ['persist'])]
     private ?Participante $participante = null;
 
-    #[ORM\OneToOne(targetEntity: Formador::class, mappedBy: 'usuario', cascade: ['persist', 'remove'])]
+    #[ORM\OneToOne(targetEntity: Formador::class, mappedBy: 'usuario', cascade: ['persist'])]
     private ?Formador $formador = null;
 
     public function getId(): int
