@@ -77,7 +77,7 @@ class LoginControllerTest extends BaseControllerTest
             echo $crawler->filter('body')->text(); // Imprime el contenido de la página para depuración
         }
 
-        // Verificar que el mensaje flash se muestra correctamente
+        // Verificamos que el mensaje flash se muestra correctamente
         $this->assertSelectorTextContains(
             '.alert-warning',
             'La contraseña temporal no es correcta.'
@@ -107,7 +107,7 @@ class LoginControllerTest extends BaseControllerTest
         $this->client->loginUser($user);
         $this->client->request('GET', '/intranet/change-password');
 
-        $this->assertResponseRedirects('/intranet');
+        $this->assertResponseRedirects('/intranet/forpas/');
     }
     public function testChangePasswordFailsIfPasswordsDoNotMatch(): void
     {

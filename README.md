@@ -43,7 +43,7 @@ Este proyecto es una aplicación web desarrollada en **Symfony** para la gestió
 
 ### Pruebas realizadas:
 - **PHPUnit**:
-  - 107 pruebas unitarias pasadas exitosamente, con 483 aserciones.
+  - 107 pruebas unitarias pasadas exitosamente, con 490 aserciones.
 - **PHPStan**:
   - Código analizado y corregido sin errores.
 ---

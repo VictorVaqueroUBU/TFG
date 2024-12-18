@@ -103,7 +103,7 @@ class RegistrationController extends AbstractController
             // Redirigimos e informamos al usuario
             $this->addFlash('success', 'Alta realizada correctamente. Revise su correo electrónico');
 
-            return $this->redirectToRoute('index');
+            return $this->redirectToRoute('intranet_login');
         }
 
         return $this->render('/intranet/sistema/registration/register.html.twig', [

@@ -2,7 +2,9 @@ name: Symfony Tests
 
 on:
   push:
-    branches: [ issue-66-crear-pipeline-CI ]
+    branches:
+      - main
+      - issue-68-memoria-indice-introduccion
   pull_request:
     branches: [ main ]
 
