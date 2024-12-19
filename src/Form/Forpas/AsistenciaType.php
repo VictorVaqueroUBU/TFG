@@ -5,7 +5,7 @@ namespace App\Form\Forpas;
 use App\Entity\Forpas\Asistencia;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -26,9 +26,8 @@ class AsistenciaType extends AbstractType
                 'multiple' => false,
                 'disabled' => $disabled,
             ])
-            ->add('observaciones', TextareaType::class, [
+            ->add('observaciones', TextType::class, [
                 'label' => 'Observaciones',
-                'attr' => ['rows' => 1],
                 'required' => false,
                 'disabled' => $disabled,
             ]);

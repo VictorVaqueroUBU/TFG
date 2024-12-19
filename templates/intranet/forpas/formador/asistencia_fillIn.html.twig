@@ -35,6 +35,7 @@
         </thead>
         <tbody>
         {% for asistenciaForm in form.asistencias %}
+            {% set deshabilitar = sesion.edicion.participantesEdicion[loop.index0].bajaJustificada is not null %}
             <tr>
                 <td>
                     {{ sesion.edicion.participantesEdicion[loop.index0].participante.nombre }}
@@ -43,7 +44,9 @@
                 <td>{{ form_widget(asistenciaForm.estado.0) }}</td>
                 <td>{{ form_widget(asistenciaForm.estado.1) }}</td>
                 <td>{{ form_widget(asistenciaForm.estado.2) }}</td>
-                <td>{{ form_widget(asistenciaForm.observaciones) }}</td>
+                <td>{{ form_widget(asistenciaForm.observaciones, {
+                        'attr': deshabilitar ? { 'value': 'Usuario con baja justificada' } : {}
+                    }) }}</td>
             </tr>
         {% endfor %}
         </tbody>

@@ -36,6 +36,7 @@ class ParticipanteEdicionType extends AbstractType
                 'widget' => 'single_text',
                 'label' => 'Fecha de Solicitud',
                 'required' => false,
+                'disabled' => true,
             ])
             ->add('baja_justificada', DateTimeType::class, [
                 'widget' => 'single_text',
@@ -45,6 +46,7 @@ class ParticipanteEdicionType extends AbstractType
             ->add('apto', ChoiceType::class, [
                 'label' => 'Prueba de Aptitud',
                 'required' => false,
+                'disabled' => true,
                 'choices' => [
                     'Apto/a' => 1,
                     'No Apto/a' => 0,
@@ -54,6 +56,7 @@ class ParticipanteEdicionType extends AbstractType
             ->add('prueba_final', NumberType::class, [
                 'label' => 'Prueba Final',
                 'required' => false,
+                'disabled' => true,
                 'scale' => 2,
                 'attr' => [
                     'step' => 0.01,
@@ -64,6 +67,7 @@ class ParticipanteEdicionType extends AbstractType
             ->add('certificado', ChoiceType::class, [
                 'label' => 'Certificado',
                 'required' => false,
+                'disabled' => true,
                 'choices' => [
                     'Sí' => 'S',
                     'No' => 'N',
@@ -72,11 +76,12 @@ class ParticipanteEdicionType extends AbstractType
             ->add('libro', IntegerType::class, [
                 'label' => 'Libro',
                 'required' => false,
-                'attr' => ['placeholder' => 'Introduzca los 4 dígitos del año del libro'],
+                'disabled' => true,
             ])
             ->add('numero_titulo', IntegerType::class, [
                 'label' => 'Número de Título',
                 'required' => false,
+                'disabled' => true,
             ])
             ->add('observaciones', TextType::class, [
                 'label' => 'Observaciones',

@@ -22,8 +22,8 @@
                 <th>Unidad</th>
                 <th>Correo Principal</th>
                 <th>Teléfono</th>
-                <th>Fecha Solicitud</th>
-                <th>Baja_justificada</th>
+                <th class="text-center">Fecha Solicitud</th>
+                <th class="text-center">Baja_justificada</th>
                 <th>Acciones</th>
             </tr>
         </thead>
@@ -37,8 +37,8 @@
                 <td>{{ pe.participante.unidad }}</td>
                 <td>{{ pe.participante.usuario.email }}</td>
                 <td>{{ pe.participante.telefonoTrabajo }}</td>
-                <td>{{ pe.fechaSolicitud ? pe.fechaSolicitud|date('Y-m-d H:i:s') : '' }}</td>
-                <td>{{ pe.bajaJustificada ? pe.bajaJustificada|date('Y-m-d H:i:s') : '' }}</td>
+                <td class="text-center">{{ pe.fechaSolicitud ? pe.fechaSolicitud|date('Y-m-d H:i:s') : '' }}</td>
+                <td class="text-center">{{ pe.bajaJustificada ? pe.bajaJustificada|date('Y-m-d H:i:s') : '' }}</td>
                 <td>
                     <a href="{{ path('intranet_forpas_gestor_participante_edicion_show', {'id': pe.id}) }}" title="Ver"><span class="mx-1 fas fa-eye"></span></a>
                     <a href="{{ path('intranet_forpas_gestor_participante_edicion_edit', {'id': pe.id}) }}" title="Editar"><span class="mx-1 fas fa-edit"></span></a>
