@@ -43,7 +43,7 @@ Este proyecto es una aplicación web desarrollada en **Symfony** para la gestió
 
 ### Pruebas realizadas:
 - **PHPUnit**:
-  - 107 pruebas unitarias pasadas exitosamente, con 490 aserciones.
+  - 107 pruebas unitarias pasadas exitosamente, con 489 aserciones.
 - **PHPStan**:
   - Código analizado y corregido sin errores.
 ---
@@ -75,12 +75,14 @@ La aplicación utiliza un sistema de envío de correos para funciones como el re
 
 ## Tecnologías utilizadas
 
-- **PHP** 8.2 o superior
 - **Symfony** 7.1
+- **PHP** 8.2
 - **MySQL** 8.0
+- **PHPUnit** 9.6
+- **PHPStan** 1.12
 - **Composer**
 - **Git**
-- **Sequel Ace** (opcional, para la gestión visual de la base de datos)
+- **Sequel Ace** (para la gestión visual de la base de datos)
 
 ---
 
@@ -175,7 +177,7 @@ Este proyecto utiliza:
 - PHPStan para verificar posibles errores estáticos y asegurar la calidad del código.
 
 ```bash
-    php vendor/bin/phpstan analyse --configuration=phpstan.dist.neon > phpstan_report.txt
+    php vendor/bin/phpstan analyse --configuration=phpstan.dist.neon > tests/phpstan_report.txt
 ```
 
 ---

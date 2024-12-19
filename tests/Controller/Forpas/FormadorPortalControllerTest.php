@@ -3,13 +3,13 @@ namespace App\Tests\Controller\Forpas;
 
 use App\Entity\Forpas\Asistencia;
 use App\Entity\Forpas\Curso;
+use App\Entity\Forpas\Edicion;
+use App\Entity\Forpas\Formador;
 use App\Entity\Forpas\FormadorEdicion;
 use App\Entity\Forpas\Participante;
 use App\Entity\Forpas\ParticipanteEdicion;
 use App\Entity\Forpas\Sesion;
 use DateTime;
-use App\Entity\Forpas\Edicion;
-use App\Entity\Forpas\Formador;
 use Doctrine\ORM\Tools\SchemaTool;
 
 class FormadorPortalControllerTest extends BaseControllerTest

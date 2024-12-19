@@ -4,9 +4,9 @@ namespace App\Tests\Controller\Forpas;
 
 use App\Entity\Forpas\Curso;
 use App\Entity\Forpas\Edicion;
+use DateTime;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Tools\SchemaTool;
-use DateTime;
 
 final class CursoControllerTest extends BaseControllerTest
 {
@@ -146,7 +146,7 @@ final class CursoControllerTest extends BaseControllerTest
 
         self::assertSame('New', $fixture[0]->getCodigoCurso());
         self::assertSame('Something New', $fixture[0]->getNombreCurso());
-        self::assertSame(20, $fixture[0]->getHoras());
+        self::assertSame(20.0, $fixture[0]->getHoras());
         self::assertSame('Something New', $fixture[0]->getObjetivos());
         self::assertSame('Something New', $fixture[0]->getContenidos());
         self::assertSame('Something New', $fixture[0]->getDestinatarios());
@@ -158,7 +158,7 @@ final class CursoControllerTest extends BaseControllerTest
         self::assertSame('Something New', $fixture[0]->getPlazoSolicitud());
         self::assertSame('Something New', $fixture[0]->getObservaciones());
         self::assertTrue( $fixture[0]->isVisibleWeb());
-        self::assertSame(20, $fixture[0]->getHorasVirtuales());
+        self::assertSame(20.0, $fixture[0]->getHorasVirtuales());
         self::assertTrue( $fixture[0]->isCalificable());
     }
     public function testRemove(): void

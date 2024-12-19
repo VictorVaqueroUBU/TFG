@@ -4,9 +4,10 @@ namespace App\Form\Forpas;
 
 use App\Entity\Forpas\Curso;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\IntegerType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Range;
@@ -26,25 +27,36 @@ class CursoType extends AbstractType
                 'required' => true,
                 'attr' => ['maxlength' => 255],
             ])
-            ->add('horas', IntegerType::class, [
+            ->add('horas', NumberType::class, [
                 'label' => 'Horas totales*',
                 'required' => true,
-                'attr' => ['inputmode' => 'numeric'],
+                'attr' => [
+                    'inputmode' => 'decimal',
+                    'step' => '0.01',
+                    'min' => 0.01,
+                    'max' => 150,
+                ],
                 'constraints' => [
                     new Range([
-                        'min' => 1,
-                        'max' => 99,
+                        'min' => 0.01,
+                        'max' => 150,
                         'notInRangeMessage' => 'El valor debe estar entre {{ min }} y {{ max }}.',
                     ]),
                 ],
             ])
-            ->add('horas_virtuales',IntegerType::class, [
+            ->add('horas_virtuales',NumberType::class, [
                 'label' => 'Horas virtuales *',
                 'required' => true,
+                'attr' => [
+                    'inputmode' => 'decimal',
+                    'step' => '0.01',
+                    'min' => 0,
+                    'max' => 150,
+                ],
                 'constraints' => [
                     new Range([
                         'min' => 0,
-                        'max' => 99,
+                        'max' => 150,
                         'notInRangeMessage' => 'El valor debe estar entre {{ min }} y {{ max }}.',
                     ]),
                 ],

@@ -45,11 +45,13 @@
                 {{ (horasGrabadas // 60) }}h
                 {% if (horasGrabadas % 60) > 0 %}
                     {{ ' ' ~ (horasGrabadas % 60) ~ 'm ' }}
-                {% else %}
-                    {{ ' ' }}
                 {% endif %}
-                / {{ edicion.curso.horas }}h
-                {% if (horasGrabadas // 60) == edicion.curso.horas %}
+                {% set totalMinutosCurso = (edicion.curso.horas * 60)|round %}
+                / {{ (totalMinutosCurso // 60) }}h
+                {% if (totalMinutosCurso % 60) > 0 %}
+                    {{ ' ' ~ (totalMinutosCurso % 60) ~ 'm ' }}
+                {% endif %}
+                {% if horasGrabadas == totalMinutosCurso %}
                     <sup class="text-success fas fa-check"></sup>
                 {% else %}
                     <sup class="text-danger fas fa-times"></sup>
@@ -140,7 +142,7 @@
 {% endblock %}
 
 {% block botones %}
-    {% if sesionesGrabadas < edicion.sesiones and horasGrabadas < edicion.curso.horas * 60 %}
+    {% if edicion.estado == 0 and sesionesGrabadas < edicion.sesiones and horasGrabadas < edicion.curso.horas * 60 %}
         <li class="nav-item me-2">
             <a class="btn btn-primary" href="{{ path('intranet_forpas_formador_sesion_new', {'edicionId': edicion.id}) }}">
                 <span class="fas fa-plus"></span> Crear Sesión
