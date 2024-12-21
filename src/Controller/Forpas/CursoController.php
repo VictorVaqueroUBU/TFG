@@ -41,6 +41,10 @@ final class CursoController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            if ($curso->getHorasVirtuales() > 0) {
+                $curso->setCalificable(true);
+            }
+
             $entityManager->persist($curso);
             $entityManager->flush();
             $this->addFlash('success', 'La creación del curso se ha realizada satisfactoriamente.');
