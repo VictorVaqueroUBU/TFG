@@ -6,6 +6,7 @@ use App\Entity\Forpas\Formador;
 use App\Entity\Forpas\Participante;
 use App\Form\Forpas\FormadorType;
 use App\Repository\Forpas\EdicionRepository;
+use App\Repository\Forpas\FormadorEdicionRepository;
 use App\Repository\Forpas\FormadorRepository;
 use App\Repository\Forpas\ParticipanteRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -144,5 +145,17 @@ final class FormadorController extends AbstractController
         }
 
         return $this->redirectToRoute('intranet_forpas_gestor_formador_index', [], Response::HTTP_SEE_OTHER);
+    }
+    #[Route(path: '/{id}/mis-ediciones', name: 'mis_ediciones', defaults: ['titulo' => 'Ediciones asignadas'], methods: ['GET'])]
+    public function misEdiciones(Formador $formador, FormadorEdicionRepository $formadorEdicionRepository): Response {
+        // Obtenemos las ediciones abiertas y cerradas asignadas al formador
+        $edicionesAbiertas = $formadorEdicionRepository->findEdicionesAbiertasByFormador($formador->getId());
+        $edicionesCerradas = $formadorEdicionRepository->findEdicionesCerradasByFormador($formador->getId());
+
+        return $this->render('intranet/forpas/gestor/formador/mis_ediciones.html.twig', [
+            'edicionesAbiertas' => $edicionesAbiertas,
+            'edicionesCerradas' => $edicionesCerradas,
+            'formador' => $formador,
+        ]);
     }
 }
