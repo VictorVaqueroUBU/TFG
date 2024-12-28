@@ -37,9 +37,16 @@
                 <td>{{ participante.usuario.email }}</td>
                 <td>{{ participante.organizacion }}</td>
                 <td>
-                    <a href="{{ path('intranet_forpas_gestor_participante_show', {'id': participante.id}) }}" title="Ver"><span class="mx-1 fas fa-eye"></span></a>
-                    <a href="{{ path('intranet_forpas_gestor_participante_edit', {'id': participante.id}) }}" title="Editar"><span class="mx-1 fas fa-edit"></span></a>
+                    <a href="{{ path('intranet_forpas_gestor_participante_show', {'id': participante.id}) }}" title="Ver">
+                        <span class="mx-1 fas fa-eye"></span>
+                    </a>
+                    <a href="{{ path('intranet_forpas_gestor_participante_edit', {'id': participante.id}) }}" title="Editar">
+                        <span class="mx-1 fas fa-edit"></span>
+                    </a>
                     {{ include('intranet/forpas/gestor/participante/_delete_form.html.twig', { 'id': participante.id, 'buttonType': 'inline' }) }}
+                    <a href="{{ path('intranet_forpas_gestor_participante_ficha_formativa', {'id': participante.id}) }}" title="Ficha Formativa">
+                        <span class="mx-1 fas fa-file-alt"></span>
+                    </a>
                 </td>
             </tr>
         {% else %}

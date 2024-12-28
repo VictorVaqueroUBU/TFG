@@ -1,0 +1,83 @@
+{% extends 'intranet/forpas/gestor/index.html.twig' %}
+{% block migas %}
+    {{ parent() }}
+    <li class="breadcrumb-item active" aria-current="page">{{ titulo }}</li>
+{% endblock %}
+{% block title %}{{ titulo }}{% endblock %}
+
+{% block content %}
+    <div class="pagina-titulo">Portal del Gestor</div>
+
+    <div class="pagina-seccion">{{ titulo ~ participante.nombre ~ ' ' ~ participante.apellidos }}</div>
+
+    <div class="container-fluid">
+        <ul class="nav nav-tabs" id="fichaFormativaTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="proximas-tab" data-bs-toggle="tab" data-bs-target="#proximas" type="button" role="tab" aria-controls="proximas" aria-selected="true">Próximas Ediciones</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="certificadas-tab" data-bs-toggle="tab" data-bs-target="#certificadas" type="button" role="tab" aria-controls="certificadas" aria-selected="false">Ediciones Certificadas</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="otras-tab" data-bs-toggle="tab" data-bs-target="#otras" type="button" role="tab" aria-controls="otras" aria-selected="false">Otras Ediciones</button>
+            </li>
+        </ul>
+        <div class="tab-content mt-2" id="fichaFormativaTabsContent">
+            <div class="tab-pane fade show active" id="proximas" role="tabpanel" aria-labelledby="proximas-tab">
+                {% include 'intranet/forpas/gestor/participante/ediciones_tabla.html.twig' with {'participanteEdicion': proximasEdiciones, 'id': 'tablaProximas'} %}
+            </div>
+            <div class="tab-pane fade" id="certificadas" role="tabpanel" aria-labelledby="certificadas-tab">
+                {% include 'intranet/forpas/gestor/participante/ediciones_tabla.html.twig' with {'participanteEdicion': edicionesCertificadas, 'id': 'tablaCertificadas'} %}
+            </div>
+            <div class="tab-pane fade" id="otras" role="tabpanel" aria-labelledby="otras-tab">
+                {% include 'intranet/forpas/gestor/participante/ediciones_tabla.html.twig' with {'participanteEdicion': otrasEdiciones, 'id': 'tablaOtras'} %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block js %}
+    {{ parent() }}
+    <script type="module">
+        $(function () {
+            // Función para inicializar una tabla con DataTables
+            function inicializarDataTable(id) {
+                $(`#${id}`).dataTable({
+                    buttons: [
+                        {
+                            extend: 'copy',
+                            text: '<i class="fas fa-copy"></i>',
+                            titleAttr: 'Copiar',
+                        },
+                        {
+                            extend: 'print',
+                            text: '<i class="fas fa-print"></i>',
+                            titleAttr: 'Imprimir',
+                        },
+                        {
+                            extend: 'csv',
+                            text: '<i class="fas fa-file-csv"></i>',
+                            titleAttr: 'Generar fichero CSV',
+                        },
+                        {
+                            extend: 'excelHtml5',
+                            text: '<i class="fas fa-file-excel"></i>',
+                            titleAttr: 'Generar fichero Excel',
+                        },
+                    ],
+                    dom: '<"row"<"col-sm-12 col-md-4"B><"col-sm-12 col-md-4"l><"col-sm-12 col-md-4"f>>' +
+                        '<"row"<"col-sm-12"<"table-responsive"tr>>>' +
+                        '<"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
+                    language: {
+                        url: '{{ asset("includes/datatable.es.json") }}'
+                    },
+                });
+            }
+
+            // Inicializar todas las tablas
+            const tablas = ['tablaProximas', 'tablaCertificadas', 'tablaOtras'];
+            tablas.forEach(id => inicializarDataTable(id));
+        });
+    </script>
+{% endblock %}
+
