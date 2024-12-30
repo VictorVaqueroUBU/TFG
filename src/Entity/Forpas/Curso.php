@@ -26,8 +26,8 @@ class Curso
     #[ORM\Column(length: 255)]
     private ?string $nombre_curso = null;
 
-    #[ORM\Column(type: Types::SMALLINT)]
-    private ?int $horas = null;
+    #[ORM\Column(type: Types::FLOAT)]
+    private ?float $horas = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $objetivos = null;
@@ -62,8 +62,8 @@ class Curso
     #[ORM\Column]
     private ?bool $visible_web = null;
 
-    #[ORM\Column(type: Types::SMALLINT)]
-    private ?int $horas_virtuales = null;
+    #[ORM\Column(type: Types::FLOAT)]
+    private ?float $horas_virtuales = null;
 
     #[ORM\Column]
     private ?bool $calificable = null;
@@ -120,12 +120,12 @@ class Curso
         return $this;
     }
 
-    public function getHoras(): ?int
+    public function getHoras(): ?float
     {
         return $this->horas;
     }
 
-    public function setHoras(int $horas): static
+    public function setHoras(float $horas): static
     {
         $this->horas = $horas;
 
@@ -264,12 +264,12 @@ class Curso
         return $this;
     }
 
-    public function getHorasVirtuales(): ?int
+    public function getHorasVirtuales(): ?float
     {
         return $this->horas_virtuales;
     }
 
-    public function setHorasVirtuales(int $horas_virtuales): static
+    public function setHorasVirtuales(float $horas_virtuales): static
     {
         $this->horas_virtuales = $horas_virtuales;
 

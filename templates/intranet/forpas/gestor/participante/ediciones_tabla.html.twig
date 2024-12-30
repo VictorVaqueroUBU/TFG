@@ -1,0 +1,41 @@
+<table class="tabla-condensada" id="{{ id }}">
+    <thead class="cabecera-condensada">
+    <tr>
+        <th>Código</th>
+        <th>Nombre</th>
+        <th>Horas</th>
+        <th>Fecha Inicio</th>
+        <th>Fecha Fin</th>
+        <th>Horario</th>
+
+    </tr>
+    </thead>
+    <tbody>
+    {% for pe in participanteEdicion %}
+        <tr>
+            <td>{{ pe.edicion.codigoEdicion }}</td>
+            <td>{{ pe.edicion.curso.nombreCurso }}</td>
+            <td class="text-center">{{ pe.edicion.curso.horas }}</td>
+            <td class="text-center">{{ pe.edicion.fechaInicio|date('Y-m-d') }}</td>
+            <td class="text-center">{{ pe.edicion.fechaFin|date('Y-m-d') }}</td>
+            <td>{{ pe.edicion.horario }}
+                {% if pe.bajaJustificada %}
+                    <br><b>Baja justificada:</b> {{ pe.bajaJustificada|date('Y-m-d H:i:s') }}
+                {% elseif pe.edicion.estado == 0 and pe.edicion.fechaInicio|date('Y-m-d') < 'now'|date('Y-m-d') %}
+                    <br><b>Asistencia:</b> Pendiente datos del formador.
+                {% elseif pe.edicion.estado == 1 %}
+                    <br><b>Asistencia:</b> Pendiente revisión de datos.
+                {% elseif pe.edicion.estado == 2 and pe.certificado == false %}
+                    <br><b>Sin certificado.</b>
+                {% elseif pe.edicion.estado == 2 and pe.certificado == true %}
+                    <br><b>Libro:</b>{{ pe.libro }}. <b>Título:</b>{{ pe.numeroTitulo }}
+                {% endif %}
+            </td>
+        </tr>
+    {% else %}
+        <tr>
+            <td>No existen inscripciones</td><td></td><td></td><td></td><td></td><td></td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>

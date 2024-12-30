@@ -4,9 +4,11 @@ namespace App\Controller\Forpas;
 
 use App\Entity\Forpas\Formador;
 use App\Entity\Forpas\Participante;
+use App\Entity\Forpas\ParticipanteEdicion;
 use App\Form\Forpas\ParticipanteType;
 use App\Repository\Forpas\EdicionRepository;
 use App\Repository\Forpas\FormadorRepository;
+use App\Repository\Forpas\ParticipanteEdicionRepository;
 use App\Repository\Forpas\ParticipanteRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -146,5 +148,22 @@ final class ParticipanteController extends AbstractController
         }
 
         return $this->redirectToRoute('intranet_forpas_gestor_participante_index', [], Response::HTTP_SEE_OTHER);
+    }
+    #[Route(path: '/{id}/ficha-formativa', name: 'ficha_formativa', defaults: ['titulo' => 'Ficha formativa '], methods: ['GET'])]
+    public function fichaFormativa(Participante $participante, EntityManagerInterface $entityManager): Response
+    {
+        // Consultamos las ediciones por categoría
+        /** @var ParticipanteEdicionRepository $repository */
+        $repository = $entityManager->getRepository(ParticipanteEdicion::class);
+        $proximasEdiciones = $repository->findProximasEdiciones($participante);
+        $edicionesCertificadas = $repository->findEdicionesCertificadas($participante);
+        $otrasEdiciones = $repository->findOtrasEdiciones($participante);
+
+        return $this->render('intranet/forpas/gestor/participante/ficha_formativa.html.twig', [
+            'proximasEdiciones' => $proximasEdiciones,
+            'edicionesCertificadas' => $edicionesCertificadas,
+            'otrasEdiciones' => $otrasEdiciones,
+            'participante' => $participante,
+        ]);
     }
 }

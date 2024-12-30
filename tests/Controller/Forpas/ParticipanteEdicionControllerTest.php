@@ -252,8 +252,8 @@ final class ParticipanteEdicionControllerTest extends BaseControllerTest
         $responseContent = $this->client->getResponse()->getContent();
 
         // Comprobamos que aparecen datos de los participantes
-        self::assertStringContainsString('García, Carlos', $responseContent);
-        self::assertStringContainsString('López, María', $responseContent);
+        self::assertStringContainsString('Carlos García', $responseContent);
+        self::assertStringContainsString('María López', $responseContent);
 
         // Comprobamos que se reflejan las asistencias (Carlos asistió un día, así que días=1, minutos=60)
         self::assertStringContainsString('>1<', $responseContent);    // para verificar que aparece "1" en la celda de días
@@ -603,10 +603,8 @@ final class ParticipanteEdicionControllerTest extends BaseControllerTest
         // Simulamos el envío del formulario con nuevos datos
         $this->client->submitForm('Actualizar', [
             'participante_edicion[observaciones]' => 'Nueva observación',
-            'participante_edicion[prueba_final]' => '10.00',
-            'participante_edicion[certificado]' => 'N',
+            'participante_edicion[baja_justificada]' => '2024-12-19 10:30:00',
         ]);
-
         // Verificamos que redirige correctamente
         self::assertResponseRedirects(sprintf('/intranet/forpas/gestor/participante_edicion/edicion/%s', $edicion->getId()));
 
@@ -614,8 +612,7 @@ final class ParticipanteEdicionControllerTest extends BaseControllerTest
         /** @var ParticipanteEdicion $actualizado */
         $actualizado = $this->repository->find($participanteEdicion->getId());
         self::assertSame('Nueva observación', $actualizado->getObservaciones());
-        self::assertSame('10.00', $actualizado->getPruebaFinal());
-        self::assertSame('N', $actualizado->getCertificado());
+        self::assertSame('2024-12-19 10:30:00', $actualizado->getBajaJustificada()->format('Y-m-d H:i:s'));
     }
     public function testDeleteEdicionFechaPasada(): void
     {

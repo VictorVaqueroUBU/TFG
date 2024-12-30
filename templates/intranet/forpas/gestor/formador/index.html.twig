@@ -37,9 +37,16 @@
                 <td>{{ formador.formadorRJ | formadorRJTexto }}</td>
                 <td>{{ formador.observaciones }}</td>
                 <td>
-                    <a href="{{ path('intranet_forpas_gestor_formador_show', {'id': formador.id}) }}" title="Ver"><span class="mx-1 fas fa-eye"></span></a>
-                    <a href="{{ path('intranet_forpas_gestor_formador_edit', {'id': formador.id}) }}" title="Editar"><span class="mx-1 fas fa-edit"></span></a>
+                    <a href="{{ path('intranet_forpas_gestor_formador_show', {'id': formador.id}) }}" title="Ver">
+                        <span class="mx-1 fas fa-eye"></span>
+                    </a>
+                    <a href="{{ path('intranet_forpas_gestor_formador_edit', {'id': formador.id}) }}" title="Editar">
+                        <span class="mx-1 fas fa-edit"></span>
+                    </a>
                     {{ include('intranet/forpas/gestor/formador/_delete_form.html.twig', { 'id': formador.id, 'buttonType': 'inline' }) }}
+                    <a href="{{ path('intranet_forpas_gestor_formador_mis_ediciones', {'id': formador.id}) }}" title="Ediciones Asignadas">
+                        <span class="mx-1 fas fa-file-alt"></span>
+                    </a>
                 </td>
             </tr>
         {% else %}

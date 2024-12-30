@@ -2,7 +2,9 @@ name: Symfony Tests
 
 on:
   push:
-    branches: [ issue-66-crear-pipeline-CI ]
+    branches:
+      - main
+      - developer
   pull_request:
     branches: [ main ]
 

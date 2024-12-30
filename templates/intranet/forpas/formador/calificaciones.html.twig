@@ -29,15 +29,34 @@
         </thead>
         <tbody>
         {% for i, participanteEdicion in participantesEdicion %}
+            {% set deshabilitar = participanteEdicion.bajaJustificada is not null %}
             <tr>
                 <td>{{ participanteEdicion.participante.nombre }} {{ participanteEdicion.participante.apellidos }}</td>
-                <td>{{ form_widget(form['calificaciones_' ~ loop.index0].apto.0) }}</td>
-                <td>{{ form_widget(form['calificaciones_' ~ loop.index0].apto.1) }}</td>
-                <td>{{ form_widget(form['calificaciones_' ~ loop.index0].apto.2) }}</td>
-                <td>{{ form_widget(form['calificaciones_' ~ loop.index0].pruebaFinal) }}</td>
+                <td>
+                    {{ form_widget(form['calificaciones_' ~ loop.index0].apto.0, {
+                        'attr': deshabilitar ? { 'disabled': 'disabled' } : {}
+                    }) }}
+
+                </td>
+                <td>
+                    {{ form_widget(form['calificaciones_' ~ loop.index0].apto.1, {
+                        'attr': deshabilitar ? { 'disabled': 'disabled' } : {}
+                    }) }}
+                </td>
+                <td>
+                    {{ form_widget(form['calificaciones_' ~ loop.index0].apto.2, {
+                        'attr': deshabilitar ? { 'disabled': 'disabled' } : {}
+                    }) }}
+                </td>
+                <td>
+                    {{ form_widget(form['calificaciones_' ~ loop.index0].pruebaFinal, {
+                        'attr': deshabilitar ? { 'disabled': 'disabled', 'value': 'Usuario con baja justificada' } : {}
+                    }) }}
+                </td>
             </tr>
         {% endfor %}
         </tbody>
+
     </table>
 
     <!-- Botón "Volver" -->

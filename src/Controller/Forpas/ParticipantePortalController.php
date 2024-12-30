@@ -143,8 +143,11 @@ class ParticipantePortalController extends AbstractController
     }
 
     #[Route('/inscripcion/cambiar/{id}', name: 'inscripcion_cambiar')]
-    public function cambiarInscripcion(int $id, EntityManagerInterface $entityManager): Response
+    public function cambiarInscripcion(Request $request, int $id, EntityManagerInterface $entityManager): Response
     {
+        // Capturamos la IP del usuario
+        $direccionIp = $request->getClientIp();
+
         // Obtenemos el participante y la edición
         /** @var Usuario $user */
         $user = $this->getUser();
@@ -170,6 +173,7 @@ class ParticipantePortalController extends AbstractController
         $nuevaInscripcion->setParticipante($participante);
         $nuevaInscripcion->setEdicion($edicion);
         $nuevaInscripcion->setFechaSolicitud(new DateTime());
+        $nuevaInscripcion->setDireccion($direccionIp);
 
         // Añadimos la inscripción a las colecciones
         $participante->addParticipanteEdiciones($nuevaInscripcion);
@@ -184,8 +188,11 @@ class ParticipantePortalController extends AbstractController
     }
 
     #[Route('/inscripcion/realizar/{id}', name: 'inscripcion_realizar')]
-    public function realizarInscripcion(int $id, EntityManagerInterface $entityManager): Response
+    public function realizarInscripcion(Request $request, int $id, EntityManagerInterface $entityManager): Response
     {
+        // Capturamos la IP del usuario
+        $direccionIp = $request->getClientIp();
+
         // Obtenemos el participante y la edición
         /** @var Usuario $user */
         $user = $this->getUser();
@@ -197,6 +204,7 @@ class ParticipantePortalController extends AbstractController
         $inscripcion->setParticipante($participante);
         $inscripcion->setEdicion($edicion);
         $inscripcion->setFechaSolicitud(new DateTime());
+        $inscripcion->setDireccion($direccionIp);
 
         // Añadimos la inscripción a las colecciones
         $participante->addParticipanteEdiciones($inscripcion);

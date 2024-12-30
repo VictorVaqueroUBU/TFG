@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+  <meta charset="UTF-8">
+  <title>Dashboard for /Users/vaquero/www/tfg/src/Entity/Forpas</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="../../_css/bootstrap.min.css?v=9.2.32" rel="stylesheet" type="text/css">
+  <link href="../../_css/nv.d3.min.css?v=9.2.32" rel="stylesheet" type="text/css">
+  <link href="../../_css/style.css?v=9.2.32" rel="stylesheet" type="text/css">
+  <link href="../../_css/custom.css" rel="stylesheet" type="text/css">
+ </head>
+ <body>
+  <header>
+   <div class="container-fluid">
+    <div class="row">
+     <div class="col-md-12">
+      <nav aria-label="breadcrumb">
+       <ol class="breadcrumb">
+         <li class="breadcrumb-item"><a href="../../index.html">/Users/vaquero/www/tfg/src</a></li>
+         <li class="breadcrumb-item"><a href="../index.html">Entity</a></li>
+         <li class="breadcrumb-item"><a href="index.html">Forpas</a></li>
+         <li class="breadcrumb-item active">(Dashboard)</li>
+
+       </ol>
+      </nav>
+     </div>
+    </div>
+   </div>
+  </header>
+  <div class="container-fluid">
+   <div class="row">
+    <div class="col-md-12">
+     <h2>Classes</h2>
+    </div>
+   </div>
+   <div class="row">
+    <div class="col-md-6">
+     <h3>Coverage Distribution</h3>
+     <div id="classCoverageDistribution" style="height: 300px;">
+       <svg></svg>
+     </div>
+    </div>
+    <div class="col-md-6">
+     <h3>Complexity</h3>
+     <div id="classComplexity" style="height: 300px;">
+       <svg></svg>
+     </div>
+    </div>
+   </div>
+   <div class="row">
+    <div class="col-md-6">
+     <h3>Insufficient Coverage</h3>
+     <div class="scrollbox">
+      <table class="table">
+       <thead>
+        <tr>
+         <th>Class</th>
+         <th class="text-right">Coverage</th>
+        </tr>
+       </thead>
+       <tbody>
+       <tr><td><a href="Sesion.php.html#14">App\Entity\Forpas\Sesion</a></td><td class="text-right">54%</td></tr>
+       <tr><td><a href="FormadorEdicion.php.html#10">App\Entity\Forpas\FormadorEdicion</a></td><td class="text-right">69%</td></tr>
+       <tr><td><a href="Formador.php.html#13">App\Entity\Forpas\Formador</a></td><td class="text-right">75%</td></tr>
+       <tr><td><a href="Edicion.php.html#15">App\Entity\Forpas\Edicion</a></td><td class="text-right">86%</td></tr>
+
+       </tbody>
+      </table>
+     </div>
+    </div>
+    <div class="col-md-6">
+     <h3>Project Risks</h3>
+     <div class="scrollbox">
+      <table class="table">
+       <thead>
+        <tr>
+         <th>Class</th>
+         <th class="text-right"><abbr title="Change Risk Anti-Patterns (CRAP) Index">CRAP</abbr></th>
+        </tr>
+       </thead>
+       <tbody>
+       <tr><td><a href="Sesion.php.html#14">App\Entity\Forpas\Sesion</a></td><td class="text-right">94</td></tr>
+       <tr><td><a href="Edicion.php.html#15">App\Entity\Forpas\Edicion</a></td><td class="text-right">66</td></tr>
+       <tr><td><a href="Formador.php.html#13">App\Entity\Forpas\Formador</a></td><td class="text-right">60</td></tr>
+
+       </tbody>
+      </table>
+     </div>
+    </div>
+   </div>
+   <div class="row">
+    <div class="col-md-12">
+     <h2>Methods</h2>
+    </div>
+   </div>
+   <div class="row">
+    <div class="col-md-6">
+     <h3>Coverage Distribution</h3>
+     <div id="methodCoverageDistribution" style="height: 300px;">
+       <svg></svg>
+     </div>
+    </div>
+    <div class="col-md-6">
+     <h3>Complexity</h3>
+     <div id="methodComplexity" style="height: 300px;">
+       <svg></svg>
+     </div>
+    </div>
+   </div>
+   <div class="row">
+    <div class="col-md-6">
+     <h3>Insufficient Coverage</h3>
+     <div class="scrollbox">
+      <table class="table">
+       <thead>
+        <tr>
+         <th>Method</th>
+         <th class="text-right">Coverage</th>
+        </tr>
+       </thead>
+       <tbody>
+       <tr><td><a href="Asistencia.php.html#66"><abbr title="App\Entity\Forpas\Asistencia::getId">getId</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Asistencia.php.html#119"><abbr title="App\Entity\Forpas\Asistencia::getFormador">getFormador</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Edicion.php.html#332"><abbr title="App\Entity\Forpas\Edicion::removeSesionesEdicion">removeSesionesEdicion</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Formador.php.html#220"><abbr title="App\Entity\Forpas\Formador::getSesiones">getSesiones</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Formador.php.html#234"><abbr title="App\Entity\Forpas\Formador::removeSesion">removeSesion</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Formador.php.html#248"><abbr title="App\Entity\Forpas\Formador::getAsistencias">getAsistencias</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Formador.php.html#253"><abbr title="App\Entity\Forpas\Formador::addAsistencia">addAsistencia</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Formador.php.html#263"><abbr title="App\Entity\Forpas\Formador::removeAsistencia">removeAsistencia</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="FormadorEdicion.php.html#105"><abbr title="App\Entity\Forpas\FormadorEdicion::setHorasImpartidas">setHorasImpartidas</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="FormadorEdicion.php.html#117"><abbr title="App\Entity\Forpas\FormadorEdicion::setRetribPrevista">setRetribPrevista</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="FormadorEdicion.php.html#129"><abbr title="App\Entity\Forpas\FormadorEdicion::setRetribEjecutada">setRetribEjecutada</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="FormadorEdicion.php.html#153"><abbr title="App\Entity\Forpas\FormadorEdicion::setFedap">setFedap</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="FormadorEdicion.php.html#165"><abbr title="App\Entity\Forpas\FormadorEdicion::setEvaluacion">setEvaluacion</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="FormadorEdicion.php.html#213"><abbr title="App\Entity\Forpas\FormadorEdicion::setGrabadoSorolla">setGrabadoSorolla</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="FormadorEdicion.php.html#237"><abbr title="App\Entity\Forpas\FormadorEdicion::setCoincideTurno">setCoincideTurno</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="FormadorEdicion.php.html#249"><abbr title="App\Entity\Forpas\FormadorEdicion::setCoincideTurnoObservaciones">setCoincideTurnoObservaciones</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Participante.php.html#498"><abbr title="App\Entity\Forpas\Participante::getAsistencias">getAsistencias</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Participante.php.html#503"><abbr title="App\Entity\Forpas\Participante::addAsistencia">addAsistencia</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Participante.php.html#513"><abbr title="App\Entity\Forpas\Participante::removeAsistencia">removeAsistencia</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Sesion.php.html#119"><abbr title="App\Entity\Forpas\Sesion::setObservaciones">setObservaciones</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Sesion.php.html#150"><abbr title="App\Entity\Forpas\Sesion::getFormador">getFormador</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Sesion.php.html#165"><abbr title="App\Entity\Forpas\Sesion::getAsistencias">getAsistencias</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Sesion.php.html#170"><abbr title="App\Entity\Forpas\Sesion::addAsistencia">addAsistencia</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Sesion.php.html#180"><abbr title="App\Entity\Forpas\Sesion::removeAsistencia">removeAsistencia</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Sesion.php.html#55"><abbr title="App\Entity\Forpas\Sesion::validateFecha">validateFecha</abbr></a></td><td class="text-right">30%</td></tr>
+       <tr><td><a href="Edicion.php.html#198"><abbr title="App\Entity\Forpas\Edicion::getAccion">getAccion</abbr></a></td><td class="text-right">66%</td></tr>
+
+       </tbody>
+      </table>
+     </div>
+    </div>
+    <div class="col-md-6">
+     <h3>Project Risks</h3>
+     <div class="scrollbox">
+      <table class="table">
+       <thead>
+        <tr>
+         <th>Method</th>
+         <th class="text-right"><abbr title="Change Risk Anti-Patterns (CRAP) Index">CRAP</abbr></th>
+        </tr>
+       </thead>
+       <tbody>
+       <tr><td><a href="Edicion.php.html#198"><abbr title="App\Entity\Forpas\Edicion::getAccion">getAccion</abbr></a></td><td class="text-right">27</td></tr>
+       <tr><td><a href="Sesion.php.html#55"><abbr title="App\Entity\Forpas\Sesion::validateFecha">validateFecha</abbr></a></td><td class="text-right">13</td></tr>
+       <tr><td><a href="Edicion.php.html#332"><abbr title="App\Entity\Forpas\Edicion::removeSesionesEdicion">removeSesionesEdicion</abbr></a></td><td class="text-right">12</td></tr>
+       <tr><td><a href="Formador.php.html#234"><abbr title="App\Entity\Forpas\Formador::removeSesion">removeSesion</abbr></a></td><td class="text-right">12</td></tr>
+       <tr><td><a href="Formador.php.html#263"><abbr title="App\Entity\Forpas\Formador::removeAsistencia">removeAsistencia</abbr></a></td><td class="text-right">12</td></tr>
+       <tr><td><a href="Participante.php.html#513"><abbr title="App\Entity\Forpas\Participante::removeAsistencia">removeAsistencia</abbr></a></td><td class="text-right">12</td></tr>
+       <tr><td><a href="Sesion.php.html#180"><abbr title="App\Entity\Forpas\Sesion::removeAsistencia">removeAsistencia</abbr></a></td><td class="text-right">12</td></tr>
+       <tr><td><a href="Formador.php.html#253"><abbr title="App\Entity\Forpas\Formador::addAsistencia">addAsistencia</abbr></a></td><td class="text-right">6</td></tr>
+       <tr><td><a href="Participante.php.html#503"><abbr title="App\Entity\Forpas\Participante::addAsistencia">addAsistencia</abbr></a></td><td class="text-right">6</td></tr>
+       <tr><td><a href="Sesion.php.html#170"><abbr title="App\Entity\Forpas\Sesion::addAsistencia">addAsistencia</abbr></a></td><td class="text-right">6</td></tr>
+
+       </tbody>
+      </table>
+     </div>
+    </div>
+   </div>
+   <footer>
+    <hr/>
+    <p>
+     <small>Generated by <a href="https://github.com/sebastianbergmann/php-code-coverage" target="_top">php-code-coverage 9.2.32</a> using <a href="https://secure.php.net/" target="_top">PHP 8.3.12</a> and <a href="https://phpunit.de/">PHPUnit 9.6.21</a> at Thu Dec 19 19:42:13 CET 2024.</small>
+    </p>
+   </footer>
+  </div>
+  <script src="../../_js/jquery.min.js?v=9.2.32" type="text/javascript"></script>
+  <script src="../../_js/d3.min.js?v=9.2.32" type="text/javascript"></script>
+  <script src="../../_js/nv.d3.min.js?v=9.2.32" type="text/javascript"></script>
+  <script type="text/javascript">
+$(document).ready(function() {
+  nv.addGraph(function() {
+    var chart = nv.models.multiBarChart();
+    chart.tooltips(false)
+      .showControls(false)
+      .showLegend(false)
+      .reduceXTicks(false)
+      .staggerLabels(true)
+      .yAxis.tickFormat(d3.format('d'));
+
+    d3.select('#classCoverageDistribution svg')
+      .datum(getCoverageDistributionData([0,0,0,0,0,0,1,1,1,1,2,2], "Class Coverage"))
+      .transition().duration(500).call(chart);
+
+    nv.utils.windowResize(chart.update);
+
+    return chart;
+  });
+
+  nv.addGraph(function() {
+    var chart = nv.models.multiBarChart();
+    chart.tooltips(false)
+      .showControls(false)
+      .showLegend(false)
+      .reduceXTicks(false)
+      .staggerLabels(true)
+      .yAxis.tickFormat(d3.format('d'));
+
+    d3.select('#methodCoverageDistribution svg')
+      .datum(getCoverageDistributionData([24,0,0,0,1,0,0,1,0,0,0,231], "Method Coverage"))
+      .transition().duration(500).call(chart);
+
+    nv.utils.windowResize(chart.update);
+
+    return chart;
+  });
+
+  function getCoverageDistributionData(data, label) {
+    var labels = [
+      '0%',
+      '0-10%',
+      '10-20%',
+      '20-30%',
+      '30-40%',
+      '40-50%',
+      '50-60%',
+      '60-70%',
+      '70-80%',
+      '80-90%',
+      '90-100%',
+      '100%'
+    ];
+    var values = [];
+    $.each(labels, function(key) {
+      values.push({x: labels[key], y: data[key]});
+    });
+
+    return [
+      {
+        key: label,
+        values: values,
+        color: "#4572A7"
+      }
+    ];
+  }
+  nv.addGraph(function() {
+    var chart = nv.models.scatterChart()
+      .showDistX(true)
+      .showDistY(true)
+      .showLegend(false)
+      .forceX([0, 100]);
+    chart.tooltipContent(function(graph) {
+      return '<p>' + graph.point.class + '</p>';
+    });
+
+    chart.xAxis.axisLabel('Code Coverage (in percent)');
+    chart.yAxis.axisLabel('Cyclomatic Complexity');
+
+    d3.select('#classComplexity svg')
+      .datum(getComplexityData([[93.93939393939394,20,"<a href=\"Asistencia.php.html#9\">App\\Entity\\Forpas\\Asistencia<\/a>"],[100,44,"<a href=\"Curso.php.html#14\">App\\Entity\\Forpas\\Curso<\/a>"],[86.25,58,"<a href=\"Edicion.php.html#15\">App\\Entity\\Forpas\\Edicion<\/a>"],[75,38,"<a href=\"Formador.php.html#13\">App\\Entity\\Forpas\\Formador<\/a>"],[69.23076923076923,35,"<a href=\"FormadorEdicion.php.html#10\">App\\Entity\\Forpas\\FormadorEdicion<\/a>"],[91.34615384615384,70,"<a href=\"Participante.php.html#14\">App\\Entity\\Forpas\\Participante<\/a>"],[100,23,"<a href=\"ParticipanteEdicion.php.html#10\">App\\Entity\\Forpas\\ParticipanteEdicion<\/a>"],[54.761904761904766,27,"<a href=\"Sesion.php.html#14\">App\\Entity\\Forpas\\Sesion<\/a>"]], 'Class Complexity'))
+      .transition()
+      .duration(500)
+      .call(chart);
+
+    nv.utils.windowResize(chart.update);
+
+    return chart;
+  });
+
+  nv.addGraph(function() {
+    var chart = nv.models.scatterChart()
+      .showDistX(true)
+      .showDistY(true)
+      .showLegend(false)
+      .forceX([0, 100]);
+    chart.tooltipContent(function(graph) {
+      return '<p>' + graph.point.class + '</p>';
+    });
+
+    chart.xAxis.axisLabel('Code Coverage (in percent)');
+    chart.yAxis.axisLabel('Method Complexity');
+
+    d3.select('#methodComplexity svg')
+      .datum(getComplexityData([[100,3,"<a href=\"Asistencia.php.html#38\">App\\Entity\\Forpas\\Asistencia::getEstado<\/a>"],[100,4,"<a href=\"Asistencia.php.html#49\">App\\Entity\\Forpas\\Asistencia::setEstado<\/a>"],[0,1,"<a href=\"Asistencia.php.html#66\">App\\Entity\\Forpas\\Asistencia::getId<\/a>"],[100,1,"<a href=\"Asistencia.php.html#71\">App\\Entity\\Forpas\\Asistencia::isAsiste<\/a>"],[100,1,"<a href=\"Asistencia.php.html#76\">App\\Entity\\Forpas\\Asistencia::setAsiste<\/a>"],[100,1,"<a href=\"Asistencia.php.html#83\">App\\Entity\\Forpas\\Asistencia::isJustifica<\/a>"],[100,1,"<a href=\"Asistencia.php.html#88\">App\\Entity\\Forpas\\Asistencia::setJustifica<\/a>"],[100,1,"<a href=\"Asistencia.php.html#95\">App\\Entity\\Forpas\\Asistencia::getObservaciones<\/a>"],[100,1,"<a href=\"Asistencia.php.html#100\">App\\Entity\\Forpas\\Asistencia::setObservaciones<\/a>"],[100,1,"<a href=\"Asistencia.php.html#107\">App\\Entity\\Forpas\\Asistencia::getParticipante<\/a>"],[100,1,"<a href=\"Asistencia.php.html#112\">App\\Entity\\Forpas\\Asistencia::setParticipante<\/a>"],[0,1,"<a href=\"Asistencia.php.html#119\">App\\Entity\\Forpas\\Asistencia::getFormador<\/a>"],[100,1,"<a href=\"Asistencia.php.html#124\">App\\Entity\\Forpas\\Asistencia::setFormador<\/a>"],[100,1,"<a href=\"Asistencia.php.html#131\">App\\Entity\\Forpas\\Asistencia::getSesion<\/a>"],[100,1,"<a href=\"Asistencia.php.html#136\">App\\Entity\\Forpas\\Asistencia::setSesion<\/a>"],[100,1,"<a href=\"Curso.php.html#77\">App\\Entity\\Forpas\\Curso::__construct<\/a>"],[100,4,"<a href=\"Curso.php.html#82\">App\\Entity\\Forpas\\Curso::validateHoras<\/a>"],[100,1,"<a href=\"Curso.php.html#94\">App\\Entity\\Forpas\\Curso::getId<\/a>"],[100,1,"<a href=\"Curso.php.html#99\">App\\Entity\\Forpas\\Curso::getCodigoCurso<\/a>"],[100,1,"<a href=\"Curso.php.html#104\">App\\Entity\\Forpas\\Curso::setCodigoCurso<\/a>"],[100,1,"<a href=\"Curso.php.html#111\">App\\Entity\\Forpas\\Curso::getNombreCurso<\/a>"],[100,1,"<a href=\"Curso.php.html#116\">App\\Entity\\Forpas\\Curso::setNombreCurso<\/a>"],[100,1,"<a href=\"Curso.php.html#123\">App\\Entity\\Forpas\\Curso::getHoras<\/a>"],[100,1,"<a href=\"Curso.php.html#128\">App\\Entity\\Forpas\\Curso::setHoras<\/a>"],[100,1,"<a href=\"Curso.php.html#135\">App\\Entity\\Forpas\\Curso::getObjetivos<\/a>"],[100,1,"<a href=\"Curso.php.html#140\">App\\Entity\\Forpas\\Curso::setObjetivos<\/a>"],[100,1,"<a href=\"Curso.php.html#147\">App\\Entity\\Forpas\\Curso::getContenidos<\/a>"],[100,1,"<a href=\"Curso.php.html#152\">App\\Entity\\Forpas\\Curso::setContenidos<\/a>"],[100,1,"<a href=\"Curso.php.html#159\">App\\Entity\\Forpas\\Curso::getDestinatarios<\/a>"],[100,1,"<a href=\"Curso.php.html#164\">App\\Entity\\Forpas\\Curso::setDestinatarios<\/a>"],[100,1,"<a href=\"Curso.php.html#171\">App\\Entity\\Forpas\\Curso::getRequisitos<\/a>"],[100,1,"<a href=\"Curso.php.html#176\">App\\Entity\\Forpas\\Curso::setRequisitos<\/a>"],[100,1,"<a href=\"Curso.php.html#183\">App\\Entity\\Forpas\\Curso::getJustificacion<\/a>"],[100,1,"<a href=\"Curso.php.html#188\">App\\Entity\\Forpas\\Curso::setJustificacion<\/a>"],[100,1,"<a href=\"Curso.php.html#195\">App\\Entity\\Forpas\\Curso::getCoordinador<\/a>"],[100,1,"<a href=\"Curso.php.html#200\">App\\Entity\\Forpas\\Curso::setCoordinador<\/a>"],[100,1,"<a href=\"Curso.php.html#207\">App\\Entity\\Forpas\\Curso::getParticipantesEdicion<\/a>"],[100,1,"<a href=\"Curso.php.html#212\">App\\Entity\\Forpas\\Curso::setParticipantesEdicion<\/a>"],[100,1,"<a href=\"Curso.php.html#219\">App\\Entity\\Forpas\\Curso::getEdicionesEstimadas<\/a>"],[100,1,"<a href=\"Curso.php.html#224\">App\\Entity\\Forpas\\Curso::setEdicionesEstimadas<\/a>"],[100,1,"<a href=\"Curso.php.html#231\">App\\Entity\\Forpas\\Curso::getPlazoSolicitud<\/a>"],[100,1,"<a href=\"Curso.php.html#236\">App\\Entity\\Forpas\\Curso::setPlazoSolicitud<\/a>"],[100,1,"<a href=\"Curso.php.html#243\">App\\Entity\\Forpas\\Curso::getObservaciones<\/a>"],[100,1,"<a href=\"Curso.php.html#248\">App\\Entity\\Forpas\\Curso::setObservaciones<\/a>"],[100,1,"<a href=\"Curso.php.html#255\">App\\Entity\\Forpas\\Curso::isVisibleWeb<\/a>"],[100,1,"<a href=\"Curso.php.html#260\">App\\Entity\\Forpas\\Curso::setVisibleWeb<\/a>"],[100,1,"<a href=\"Curso.php.html#267\">App\\Entity\\Forpas\\Curso::getHorasVirtuales<\/a>"],[100,1,"<a href=\"Curso.php.html#272\">App\\Entity\\Forpas\\Curso::setHorasVirtuales<\/a>"],[100,1,"<a href=\"Curso.php.html#279\">App\\Entity\\Forpas\\Curso::isCalificable<\/a>"],[100,1,"<a href=\"Curso.php.html#284\">App\\Entity\\Forpas\\Curso::setCalificable<\/a>"],[100,1,"<a href=\"Curso.php.html#294\">App\\Entity\\Forpas\\Curso::getEdiciones<\/a>"],[100,2,"<a href=\"Curso.php.html#299\">App\\Entity\\Forpas\\Curso::addEdiciones<\/a>"],[100,3,"<a href=\"Curso.php.html#309\">App\\Entity\\Forpas\\Curso::removeEdiciones<\/a>"],[100,1,"<a href=\"Edicion.php.html#73\">App\\Entity\\Forpas\\Edicion::__construct<\/a>"],[100,1,"<a href=\"Edicion.php.html#80\">App\\Entity\\Forpas\\Edicion::getId<\/a>"],[100,1,"<a href=\"Edicion.php.html#85\">App\\Entity\\Forpas\\Edicion::getCodigoEdicion<\/a>"],[100,1,"<a href=\"Edicion.php.html#90\">App\\Entity\\Forpas\\Edicion::setCodigoEdicion<\/a>"],[100,1,"<a href=\"Edicion.php.html#97\">App\\Entity\\Forpas\\Edicion::getFechaInicio<\/a>"],[100,1,"<a href=\"Edicion.php.html#102\">App\\Entity\\Forpas\\Edicion::setFechaInicio<\/a>"],[100,1,"<a href=\"Edicion.php.html#109\">App\\Entity\\Forpas\\Edicion::getFechaFin<\/a>"],[100,1,"<a href=\"Edicion.php.html#114\">App\\Entity\\Forpas\\Edicion::setFechaFin<\/a>"],[100,1,"<a href=\"Edicion.php.html#121\">App\\Entity\\Forpas\\Edicion::getCalendario<\/a>"],[100,1,"<a href=\"Edicion.php.html#126\">App\\Entity\\Forpas\\Edicion::setCalendario<\/a>"],[100,1,"<a href=\"Edicion.php.html#133\">App\\Entity\\Forpas\\Edicion::getHorario<\/a>"],[100,1,"<a href=\"Edicion.php.html#138\">App\\Entity\\Forpas\\Edicion::setHorario<\/a>"],[100,1,"<a href=\"Edicion.php.html#145\">App\\Entity\\Forpas\\Edicion::getLugar<\/a>"],[100,1,"<a href=\"Edicion.php.html#150\">App\\Entity\\Forpas\\Edicion::setLugar<\/a>"],[100,1,"<a href=\"Edicion.php.html#157\">App\\Entity\\Forpas\\Edicion::getEstado<\/a>"],[100,1,"<a href=\"Edicion.php.html#162\">App\\Entity\\Forpas\\Edicion::setEstado<\/a>"],[100,1,"<a href=\"Edicion.php.html#169\">App\\Entity\\Forpas\\Edicion::getSesiones<\/a>"],[100,1,"<a href=\"Edicion.php.html#174\">App\\Entity\\Forpas\\Edicion::setSesiones<\/a>"],[100,1,"<a href=\"Edicion.php.html#181\">App\\Entity\\Forpas\\Edicion::getMaxParticipantes<\/a>"],[100,1,"<a href=\"Edicion.php.html#186\">App\\Entity\\Forpas\\Edicion::setMaxParticipantes<\/a>"],[100,1,"<a href=\"Edicion.php.html#193\">App\\Entity\\Forpas\\Edicion::getPlazasLibres<\/a>"],[66.66666666666666,17,"<a href=\"Edicion.php.html#198\">App\\Entity\\Forpas\\Edicion::getAccion<\/a>"],[100,1,"<a href=\"Edicion.php.html#247\">App\\Entity\\Forpas\\Edicion::getCurso<\/a>"],[100,1,"<a href=\"Edicion.php.html#252\">App\\Entity\\Forpas\\Edicion::setCurso<\/a>"],[100,1,"<a href=\"Edicion.php.html#262\">App\\Entity\\Forpas\\Edicion::getParticipantesEdicion<\/a>"],[100,2,"<a href=\"Edicion.php.html#267\">App\\Entity\\Forpas\\Edicion::addParticipantesEdicion<\/a>"],[100,3,"<a href=\"Edicion.php.html#276\">App\\Entity\\Forpas\\Edicion::removeParticipantesEdicion<\/a>"],[100,1,"<a href=\"Edicion.php.html#290\">App\\Entity\\Forpas\\Edicion::getFormadoresEdicion<\/a>"],[100,2,"<a href=\"Edicion.php.html#295\">App\\Entity\\Forpas\\Edicion::addFormadoresEdicion<\/a>"],[100,3,"<a href=\"Edicion.php.html#304\">App\\Entity\\Forpas\\Edicion::removeFormadoresEdicion<\/a>"],[100,1,"<a href=\"Edicion.php.html#318\">App\\Entity\\Forpas\\Edicion::getSesionesEdicion<\/a>"],[100,2,"<a href=\"Edicion.php.html#323\">App\\Entity\\Forpas\\Edicion::addSesionesEdicion<\/a>"],[0,3,"<a href=\"Edicion.php.html#332\">App\\Entity\\Forpas\\Edicion::removeSesionesEdicion<\/a>"],[100,1,"<a href=\"Formador.php.html#68\">App\\Entity\\Forpas\\Formador::__construct<\/a>"],[100,1,"<a href=\"Formador.php.html#75\">App\\Entity\\Forpas\\Formador::getId<\/a>"],[100,1,"<a href=\"Formador.php.html#80\">App\\Entity\\Forpas\\Formador::getNif<\/a>"],[100,1,"<a href=\"Formador.php.html#85\">App\\Entity\\Forpas\\Formador::setNif<\/a>"],[100,1,"<a href=\"Formador.php.html#92\">App\\Entity\\Forpas\\Formador::getApellidos<\/a>"],[100,1,"<a href=\"Formador.php.html#97\">App\\Entity\\Forpas\\Formador::setApellidos<\/a>"],[100,1,"<a href=\"Formador.php.html#104\">App\\Entity\\Forpas\\Formador::getNombre<\/a>"],[100,1,"<a href=\"Formador.php.html#109\">App\\Entity\\Forpas\\Formador::setNombre<\/a>"],[100,1,"<a href=\"Formador.php.html#116\">App\\Entity\\Forpas\\Formador::getOrganizacion<\/a>"],[100,1,"<a href=\"Formador.php.html#121\">App\\Entity\\Forpas\\Formador::setOrganizacion<\/a>"],[100,1,"<a href=\"Formador.php.html#128\">App\\Entity\\Forpas\\Formador::getCorreoAux<\/a>"],[100,1,"<a href=\"Formador.php.html#133\">App\\Entity\\Forpas\\Formador::setCorreoAux<\/a>"],[100,1,"<a href=\"Formador.php.html#140\">App\\Entity\\Forpas\\Formador::getTelefono<\/a>"],[100,1,"<a href=\"Formador.php.html#145\">App\\Entity\\Forpas\\Formador::setTelefono<\/a>"],[100,1,"<a href=\"Formador.php.html#152\">App\\Entity\\Forpas\\Formador::getObservaciones<\/a>"],[100,1,"<a href=\"Formador.php.html#157\">App\\Entity\\Forpas\\Formador::setObservaciones<\/a>"],[100,1,"<a href=\"Formador.php.html#164\">App\\Entity\\Forpas\\Formador::getFormadorRJ<\/a>"],[100,1,"<a href=\"Formador.php.html#169\">App\\Entity\\Forpas\\Formador::setFormadorRJ<\/a>"],[100,1,"<a href=\"Formador.php.html#179\">App\\Entity\\Forpas\\Formador::getFormadorEdiciones<\/a>"],[100,2,"<a href=\"Formador.php.html#184\">App\\Entity\\Forpas\\Formador::addFormadorEdiciones<\/a>"],[100,3,"<a href=\"Formador.php.html#193\">App\\Entity\\Forpas\\Formador::removeFormadorEdiciones<\/a>"],[100,1,"<a href=\"Formador.php.html#205\">App\\Entity\\Forpas\\Formador::getUsuario<\/a>"],[100,1,"<a href=\"Formador.php.html#210\">App\\Entity\\Forpas\\Formador::setUsuario<\/a>"],[0,1,"<a href=\"Formador.php.html#220\">App\\Entity\\Forpas\\Formador::getSesiones<\/a>"],[100,2,"<a href=\"Formador.php.html#225\">App\\Entity\\Forpas\\Formador::addSesion<\/a>"],[0,3,"<a href=\"Formador.php.html#234\">App\\Entity\\Forpas\\Formador::removeSesion<\/a>"],[0,1,"<a href=\"Formador.php.html#248\">App\\Entity\\Forpas\\Formador::getAsistencias<\/a>"],[0,2,"<a href=\"Formador.php.html#253\">App\\Entity\\Forpas\\Formador::addAsistencia<\/a>"],[0,3,"<a href=\"Formador.php.html#263\">App\\Entity\\Forpas\\Formador::removeAsistencia<\/a>"],[100,1,"<a href=\"FormadorEdicion.php.html#71\">App\\Entity\\Forpas\\FormadorEdicion::getId<\/a>"],[100,1,"<a href=\"FormadorEdicion.php.html#76\">App\\Entity\\Forpas\\FormadorEdicion::getFormador<\/a>"],[100,1,"<a href=\"FormadorEdicion.php.html#81\">App\\Entity\\Forpas\\FormadorEdicion::setFormador<\/a>"],[100,1,"<a href=\"FormadorEdicion.php.html#88\">App\\Entity\\Forpas\\FormadorEdicion::getEdicion<\/a>"],[100,1,"<a href=\"FormadorEdicion.php.html#93\">App\\Entity\\Forpas\\FormadorEdicion::setEdicion<\/a>"],[100,1,"<a href=\"FormadorEdicion.php.html#100\">App\\Entity\\Forpas\\FormadorEdicion::getHorasImpartidas<\/a>"],[0,1,"<a href=\"FormadorEdicion.php.html#105\">App\\Entity\\Forpas\\FormadorEdicion::setHorasImpartidas<\/a>"],[100,1,"<a href=\"FormadorEdicion.php.html#112\">App\\Entity\\Forpas\\FormadorEdicion::getRetribPrevista<\/a>"],[0,1,"<a href=\"FormadorEdicion.php.html#117\">App\\Entity\\Forpas\\FormadorEdicion::setRetribPrevista<\/a>"],[100,1,"<a href=\"FormadorEdicion.php.html#124\">App\\Entity\\Forpas\\FormadorEdicion::getRetribEjecutada<\/a>"],[0,1,"<a href=\"FormadorEdicion.php.html#129\">App\\Entity\\Forpas\\FormadorEdicion::setRetribEjecutada<\/a>"],[100,1,"<a href=\"FormadorEdicion.php.html#136\">App\\Entity\\Forpas\\FormadorEdicion::getObservaciones<\/a>"],[100,1,"<a href=\"FormadorEdicion.php.html#141\">App\\Entity\\Forpas\\FormadorEdicion::setObservaciones<\/a>"],[100,1,"<a href=\"FormadorEdicion.php.html#148\">App\\Entity\\Forpas\\FormadorEdicion::isFedap<\/a>"],[0,1,"<a href=\"FormadorEdicion.php.html#153\">App\\Entity\\Forpas\\FormadorEdicion::setFedap<\/a>"],[100,1,"<a href=\"FormadorEdicion.php.html#160\">App\\Entity\\Forpas\\FormadorEdicion::isEvaluacion<\/a>"],[0,1,"<a href=\"FormadorEdicion.php.html#165\">App\\Entity\\Forpas\\FormadorEdicion::setEvaluacion<\/a>"],[100,1,"<a href=\"FormadorEdicion.php.html#172\">App\\Entity\\Forpas\\FormadorEdicion::getHojaFirma<\/a>"],[100,1,"<a href=\"FormadorEdicion.php.html#177\">App\\Entity\\Forpas\\FormadorEdicion::setHojaFirma<\/a>"],[100,1,"<a href=\"FormadorEdicion.php.html#184\">App\\Entity\\Forpas\\FormadorEdicion::getDatosBanco<\/a>"],[100,1,"<a href=\"FormadorEdicion.php.html#189\">App\\Entity\\Forpas\\FormadorEdicion::setDatosBanco<\/a>"],[100,1,"<a href=\"FormadorEdicion.php.html#196\">App\\Entity\\Forpas\\FormadorEdicion::getIncompatibilidad<\/a>"],[100,1,"<a href=\"FormadorEdicion.php.html#201\">App\\Entity\\Forpas\\FormadorEdicion::setIncompatibilidad<\/a>"],[100,1,"<a href=\"FormadorEdicion.php.html#208\">App\\Entity\\Forpas\\FormadorEdicion::getGrabadoSorolla<\/a>"],[0,1,"<a href=\"FormadorEdicion.php.html#213\">App\\Entity\\Forpas\\FormadorEdicion::setGrabadoSorolla<\/a>"],[100,1,"<a href=\"FormadorEdicion.php.html#220\">App\\Entity\\Forpas\\FormadorEdicion::isSinCoste<\/a>"],[100,1,"<a href=\"FormadorEdicion.php.html#225\">App\\Entity\\Forpas\\FormadorEdicion::setSinCoste<\/a>"],[100,1,"<a href=\"FormadorEdicion.php.html#232\">App\\Entity\\Forpas\\FormadorEdicion::getCoincideTurno<\/a>"],[0,1,"<a href=\"FormadorEdicion.php.html#237\">App\\Entity\\Forpas\\FormadorEdicion::setCoincideTurno<\/a>"],[100,1,"<a href=\"FormadorEdicion.php.html#244\">App\\Entity\\Forpas\\FormadorEdicion::getCoincideTurnoObservaciones<\/a>"],[0,1,"<a href=\"FormadorEdicion.php.html#249\">App\\Entity\\Forpas\\FormadorEdicion::setCoincideTurnoObservaciones<\/a>"],[100,1,"<a href=\"FormadorEdicion.php.html#256\">App\\Entity\\Forpas\\FormadorEdicion::getControlPersonalEnviado<\/a>"],[100,1,"<a href=\"FormadorEdicion.php.html#261\">App\\Entity\\Forpas\\FormadorEdicion::setControlPersonalEnviado<\/a>"],[100,1,"<a href=\"FormadorEdicion.php.html#268\">App\\Entity\\Forpas\\FormadorEdicion::getControlPersonalRecibido<\/a>"],[100,1,"<a href=\"FormadorEdicion.php.html#273\">App\\Entity\\Forpas\\FormadorEdicion::setControlPersonalRecibido<\/a>"],[100,1,"<a href=\"Participante.php.html#120\">App\\Entity\\Forpas\\Participante::__construct<\/a>"],[100,1,"<a href=\"Participante.php.html#126\">App\\Entity\\Forpas\\Participante::getId<\/a>"],[100,1,"<a href=\"Participante.php.html#131\">App\\Entity\\Forpas\\Participante::getNif<\/a>"],[100,1,"<a href=\"Participante.php.html#136\">App\\Entity\\Forpas\\Participante::setNif<\/a>"],[100,1,"<a href=\"Participante.php.html#143\">App\\Entity\\Forpas\\Participante::getApellidos<\/a>"],[100,1,"<a href=\"Participante.php.html#148\">App\\Entity\\Forpas\\Participante::setApellidos<\/a>"],[100,1,"<a href=\"Participante.php.html#155\">App\\Entity\\Forpas\\Participante::getNombre<\/a>"],[100,1,"<a href=\"Participante.php.html#160\">App\\Entity\\Forpas\\Participante::setNombre<\/a>"],[100,1,"<a href=\"Participante.php.html#167\">App\\Entity\\Forpas\\Participante::getDescripcionCce<\/a>"],[100,1,"<a href=\"Participante.php.html#172\">App\\Entity\\Forpas\\Participante::setDescripcionCce<\/a>"],[100,1,"<a href=\"Participante.php.html#179\">App\\Entity\\Forpas\\Participante::getCodigoCce<\/a>"],[100,1,"<a href=\"Participante.php.html#184\">App\\Entity\\Forpas\\Participante::setCodigoCce<\/a>"],[100,1,"<a href=\"Participante.php.html#191\">App\\Entity\\Forpas\\Participante::getGrupo<\/a>"],[100,1,"<a href=\"Participante.php.html#196\">App\\Entity\\Forpas\\Participante::setGrupo<\/a>"],[100,1,"<a href=\"Participante.php.html#203\">App\\Entity\\Forpas\\Participante::getNivel<\/a>"],[100,1,"<a href=\"Participante.php.html#208\">App\\Entity\\Forpas\\Participante::setNivel<\/a>"],[100,1,"<a href=\"Participante.php.html#215\">App\\Entity\\Forpas\\Participante::getPuestoTrabajo<\/a>"],[100,1,"<a href=\"Participante.php.html#220\">App\\Entity\\Forpas\\Participante::setPuestoTrabajo<\/a>"],[100,1,"<a href=\"Participante.php.html#227\">App\\Entity\\Forpas\\Participante::getSubunidad<\/a>"],[100,1,"<a href=\"Participante.php.html#232\">App\\Entity\\Forpas\\Participante::setSubunidad<\/a>"],[100,1,"<a href=\"Participante.php.html#239\">App\\Entity\\Forpas\\Participante::getUnidad<\/a>"],[100,1,"<a href=\"Participante.php.html#244\">App\\Entity\\Forpas\\Participante::setUnidad<\/a>"],[100,1,"<a href=\"Participante.php.html#251\">App\\Entity\\Forpas\\Participante::getCentroDestino<\/a>"],[100,1,"<a href=\"Participante.php.html#256\">App\\Entity\\Forpas\\Participante::setCentroDestino<\/a>"],[100,1,"<a href=\"Participante.php.html#263\">App\\Entity\\Forpas\\Participante::getTRJuridico<\/a>"],[100,1,"<a href=\"Participante.php.html#268\">App\\Entity\\Forpas\\Participante::setTRJuridico<\/a>"],[100,1,"<a href=\"Participante.php.html#275\">App\\Entity\\Forpas\\Participante::getSituacionAdmin<\/a>"],[100,1,"<a href=\"Participante.php.html#280\">App\\Entity\\Forpas\\Participante::setSituacionAdmin<\/a>"],[100,1,"<a href=\"Participante.php.html#287\">App\\Entity\\Forpas\\Participante::getCodigoPlaza<\/a>"],[100,1,"<a href=\"Participante.php.html#292\">App\\Entity\\Forpas\\Participante::setCodigoPlaza<\/a>"],[100,1,"<a href=\"Participante.php.html#299\">App\\Entity\\Forpas\\Participante::getTelefonoTrabajo<\/a>"],[100,1,"<a href=\"Participante.php.html#304\">App\\Entity\\Forpas\\Participante::setTelefonoTrabajo<\/a>"],[100,1,"<a href=\"Participante.php.html#311\">App\\Entity\\Forpas\\Participante::getCorreoAux<\/a>"],[100,1,"<a href=\"Participante.php.html#316\">App\\Entity\\Forpas\\Participante::setCorreoAux<\/a>"],[100,1,"<a href=\"Participante.php.html#323\">App\\Entity\\Forpas\\Participante::getCodigoRpt<\/a>"],[100,1,"<a href=\"Participante.php.html#328\">App\\Entity\\Forpas\\Participante::setCodigoRpt<\/a>"],[100,1,"<a href=\"Participante.php.html#335\">App\\Entity\\Forpas\\Participante::getOrganizacion<\/a>"],[100,1,"<a href=\"Participante.php.html#340\">App\\Entity\\Forpas\\Participante::setOrganizacion<\/a>"],[100,1,"<a href=\"Participante.php.html#347\">App\\Entity\\Forpas\\Participante::getTurno<\/a>"],[100,1,"<a href=\"Participante.php.html#352\">App\\Entity\\Forpas\\Participante::setTurno<\/a>"],[100,1,"<a href=\"Participante.php.html#359\">App\\Entity\\Forpas\\Participante::getTelefonoParticular<\/a>"],[100,1,"<a href=\"Participante.php.html#364\">App\\Entity\\Forpas\\Participante::setTelefonoParticular<\/a>"],[100,1,"<a href=\"Participante.php.html#371\">App\\Entity\\Forpas\\Participante::getTelefonoMovil<\/a>"],[100,1,"<a href=\"Participante.php.html#376\">App\\Entity\\Forpas\\Participante::setTelefonoMovil<\/a>"],[100,1,"<a href=\"Participante.php.html#383\">App\\Entity\\Forpas\\Participante::getFechaNacimiento<\/a>"],[100,1,"<a href=\"Participante.php.html#388\">App\\Entity\\Forpas\\Participante::setFechaNacimiento<\/a>"],[100,1,"<a href=\"Participante.php.html#395\">App\\Entity\\Forpas\\Participante::getTitulacionNivel<\/a>"],[100,1,"<a href=\"Participante.php.html#400\">App\\Entity\\Forpas\\Participante::setTitulacionNivel<\/a>"],[100,1,"<a href=\"Participante.php.html#407\">App\\Entity\\Forpas\\Participante::getTitulacionFecha<\/a>"],[100,1,"<a href=\"Participante.php.html#412\">App\\Entity\\Forpas\\Participante::setTitulacionFecha<\/a>"],[100,1,"<a href=\"Participante.php.html#419\">App\\Entity\\Forpas\\Participante::getTitulacion<\/a>"],[100,1,"<a href=\"Participante.php.html#424\">App\\Entity\\Forpas\\Participante::setTitulacion<\/a>"],[100,1,"<a href=\"Participante.php.html#431\">App\\Entity\\Forpas\\Participante::getDniSinLetra<\/a>"],[100,1,"<a href=\"Participante.php.html#436\">App\\Entity\\Forpas\\Participante::setDniSinLetra<\/a>"],[100,1,"<a href=\"Participante.php.html#443\">App\\Entity\\Forpas\\Participante::getSexo<\/a>"],[100,1,"<a href=\"Participante.php.html#448\">App\\Entity\\Forpas\\Participante::setSexo<\/a>"],[100,1,"<a href=\"Participante.php.html#458\">App\\Entity\\Forpas\\Participante::getParticipanteEdiciones<\/a>"],[100,2,"<a href=\"Participante.php.html#463\">App\\Entity\\Forpas\\Participante::addParticipanteEdiciones<\/a>"],[100,3,"<a href=\"Participante.php.html#472\">App\\Entity\\Forpas\\Participante::removeParticipanteEdiciones<\/a>"],[100,1,"<a href=\"Participante.php.html#483\">App\\Entity\\Forpas\\Participante::getUsuario<\/a>"],[100,1,"<a href=\"Participante.php.html#488\">App\\Entity\\Forpas\\Participante::setUsuario<\/a>"],[0,1,"<a href=\"Participante.php.html#498\">App\\Entity\\Forpas\\Participante::getAsistencias<\/a>"],[0,2,"<a href=\"Participante.php.html#503\">App\\Entity\\Forpas\\Participante::addAsistencia<\/a>"],[0,3,"<a href=\"Participante.php.html#513\">App\\Entity\\Forpas\\Participante::removeAsistencia<\/a>"],[100,1,"<a href=\"ParticipanteEdicion.php.html#53\">App\\Entity\\Forpas\\ParticipanteEdicion::getId<\/a>"],[100,1,"<a href=\"ParticipanteEdicion.php.html#58\">App\\Entity\\Forpas\\ParticipanteEdicion::getParticipante<\/a>"],[100,1,"<a href=\"ParticipanteEdicion.php.html#63\">App\\Entity\\Forpas\\ParticipanteEdicion::setParticipante<\/a>"],[100,1,"<a href=\"ParticipanteEdicion.php.html#70\">App\\Entity\\Forpas\\ParticipanteEdicion::getEdicion<\/a>"],[100,1,"<a href=\"ParticipanteEdicion.php.html#75\">App\\Entity\\Forpas\\ParticipanteEdicion::setEdicion<\/a>"],[100,1,"<a href=\"ParticipanteEdicion.php.html#82\">App\\Entity\\Forpas\\ParticipanteEdicion::getFechaSolicitud<\/a>"],[100,1,"<a href=\"ParticipanteEdicion.php.html#87\">App\\Entity\\Forpas\\ParticipanteEdicion::setFechaSolicitud<\/a>"],[100,1,"<a href=\"ParticipanteEdicion.php.html#94\">App\\Entity\\Forpas\\ParticipanteEdicion::getBajaJustificada<\/a>"],[100,1,"<a href=\"ParticipanteEdicion.php.html#99\">App\\Entity\\Forpas\\ParticipanteEdicion::setBajaJustificada<\/a>"],[100,1,"<a href=\"ParticipanteEdicion.php.html#106\">App\\Entity\\Forpas\\ParticipanteEdicion::getPruebaFinal<\/a>"],[100,1,"<a href=\"ParticipanteEdicion.php.html#111\">App\\Entity\\Forpas\\ParticipanteEdicion::setPruebaFinal<\/a>"],[100,1,"<a href=\"ParticipanteEdicion.php.html#118\">App\\Entity\\Forpas\\ParticipanteEdicion::getCertificado<\/a>"],[100,1,"<a href=\"ParticipanteEdicion.php.html#123\">App\\Entity\\Forpas\\ParticipanteEdicion::setCertificado<\/a>"],[100,1,"<a href=\"ParticipanteEdicion.php.html#130\">App\\Entity\\Forpas\\ParticipanteEdicion::getLibro<\/a>"],[100,1,"<a href=\"ParticipanteEdicion.php.html#135\">App\\Entity\\Forpas\\ParticipanteEdicion::setLibro<\/a>"],[100,1,"<a href=\"ParticipanteEdicion.php.html#142\">App\\Entity\\Forpas\\ParticipanteEdicion::getNumeroTitulo<\/a>"],[100,1,"<a href=\"ParticipanteEdicion.php.html#147\">App\\Entity\\Forpas\\ParticipanteEdicion::setNumeroTitulo<\/a>"],[100,1,"<a href=\"ParticipanteEdicion.php.html#154\">App\\Entity\\Forpas\\ParticipanteEdicion::getObservaciones<\/a>"],[100,1,"<a href=\"ParticipanteEdicion.php.html#159\">App\\Entity\\Forpas\\ParticipanteEdicion::setObservaciones<\/a>"],[100,1,"<a href=\"ParticipanteEdicion.php.html#166\">App\\Entity\\Forpas\\ParticipanteEdicion::getApto<\/a>"],[100,1,"<a href=\"ParticipanteEdicion.php.html#171\">App\\Entity\\Forpas\\ParticipanteEdicion::setApto<\/a>"],[100,1,"<a href=\"ParticipanteEdicion.php.html#178\">App\\Entity\\Forpas\\ParticipanteEdicion::getDireccion<\/a>"],[100,1,"<a href=\"ParticipanteEdicion.php.html#183\">App\\Entity\\Forpas\\ParticipanteEdicion::setDireccion<\/a>"],[100,1,"<a href=\"Sesion.php.html#51\">App\\Entity\\Forpas\\Sesion::__construct<\/a>"],[30,5,"<a href=\"Sesion.php.html#55\">App\\Entity\\Forpas\\Sesion::validateFecha<\/a>"],[100,1,"<a href=\"Sesion.php.html#74\">App\\Entity\\Forpas\\Sesion::getId<\/a>"],[100,1,"<a href=\"Sesion.php.html#79\">App\\Entity\\Forpas\\Sesion::getFecha<\/a>"],[100,1,"<a href=\"Sesion.php.html#84\">App\\Entity\\Forpas\\Sesion::setFecha<\/a>"],[100,1,"<a href=\"Sesion.php.html#91\">App\\Entity\\Forpas\\Sesion::getHoraInicio<\/a>"],[100,1,"<a href=\"Sesion.php.html#96\">App\\Entity\\Forpas\\Sesion::setHoraInicio<\/a>"],[100,1,"<a href=\"Sesion.php.html#103\">App\\Entity\\Forpas\\Sesion::getDuracion<\/a>"],[100,1,"<a href=\"Sesion.php.html#108\">App\\Entity\\Forpas\\Sesion::setDuracion<\/a>"],[100,1,"<a href=\"Sesion.php.html#114\">App\\Entity\\Forpas\\Sesion::getObservaciones<\/a>"],[0,1,"<a href=\"Sesion.php.html#119\">App\\Entity\\Forpas\\Sesion::setObservaciones<\/a>"],[100,1,"<a href=\"Sesion.php.html#126\">App\\Entity\\Forpas\\Sesion::getTipo<\/a>"],[100,1,"<a href=\"Sesion.php.html#131\">App\\Entity\\Forpas\\Sesion::setTipo<\/a>"],[100,1,"<a href=\"Sesion.php.html#138\">App\\Entity\\Forpas\\Sesion::getEdicion<\/a>"],[100,1,"<a href=\"Sesion.php.html#143\">App\\Entity\\Forpas\\Sesion::setEdicion<\/a>"],[0,1,"<a href=\"Sesion.php.html#150\">App\\Entity\\Forpas\\Sesion::getFormador<\/a>"],[100,1,"<a href=\"Sesion.php.html#155\">App\\Entity\\Forpas\\Sesion::setFormador<\/a>"],[0,1,"<a href=\"Sesion.php.html#165\">App\\Entity\\Forpas\\Sesion::getAsistencias<\/a>"],[0,2,"<a href=\"Sesion.php.html#170\">App\\Entity\\Forpas\\Sesion::addAsistencia<\/a>"],[0,3,"<a href=\"Sesion.php.html#180\">App\\Entity\\Forpas\\Sesion::removeAsistencia<\/a>"]], 'Method Complexity'))
+      .transition()
+      .duration(500)
+      .call(chart);
+
+    nv.utils.windowResize(chart.update);
+
+    return chart;
+  });
+
+  function getComplexityData(data, label) {
+    var values = [];
+    $.each(data, function(key) {
+      var value = Math.round(data[key][0]*100) / 100;
+      values.push({
+        x: value,
+        y: data[key][1],
+        class: data[key][2],
+        size: 0.05,
+        shape: 'diamond'
+      });
+    });
+
+    return [
+      {
+        key: label,
+        values: values,
+        color: "#4572A7"
+      }
+    ];
+  }
+});
+  </script>
+ </body>
+</html>

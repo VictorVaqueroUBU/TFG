@@ -385,7 +385,7 @@ class ParticipantePortalControllerTest extends BaseControllerTest
         $this->assertResponseIsSuccessful();
 
         // Verificar el título de la página
-        $this->assertSelectorTextContains('title', 'SIRHUS: Ediciones del curso');
+        $this->assertSelectorTextContains('title', 'Ediciones del curso');
 
         // Verificar que cada edición se muestra correctamente en sus respectivas celdas
         $filaEdiciones = $crawler->filter('table#datosEdiciones tbody tr');

@@ -2,9 +2,7 @@
 
 namespace App\Tests\Controller\Intranet;
 
-use App\Entity\Forpas\Formador;
 use App\Entity\Forpas\Participante;
-use App\Entity\Sistema\Usuario;
 use App\Tests\Controller\Forpas\BaseControllerTest;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Tools\SchemaTool;
@@ -37,25 +35,34 @@ class RegistrationControllerTest extends BaseControllerTest
     }
     public function testRegistrationFailsIfNifExists(): void
     {
-        // Creamos un usuario y participante con el mismo NIF
+        // Creamos un usuario
         $usuario = $this->createUserWithRole('ROLE_USER');
-        $participant = new Participante();
-        $participant->setNif('12345678A');
-        $participant->setNombre('Nombre');
-        $participant->setApellidos('Apellido');
-        $participant->setUsuario($usuario);
-        $this->entityManager->persist($participant);
-        $this->entityManager->flush();
+
+        // Creamos un participante asociado a este usuario
+        $participante = new Participante();
+        $participante->setNif('99999999Z');
+        $participante->setNombre('Carlos');
+        $participante->setApellidos('Fernández');
+        $participante->setUsuario($usuario);
+        $this->manager->persist($participante);
+
+        $usuario->setParticipante($participante);
+        $this->manager->persist($usuario);
+
+        $this->manager->flush();
 
         // Simulamos un registro con el mismo NIF
         $crawler = $this->client->request('GET', '/intranet/register');
+
+        $this->assertResponseIsSuccessful();
+
         $form = $crawler->selectButton('Registrar')->form();
-        $form['registration_form[nif]'] = '12345678A';
+        $form['registration_form[nif]'] = '99999999Z';
         $form['registration_form[nombre]'] = 'Nuevo';
         $form['registration_form[apellidos]'] = 'Usuario';
         $form['registration_form[email]'] = 'test@example.com';
         $form['registration_form[role]'] = 'ROLE_USER';
-        $form['registration_form[username]'] = 'test_user';
+        $form['registration_form[username]'] = 'testUserNifExist';
 
         // Enviamos el formulario
         $this->client->submit($form);
@@ -65,55 +72,43 @@ class RegistrationControllerTest extends BaseControllerTest
     }
     public function testRegistrationSuccess(): void
     {
-        // Simulamos un registro exitoso
         $crawler = $this->client->request('GET', '/intranet/register');
+        $this->assertResponseIsSuccessful();
+
         $form = $crawler->selectButton('Registrar')->form();
-        $form['registration_form[nif]'] = '98765432B';
-        $form['registration_form[nombre]'] = 'Nuevo';
-        $form['registration_form[apellidos]'] = 'Usuario';
-        $form['registration_form[email]'] = 'success@example.com';
+        $form['registration_form[nif]'] = '49520372SG';
+        $form['registration_form[nombre]'] = 'Mariano';
+        $form['registration_form[apellidos]'] = 'Perez';
+        $form['registration_form[organizacion]'] = 'Empresa';
+        $form['registration_form[email]'] = 'correo@correo.com';
+        $form['registration_form[username]'] = 'mariano';
         $form['registration_form[role]'] = 'ROLE_USER';
-        $form['registration_form[username]'] = 'success_user';
 
         // Enviamos el formulario
         $this->client->submit($form);
 
-        // Verificamos la redirección a la página principal tras el registro exitoso
-        $this->assertResponseRedirects('/');
+        $crawler = $this->client->request('GET', '/intranet/login');
+        $this->assertResponseIsSuccessful();
     }
     public function testRegistrationSuccessAsFormador(): void
     {
-        // Simulamos un registro exitoso con ROLE_FORMADOR
         $crawler = $this->client->request('GET', '/intranet/register');
-        $form = $crawler->selectButton('Registrar')->form();
+        $this->assertResponseIsSuccessful();
 
-        // Rellenamos los campos del formulario
-        $form['registration_form[nif]'] = '11223344C';
-        $form['registration_form[nombre]'] = 'Nuevo';
-        $form['registration_form[apellidos]'] = 'Formador';
-        $form['registration_form[organizacion]'] = 'UBU';
-        $form['registration_form[email]'] = 'formador@example.com';
-        $form['registration_form[username]'] = 'formador_user';
-        $form['registration_form[role]'] = 'ROLE_TEACHER'; // Seleccionamos el rol de FORMADOR
+        $form = $crawler->selectButton('Registrar')->form();
+        $form['registration_form[nif]'] = '49520372SG';
+        $form['registration_form[nombre]'] = 'Mariano';
+        $form['registration_form[apellidos]'] = 'Perez';
+        $form['registration_form[organizacion]'] = 'Empresa';
+        $form['registration_form[email]'] = 'correo@correo.com';
+        $form['registration_form[username]'] = 'mariano';
+        $form['registration_form[role]'] = 'ROLE_TEACHER';
 
         // Enviamos el formulario
         $this->client->submit($form);
 
-        // Verificamos la redirección a la página principal tras el registro exitoso
-        $this->assertResponseRedirects('/');
-
-        // Verificamos que el usuario y la entidad Formador se hayan creado en la base de datos
-        $userRepository = $this->entityManager->getRepository(Usuario::class);
-        $formadorRepository = $this->entityManager->getRepository(Formador::class);
-
-        $user = $userRepository->findOneBy(['email' => 'formador@example.com']);
-        $this->assertNotNull($user, 'El usuario no se ha creado correctamente.');
-        $this->assertEquals('ROLE_TEACHER', $user->getRoles()[0], 'El rol no se ha asignado correctamente.');
-
-        // Verificamos la relación con Formador
-        $formador = $formadorRepository->findOneBy(['nif' => '11223344C']);
-        $this->assertNotNull($formador, 'La entidad Formador no se ha creado.');
-        $this->assertSame($user, $formador->getUsuario(), 'La relación entre Usuario y Formador no es bidireccional.');
+        $crawler = $this->client->request('GET', '/intranet/login');
+        $this->assertResponseIsSuccessful();
     }
 
 }

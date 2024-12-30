@@ -37,7 +37,7 @@
         <tr>
             <th>NIF</th>
             <th>Participante</th>
-            <th>Baja Justificada</th>
+            <th class="text-center">Baja Justificada</th>
             <th class="text-center">Días</th>
             <th>Asistencias</th>
             <th>Justifica</th>
@@ -53,8 +53,8 @@
         {% for pId, p in datos_participantes %}
             <tr>
                 <td>{{ p.nif }}</td>
-                <td>{{ p.apellidos }}, {{ p.nombre }}</td>
-                <td>{{ p.bajaJustificada ? p.bajaJustificada|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ p.nombre }} {{ p.apellidos }}</td>
+                <td class="text-center">{{ p.bajaJustificada ? p.bajaJustificada|date('Y-m-d H:i:s') : '' }}</td>
                 <td class="text-center">{{ p.dias }}</td>
                 <td>
                     {{ p.asistenciasFechas is not empty ? p.asistenciasFechas|map(fecha => fecha|date('dM'))|join(', ') : '' }}

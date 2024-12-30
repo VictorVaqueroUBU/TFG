@@ -3,6 +3,7 @@
 namespace App\Controller\Forpas;
 
 use App\Entity\Forpas\ParticipanteEdicion;
+use App\Entity\Sistema\Usuario;
 use App\Form\Forpas\ParticipanteEdicionType;
 use App\Repository\Forpas\AsistenciaRepository;
 use App\Repository\Forpas\EdicionRepository;
@@ -135,6 +136,10 @@ final class ParticipanteEdicionController extends AbstractController
     public function new(int $id, int $edicionId, EntityManagerInterface $entityManager,
                         ParticipanteRepository $participanteRepository, EdicionRepository $edicionRepository): Response
     {
+        // Capturamos el usuario que está logado
+        /** @var Usuario|null $user */
+        $user = $this->getUser();
+
         // Obtenemos el participante y la edición
         $participante = $participanteRepository->find($id);
         $edicion = $edicionRepository->find($edicionId);
@@ -144,6 +149,7 @@ final class ParticipanteEdicionController extends AbstractController
         $participanteEdicion->setParticipante($participante);
         $participanteEdicion->setEdicion($edicion);
         $participanteEdicion->setFechaSolicitud(new DateTime());
+        $participanteEdicion->setDireccion($user->getUsername());
 
         // Añadimos la inscripción a las colecciones
         $participante->addParticipanteEdiciones($participanteEdicion);
