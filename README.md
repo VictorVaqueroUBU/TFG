@@ -36,7 +36,10 @@ Este proyecto es una aplicación web desarrollada en **Symfony** para la gestió
   - Validación del estado de las ediciones, sesiones y calificaciones, si las hubiera.
 - **Portal del Gestor**:
   - Nueva herramienta de certificaciones de ediciones.
-
+  - Visualización de la ficha formativa de un participante.
+  - Visualización de las ediciones asignadas a un formador con sus estados actuales (abiertas, cerradas).
+- **Documentación**:
+  - Se ha añadido la memoria en formato docx y pdf a la documentación del proyecto.
 - **Pruebas Unitarias y Calidad del Código**:
   - Implementación de pruebas para nuevas entidades y controladores.
   - Código validado con **PHPStan** para asegurar estándares de calidad.
@@ -100,16 +103,29 @@ La aplicación utiliza un sistema de envío de correos para funciones como el re
     cd tu-repositorio
 ```
 
-3. Instala las dependencias con Composer:
+3. Instala componentes de Symfony:
 
+  - Entorno de pruebas
 ```bash
     composer install
 ```
-   
+  - Entorno de producción
+```bash
+    composer dump-env prod
+    composer install --no-dev --optimize-autoloader
+    APP_ENV=prod php bin/console cache:clear
+```
+
 4. Instalar componentes JavaScript
 
+- Entorno de pruebas
 ```bash
     bin/console importmap:install
+```
+- Entorno de producción
+```bash
+    bin/console importmap:install
+    bin/console asset-map:compile
 ```
 
 5. Instalar componentes JavaScript
