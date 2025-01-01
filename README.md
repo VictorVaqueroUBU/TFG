@@ -113,7 +113,7 @@ La aplicación utiliza un sistema de envío de correos para funciones como el re
 ```bash
     composer dump-env prod
     composer install --no-dev --optimize-autoloader
-    APP_ENV=prod php bin/console cache:clear
+    APP_ENV=prod APP_DEBUG=0 bin/console cache:clear
 ```
 
 4. Instalar componentes JavaScript
