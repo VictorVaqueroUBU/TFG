@@ -5,8 +5,9 @@
 {% block content %}
     <div class="pagina-seccion">{{ titulo }}</div>
 
-    {{ form_errors(registrationForm) }}
     {{ form_start(registrationForm) }}
+
+    <!-- Renderizar todos los campos del formulario -->
     {{ form_widget(registrationForm) }}
 
     <!-- Botón "Volver" -->
