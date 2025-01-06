@@ -120,12 +120,15 @@ class EdicionRepository extends ServiceEntityRepository
      *
      * @return Edicion[] Retorna un array de objetos de la entidad Edicion que cumplen con el criterio de búsqueda.
      */
-    public function findProximasEdiciones(): array
+    public function findProximasEdicionesVisibles(): array
     {
         $hoy = (new DateTime())->setTime(0, 0);
         return $this->createQueryBuilder('e')
+            ->innerJoin('e.curso', 'c')
             ->where('e.fecha_inicio >= :hoy')
+            ->andWhere('c.visible_web = :visibleWeb')
             ->setParameter('hoy', $hoy)
+            ->setParameter('visibleWeb', true)
             ->getQuery()
             ->getResult();
     }

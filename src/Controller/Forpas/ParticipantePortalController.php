@@ -80,7 +80,7 @@ class ParticipantePortalController extends AbstractController
     public function listarCursos(CursoRepository $cursoRepository): Response
     {
         $year = (int) date('Y'); // Obtiene el año actual
-        $cursos = $cursoRepository->findByYear($year);
+        $cursos = $cursoRepository->findByYearVisibles($year);
         return $this->render('intranet/forpas/participante/cursos.html.twig', [
             'cursos' => $cursos,
         ]);
@@ -230,7 +230,7 @@ class ParticipantePortalController extends AbstractController
         $participante = $user->getParticipante();
 
         // Obtenemos las ediciones futuras
-        $proximasEdiciones = $entityManager->getRepository(Edicion::class)->findProximasEdiciones();
+        $proximasEdiciones = $entityManager->getRepository(Edicion::class)->findProximasEdicionesVisibles();
 
         return $this->render('intranet/forpas/participante/proximas_ediciones.html.twig', [
             'proximasEdiciones' => $proximasEdiciones,
