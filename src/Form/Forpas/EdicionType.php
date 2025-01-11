@@ -28,6 +28,10 @@ class EdicionType extends AbstractType
                 'choice_label' => 'nombreCurso',
                 'label' => 'Curso',
                 'disabled' => true,
+                'attr' => [
+                    'class' => 'form-control',
+                    'style' => 'max-width: 100%; width: 100%; box-sizing: border-box;'
+                ],
             ])
             ->add('codigo_edicion', TextType::class, [
                 'label' => 'Código',

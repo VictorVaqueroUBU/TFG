@@ -212,6 +212,7 @@ class FormadorPortalController extends AbstractController
 
             if (!$asistencia) {
                 $asistencia = new Asistencia();
+                $asistencia->setEstado('ninguno'); // Valor predeterminado
                 $asistencia->setSesion($sesion);
                 $asistencia->setParticipante($participanteEdicion->getParticipante());
                 $asistencia->setFormador($user->getFormador());
