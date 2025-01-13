@@ -16,8 +16,8 @@
             <td>{{ pe.edicion.codigoEdicion }}</td>
             <td>{{ pe.edicion.curso.nombreCurso }}</td>
             <td class="text-center">{{ pe.edicion.curso.horas }}</td>
-            <td class="text-center">{{ pe.edicion.fechaInicio|date('Y-m-d') }}</td>
-            <td class="text-center">{{ pe.edicion.fechaFin|date('Y-m-d') }}</td>
+            <td class="col-1 text-center">{{ pe.edicion.fechaInicio|date('Y-m-d') }}</td>
+            <td class="col-1 text-center">{{ pe.edicion.fechaFin|date('Y-m-d') }}</td>
             <td>{{ pe.edicion.horario }}
                 {% if pe.bajaJustificada %}
                     <br><b>Baja justificada:</b> {{ pe.bajaJustificada|date('Y-m-d H:i:s') }}

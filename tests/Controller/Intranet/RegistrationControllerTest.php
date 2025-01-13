@@ -63,6 +63,7 @@ class RegistrationControllerTest extends BaseControllerTest
         $form['registration_form[email]'] = 'test@example.com';
         $form['registration_form[role]'] = 'ROLE_USER';
         $form['registration_form[username]'] = 'testUserNifExist';
+        $form['registration_form[consent]'] = '1';
 
         // Enviamos el formulario
         $this->client->submit($form);
@@ -83,6 +84,7 @@ class RegistrationControllerTest extends BaseControllerTest
         $form['registration_form[email]'] = 'correo@correo.com';
         $form['registration_form[username]'] = 'mariano';
         $form['registration_form[role]'] = 'ROLE_USER';
+        $form['registration_form[consent]'] = '1';
 
         // Enviamos el formulario
         $this->client->submit($form);
@@ -103,6 +105,7 @@ class RegistrationControllerTest extends BaseControllerTest
         $form['registration_form[email]'] = 'correo@correo.com';
         $form['registration_form[username]'] = 'mariano';
         $form['registration_form[role]'] = 'ROLE_TEACHER';
+        $form['registration_form[consent]'] = '1';
 
         // Enviamos el formulario
         $this->client->submit($form);

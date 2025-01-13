@@ -4,11 +4,13 @@ namespace App\Form\Sistema;
 
 use App\Entity\Sistema\Usuario;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\IsTrue;
 
 class RegistrationFormType extends AbstractType
 {
@@ -55,6 +57,17 @@ class RegistrationFormType extends AbstractType
                 'choices' => [
                     'Participante' => 'ROLE_USER',
                     'Formador' => 'ROLE_TEACHER',
+                ],
+            ])
+            ->add('consent', CheckboxType::class, [
+                'label' => 'Acepto el tratamiento de mis datos personales conforme a la <a href="/intranet/politica-privacidad" target="_blank">Política de Privacidad</a>.',
+                'label_html' => true, // Habilitar HTML en el label
+                'mapped' => false,
+                'required' => true,
+                'constraints' => [
+                    new IsTrue([
+                        'message' => 'Debes aceptar el tratamiento de tus datos personales.',
+                    ]),
                 ],
             ])
         ;
