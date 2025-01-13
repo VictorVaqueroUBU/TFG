@@ -26,7 +26,7 @@ Este proyecto es una aplicación web desarrollada en **Symfony** para la gestió
 </p>
 
 ---
-## Cambios en el Sprint Actual
+## Cambios introducidos en los últimos Sprints
 
 ### Funcionalidades añadidas:
 - **Portal del Formador**:
@@ -39,7 +39,7 @@ Este proyecto es una aplicación web desarrollada en **Symfony** para la gestió
   - Visualización de la ficha formativa de un participante.
   - Visualización de las ediciones asignadas a un formador con sus estados actuales (abiertas, cerradas).
 - **Documentación**:
-  - Se ha añadido la memoria en formato docx y pdf a la documentación del proyecto.
+  - Se ha añadido la memoria y la documentación técnica en formato docx y pdf a la documentación del proyecto.
 - **Pruebas Unitarias y Calidad del Código**:
   - Implementación de pruebas para nuevas entidades y controladores.
   - Código validado con **PHPStan** para asegurar estándares de calidad.
@@ -51,30 +51,8 @@ Este proyecto es una aplicación web desarrollada en **Symfony** para la gestió
   - Código analizado y corregido sin errores.
 ---
 
-## Cambios en el Sprint Anterior
-
-### Funcionalidades añadidas:
-- Gestión de usuarios con roles: implementación del sistema de roles para administradores, participantes y formadores.
-- Formularios de registro y autenticación:
-    - Registro de usuarios con validación de datos.
-    - Sistema de autenticación y autorización con redirección basada en roles.
-- Mejoras en la gestión de ediciones:
-    - Vinculación de ediciones con cursos existentes.
-    - Gestión de plazas y calendario de ediciones.
-- Inscripción de participantes y asignación de formadores:
-    - Lógica para la inscripción de participantes en ediciones específicas.
-    - Asignación de formadores con información de retribuciones.
-
 ### Requisitos para el envío de correos
 La aplicación utiliza un sistema de envío de correos para funciones como el registro de usuarios y otras notificaciones. Para habilitar esta funcionalidad, se requiere la instalación y configuración de un servidor local de correos, como Postfix.
-
-### Pruebas realizadas:
-- **PHPUnit**:
-    - 66 pruebas unitarias pasadas exitosamente, con 301 aserciones.
-- **PHPStan**:
-    - Código analizado y corregido sin errores, cumpliendo con los estándares de calidad.
-
----
 
 ## Tecnologías utilizadas
 
